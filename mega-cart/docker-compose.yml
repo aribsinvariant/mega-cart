@@ -1,0 +1,47 @@
+version: '3'
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672" # app
+      - "15672:15672" # dashboard
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB: auth_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  
+  auth-service:
+    build: ./auth-service
+    environment:
+      - AMQP_URL=amqp://rabbitmq
+      - DATABASE_URL=postgresql://myuser:mypassword@postgres:5432/auth_db
+    depends_on:
+      - rabbitmq
+      - postgres
+
+  gateway:
+    build: ./api-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - auth-service
+
+  frontend:
+    build: ./frontend
+    ports:
+     - "5173:80"
+    depends_on:
+      - gateway
+
+volumes:
+  pgdata:
+  rabbitmq_data:

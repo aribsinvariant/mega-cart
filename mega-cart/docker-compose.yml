@@ -18,6 +18,7 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - ./db_inits.sh:/docker-entrypoint-initdb.d/db_inits.sh
   
   auth-service:
     build: ./auth-service

@@ -8,7 +8,7 @@ app.use(express.json());
 
 let channel;
 
-// rabbitmq
+// rabbitmq not used right now, but may use it for deleting carts when users are deleted
 async function connectQueue() {
     const connection = await amqp.connect('amqp://localhost');
     channel = await connection.createChannel();
@@ -16,6 +16,7 @@ async function connectQueue() {
 }
 connectQueue();
 
+// create cart with items
 app.post('/carts', async (req, res) => {
     const { userId, name, description, items } = req.body;
 
@@ -39,7 +40,7 @@ app.post('/carts', async (req, res) => {
 
         await client.query('COMMIT');
 
-        res.json({ message: "Entry and items created", cartId });
+        res.json({ message: "Cart and items created", cartId });
     }
     catch (err) {
         await client.query('ROLLBACK');
@@ -62,8 +63,14 @@ app.get('/carts', async (req, res) => {
         ORDER BY created_at DESC
     `;
 
-    const result = await query(text, [userId]);
-    res.json(result.rows);
+    try {
+        const result = await query(text, [userId]);
+        res.json(result.rows);
+    }
+    catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Get Carts Failed" });
+    }
 });
 
 // this one will be the one that runs when you click on a specific cart, id refers to cartId not userId
@@ -82,14 +89,87 @@ app.get('/carts/:id', async (req, res) => {
     /*`
         SELECT c.*, json_agg(i.*) as items 
         FROM carts c
-        LEFT JOIN items i ON c.id = i.entry_id
+        LEFT JOIN items i ON c.id = i.cart_id
         WHERE c.id = $1
         GROUP BY c.id
     `;*/
 
-
-    const result = await db.query(text, [id]);
-    res.json(result.rows[0]);
+    try {
+        const result = await db.query(text, [id]);
+        res.json(result.rows[0]);
+    }
+    catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Get Cart Failed" });
+    }
 });
+
+// update cart
+app.put('/carts/:id', async (req, res) => {
+    const { id } = req.params;
+    const { name, description, items } = req.body;
+
+    const client = await db.pool.connect();
+
+    try {
+        await client.query('BEGIN');
+        const cartRes = await client.query(
+            'UPDATE carts SET name = $1, description = $2 WHERE id = $3 RETURNING id',
+            [name, description, id]
+        );
+
+        if (cartRes.rows.length === 0) {
+            await client.query('ROLLBACK');
+            client.release();
+            return res.status(404).json({ error: "Cart not found" });
+        }
+
+        const cartId = cartRes.rows[0].id;
+
+        await client.query('DELETE FROM items WHERE cart_id = $1', [cartId]);
+
+        for (const item of items) {
+            await client.query(
+                'INSERT INTO items (cart_id, name, description, price, quantity) VALUES ($1, $2, $3, $4, $5)',
+                [cartId, item.name, item.description, item.price, item.quantity]
+            );
+        }
+
+        await client.query('COMMIT');
+
+        res.json({ message: "Cart and items updated", cartId });
+    }
+    catch (err) {
+        await client.query('ROLLBACK');
+        console.error(err);
+        res.status(500).json({ error: "Update Cart Failed" });
+    } finally {
+        client.release();
+    }
+});
+
+// delete cart
+app.delete('/carts/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const cartRes = await query(
+            'DELETE FROM carts WHERE id = $1 RETURNING id',
+            [id]
+        );
+
+        if (cartRes.rows.length === 0) {
+            return res.status(404).json({ error: "Cart not found" });
+        }
+
+        res.json({ message: "Cart deleted", cartId: cartRes.rows[0].id });
+    }
+    catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Delete Failed" });
+    }
+});
+
+
 
 app.listen(3007, () => console.log('Cart Service running on 3007'))

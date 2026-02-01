@@ -8,9 +8,10 @@ const pool = new Pool({
 module.exports = {
   query: (text, params) => {
     console.log(`Query: ${text}`);
-    
+
     return pool.query(text, params);
   },
+  pool
 };
 
 // need to init db, do this by writing a .sql file in this folder to create the table for users

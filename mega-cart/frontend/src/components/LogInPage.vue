@@ -1,6 +1,6 @@
 <template>
   <div class="container py-4">
-    <h1>Sign up</h1>
+    <h1>Log In</h1>
 
     <form class="mt-3" @submit.prevent="submit">
       <div class="mb-3">
@@ -14,19 +14,8 @@
         />
       </div>
 
-      <div class="mb-3">
-        <label class="form-label" for="fullName">Full Name</label>
-        <input
-          id="fullName"
-          class="form-control"
-          v-model.trim="fullName"
-          autocomplete="name"
-          required
-        />
-      </div>
-
        <div class="mb-3">
-        <label class="form-label" for="password">Password (at least 6 characters)</label>
+        <label class="form-label" for="password">Password</label>
 
         <div class="input-group">
           <input
@@ -50,21 +39,19 @@
         </div>
       </div>
 
-      <button class="btn btn-primary" type="submit" :disabled="isFormNotValid">Create account</button>
+      <button class="btn btn-primary" type="submit" :disabled="isFormNotValid">Log In</button>
     </form>
   </div>
 </template>
 
 <script>
 export default {
-  name: "SignUpPage",
+  name: "LogInPage",
   data() {
     return {
         email: "",
         password: "",
-        fullName: "",
         showPassword: false,
-        isFormNotValid: true,
     };
   },
   computed: {
@@ -77,28 +64,31 @@ export default {
         this.showPassword = !this.showPassword;
         },
     async submit() {
-      try {
-        await api.post("/auth/signup", {
-          fullName: this.fullName,
+        try {
+        const res = await api.post("/auth/login", {
           email: this.email,
           password: this.password,
         });
 
-        // optionally auto-login after signup:
-        // const { token } = (await api.post("/auth/login", {...})).data
-        // localStorage.setItem("token", token)
+        // Typically you receive a token:
+        // { token: "....", user: {...} }
+        const { token } = res.data;
 
-        this.$emit("signup-success");
+        // store token so future requests are authenticated
+        localStorage.setItem("token", token);
+
+        // tell parent to go home
+        this.$emit("login-success");
       } catch (err) {
-          console.error(err);
-          alert("Sign up failed (maybe email already used).");
+        // show a message instead of alert in real apps
+        console.error(err);
+        alert("Login failed. Check email/password.");
       } finally {
-          this.fullName = "";
-          this.email = "";
-          this.password = "";
-          this.showPassword = false;
+        this.email = "";
+        this.password = "";
+        this.showPassword = false;
       }
-    }
-  }
+    },
+  },
 };
 </script>

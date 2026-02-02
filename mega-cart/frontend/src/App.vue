@@ -8,6 +8,7 @@
     <page-viewer
         :page="pages[activePage]"
         @signup-success="goLogin"
+        @login-success="goHome"
     />
 </template>
 
@@ -31,6 +32,10 @@ export default {
                 {
                     link: { text: "Sign up", url: "signup.html" },
                     component: "SignUpPage",
+                },
+                {
+                    link: { text: "Log in", url: "login.html" },
+                    component: "LogInPage",
                 }
             ]
         };
@@ -38,6 +43,10 @@ export default {
     methods: {
         goLogin() {
             alert("Redirecting to login page...");
+            this.activePage = 2;
+        },
+        goHome() {
+            alert("Redirecting to home page...");
             this.activePage = 0;
         },
     }

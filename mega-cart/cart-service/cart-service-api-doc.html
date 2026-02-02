@@ -689,249 +689,156 @@
   <script>
     // Script section to load models into a JS Var
     var defs = {}
-            defs["Cart"] = {
+            defs["CartCreateRequest"] = {
+  "required" : [ "name", "userId" ],
   "type" : "object",
   "properties" : {
-    "id" : {
-      "type" : "integer",
-      "example" : 101
-    },
-    "user_id" : {
+    "userId" : {
       "type" : "string",
-      "example" : "user-123"
+      "description" : "User identifier owning the cart"
     },
     "name" : {
       "type" : "string",
-      "example" : "My Shopping Cart"
+      "description" : "Name of the cart"
     },
     "description" : {
       "type" : "string",
-      "nullable" : true,
-      "example" : "Cart for weekly groceries"
-    },
-    "created_at" : {
-      "type" : "string",
-      "format" : "date-time",
-      "example" : "2024-04-01T12:00:00Z"
+      "description" : "Optional description of the cart"
     },
     "items" : {
       "type" : "array",
+      "description" : "List of items in the cart",
       "items" : {
         "$ref" : "#/components/schemas/Item"
       }
+    },
+    "labels" : {
+      "type" : "array",
+      "description" : "Labels associated with the cart",
+      "items" : {
+        "type" : "string"
+      }
     }
-  },
-  "description" : "A shopping cart with associated items"
+  }
+};
+            defs["CartDetail"] = {
+  "allOf" : [ {
+    "$ref" : "#/components/schemas/CartSummary"
+  }, {
+    "type" : "object",
+    "properties" : {
+      "items" : {
+        "type" : "array",
+        "description" : "Items in the cart",
+        "items" : {
+          "$ref" : "#/components/schemas/Item"
+        }
+      },
+      "labels" : {
+        "type" : "array",
+        "description" : "Labels associated with the cart",
+        "items" : {
+          "type" : "string"
+        }
+      }
+    }
+  } ]
 };
             defs["CartSummary"] = {
   "type" : "object",
   "properties" : {
     "id" : {
-      "type" : "integer",
-      "example" : 101
+      "type" : "string",
+      "description" : "Cart identifier"
     },
     "name" : {
       "type" : "string",
-      "example" : "My Shopping Cart"
+      "description" : "Name of the cart"
     },
     "description" : {
       "type" : "string",
-      "nullable" : true,
-      "example" : "Cart for weekly groceries"
+      "description" : "Description of the cart"
     },
     "created_at" : {
       "type" : "string",
-      "format" : "date-time",
-      "example" : "2024-04-01T12:00:00Z"
-    }
-  },
-  "description" : "Summary information of a cart"
-};
-            defs["carts_body"] = {
-  "required" : [ "items", "name", "userId" ],
-  "type" : "object",
-  "properties" : {
-    "userId" : {
-      "type" : "string",
-      "example" : "user-123"
-    },
-    "name" : {
-      "type" : "string",
-      "example" : "My Shopping Cart"
-    },
-    "items" : {
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/components/schemas/ItemInput"
-      }
+      "description" : "Creation timestamp",
+      "format" : "date-time"
     }
   }
 };
-            defs["carts_id_body"] = {
-  "required" : [ "items", "name" ],
+            defs["CartUpdateRequest"] = {
+  "required" : [ "name" ],
   "type" : "object",
   "properties" : {
     "name" : {
       "type" : "string",
-      "example" : "Updated Cart Name"
+      "description" : "Updated name of the cart"
+    },
+    "description" : {
+      "type" : "string",
+      "description" : "Updated description of the cart"
     },
     "items" : {
       "type" : "array",
+      "description" : "Updated list of items in the cart",
       "items" : {
-        "$ref" : "#/components/schemas/ItemInput"
+        "$ref" : "#/components/schemas/Item"
+      }
+    },
+    "labels" : {
+      "type" : "array",
+      "description" : "Updated labels associated with the cart",
+      "items" : {
+        "type" : "string"
       }
     }
   }
 };
-            defs["inline_response_200"] = {
-  "type" : "object",
-  "properties" : {
-    "message" : {
-      "type" : "string",
-      "example" : "Cart created successfully"
-    },
-    "cartId" : {
-      "type" : "integer",
-      "example" : 101
-    }
-  }
-};
-            defs["inline_response_200_1"] = {
-  "type" : "object",
-  "properties" : {
-    "message" : {
-      "type" : "string",
-      "example" : "Cart updated successfully"
-    },
-    "cartId" : {
-      "type" : "integer",
-      "example" : 101
-    }
-  }
-};
-            defs["inline_response_200_2"] = {
-  "type" : "object",
-  "properties" : {
-    "message" : {
-      "type" : "string",
-      "example" : "Cart deleted successfully"
-    },
-    "cartId" : {
-      "type" : "integer",
-      "example" : 101
-    }
-  }
-};
-            defs["inline_response_404"] = {
+            defs["ErrorResponse"] = {
   "type" : "object",
   "properties" : {
     "error" : {
       "type" : "string",
-      "example" : "Cart not found"
-    }
-  }
-};
-            defs["inline_response_500"] = {
-  "type" : "object",
-  "properties" : {
-    "error" : {
-      "type" : "string",
-      "example" : "Failed to retrieve carts due to server error"
-    }
-  }
-};
-            defs["inline_response_500_1"] = {
-  "type" : "object",
-  "properties" : {
-    "error" : {
-      "type" : "string",
-      "example" : "Failed to create cart due to server error"
-    }
-  }
-};
-            defs["inline_response_500_2"] = {
-  "type" : "object",
-  "properties" : {
-    "error" : {
-      "type" : "string",
-      "example" : "Failed to retrieve cart due to server error"
-    }
-  }
-};
-            defs["inline_response_500_3"] = {
-  "type" : "object",
-  "properties" : {
-    "error" : {
-      "type" : "string",
-      "example" : "Failed to update cart due to server error"
-    }
-  }
-};
-            defs["inline_response_500_4"] = {
-  "type" : "object",
-  "properties" : {
-    "error" : {
-      "type" : "string",
-      "example" : "Failed to delete cart due to server error"
+      "description" : "Error message describing the failure or issue"
     }
   }
 };
             defs["Item"] = {
-  "type" : "object",
-  "properties" : {
-    "id" : {
-      "type" : "integer",
-      "example" : 501
-    },
-    "cart_id" : {
-      "type" : "integer",
-      "example" : 101
-    },
-    "name" : {
-      "type" : "string",
-      "example" : "Apple"
-    },
-    "description" : {
-      "type" : "string",
-      "nullable" : true,
-      "example" : "Fresh red apples"
-    },
-    "price" : {
-      "type" : "number",
-      "format" : "float",
-      "example" : 0.99
-    },
-    "quantity" : {
-      "type" : "integer",
-      "example" : 5
-    }
-  },
-  "description" : "An item within a cart"
-};
-            defs["ItemInput"] = {
   "required" : [ "name", "price", "quantity" ],
   "type" : "object",
   "properties" : {
     "name" : {
       "type" : "string",
-      "example" : "Apple"
+      "description" : "Name of the item"
     },
     "description" : {
       "type" : "string",
-      "nullable" : true,
-      "example" : "Fresh red apples"
+      "description" : "Optional description of the item"
     },
     "price" : {
       "type" : "number",
-      "format" : "float",
-      "example" : 0.99
+      "description" : "Price of the item",
+      "format" : "float"
     },
     "quantity" : {
       "type" : "integer",
-      "example" : 5
+      "description" : "Quantity of the item"
     }
-  },
-  "description" : "Item object used in create/update requests"
+  }
+};
+            defs["label"] = {};
+            defs["StandardResponse"] = {
+  "type" : "object",
+  "properties" : {
+    "message" : {
+      "type" : "string",
+      "description" : "Success message"
+    },
+    "cartId" : {
+      "type" : "string",
+      "description" : "Identifier of the affected cart"
+    }
+  }
 };
   </script>
 
@@ -959,8 +866,8 @@
                     <li data-group="Carts" data-name="getCartById" class="">
                       <a href="#api-Carts-getCartById">getCartById</a>
                     </li>
-                    <li data-group="Carts" data-name="getUserCarts" class="">
-                      <a href="#api-Carts-getUserCarts">getUserCarts</a>
+                    <li data-group="Carts" data-name="listCarts" class="">
+                      <a href="#api-Carts-listCarts">listCarts</a>
                     </li>
                     <li data-group="Carts" data-name="updateCart" class="">
                       <a href="#api-Carts-updateCart">updateCart</a>
@@ -980,7 +887,8 @@
             <h2 id="welcome-to-apidoc">API and SDK Documentation</h2>
               <div class="app-desc">Version: 1.0.0</div>
             <hr>
-            <div>API for creation, deletion, update, and retrieval of carts and their items.</div>
+            <div>This API manages carts with items and labels.
+<strong>Warning:</strong> No authentication or authorization is implemented. All endpoints are publicly accessible.</div>
           </div>
         </div>
         <div id="sections">
@@ -990,7 +898,7 @@
                       <article id="api-Carts-createCart-0" data-group="User" data-name="createCart" data-version="0">
                         <div class="pull-left">
                           <h1>createCart</h1>
-                          <p>Create a new cart with items</p>
+                          <p>Create new cart with items and labels</p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
@@ -1021,7 +929,7 @@
                            <pre class="prettyprint"><code class="language-bsh">curl -X POST\
 -H "Accept: application/json"\
 -H "Content-Type: application/json"\
-"http://localhost:3007//carts"</code></pre>
+"http://localhost:3007/carts"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-Carts-createCart-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -1037,9 +945,26 @@ public class CartsApiExample {
     public static void main(String[] args) {
         
         CartsApi apiInstance = new CartsApi();
-        Carts_body body = ; // Carts_body | 
+        CartCreateRequest body = {
+  "value" : {
+    "userId" : "user123",
+    "name" : "My Shopping Cart",
+    "description" : "Cart for weekly groceries",
+    "items" : [ {
+      "name" : "Apple",
+      "description" : "Fresh red apples",
+      "price" : 0.5,
+      "quantity" : 10
+    }, {
+      "name" : "Milk",
+      "price" : 1.2,
+      "quantity" : 2
+    } ],
+    "labels" : [ "groceries", "weekly" ]
+  }
+}; // CartCreateRequest | 
         try {
-            inline_response_200 result = apiInstance.createCart(body);
+            StandardResponse result = apiInstance.createCart(body);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling CartsApi#createCart");
@@ -1056,9 +981,26 @@ public class CartsApiExample {
 
     public static void main(String[] args) {
         CartsApi apiInstance = new CartsApi();
-        Carts_body body = ; // Carts_body | 
+        CartCreateRequest body = {
+  "value" : {
+    "userId" : "user123",
+    "name" : "My Shopping Cart",
+    "description" : "Cart for weekly groceries",
+    "items" : [ {
+      "name" : "Apple",
+      "description" : "Fresh red apples",
+      "price" : 0.5,
+      "quantity" : 10
+    }, {
+      "name" : "Milk",
+      "price" : 1.2,
+      "quantity" : 2
+    } ],
+    "labels" : [ "groceries", "weekly" ]
+  }
+}; // CartCreateRequest | 
         try {
-            inline_response_200 result = apiInstance.createCart(body);
+            StandardResponse result = apiInstance.createCart(body);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling CartsApi#createCart");
@@ -1072,13 +1014,30 @@ public class CartsApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-Carts-createCart-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Carts_body *body = ; // 
+                              <pre class="prettyprint"><code class="language-cpp">CartCreateRequest *body = {
+  "value" : {
+    "userId" : "user123",
+    "name" : "My Shopping Cart",
+    "description" : "Cart for weekly groceries",
+    "items" : [ {
+      "name" : "Apple",
+      "description" : "Fresh red apples",
+      "price" : 0.5,
+      "quantity" : 10
+    }, {
+      "name" : "Milk",
+      "price" : 1.2,
+      "quantity" : 2
+    } ],
+    "labels" : [ "groceries", "weekly" ]
+  }
+}; // 
 
 CartsApi *apiInstance = [[CartsApi alloc] init];
 
-// Create a new cart with items
+// Create new cart with items and labels
 [apiInstance createCartWith:body
-              completionHandler: ^(inline_response_200 output, NSError* error) {
+              completionHandler: ^(StandardResponse output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
                             }
@@ -1090,10 +1049,27 @@ CartsApi *apiInstance = [[CartsApi alloc] init];
                             </div>
 
                             <div class="tab-pane" id="examples-Carts-createCart-0-javascript">
-                              <pre class="prettyprint"><code class="language-js">var CartService = require('cart_service');
+                              <pre class="prettyprint"><code class="language-js">var GeneratedApi202602021350 = require('generated_api_2026_02_02_1350');
 
-var api = new CartService.CartsApi()
-var body = ; // {{Carts_body}} 
+var api = new GeneratedApi202602021350.CartsApi()
+var body = {
+  "value" : {
+    "userId" : "user123",
+    "name" : "My Shopping Cart",
+    "description" : "Cart for weekly groceries",
+    "items" : [ {
+      "name" : "Apple",
+      "description" : "Fresh red apples",
+      "price" : 0.5,
+      "quantity" : 10
+    }, {
+      "name" : "Milk",
+      "price" : 1.2,
+      "quantity" : 2
+    } ],
+    "labels" : [ "groceries", "weekly" ]
+  }
+}; // {{CartCreateRequest}} 
 
 var callback = function(error, data, response) {
   if (error) {
@@ -1124,12 +1100,12 @@ namespace Example
         {
 
             var apiInstance = new CartsApi();
-            var body = new Carts_body(); // Carts_body | 
+            var body = new CartCreateRequest(); // CartCreateRequest | 
 
             try
             {
-                // Create a new cart with items
-                inline_response_200 result = apiInstance.createCart(body);
+                // Create new cart with items and labels
+                StandardResponse result = apiInstance.createCart(body);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -1147,7 +1123,24 @@ namespace Example
 require_once(__DIR__ . '/vendor/autoload.php');
 
 $api_instance = new Swagger\Client\ApiCartsApi();
-$body = ; // Carts_body | 
+$body = {
+  "value" : {
+    "userId" : "user123",
+    "name" : "My Shopping Cart",
+    "description" : "Cart for weekly groceries",
+    "items" : [ {
+      "name" : "Apple",
+      "description" : "Fresh red apples",
+      "price" : 0.5,
+      "quantity" : 10
+    }, {
+      "name" : "Milk",
+      "price" : 1.2,
+      "quantity" : 2
+    } ],
+    "labels" : [ "groceries", "weekly" ]
+  }
+}; // CartCreateRequest | 
 
 try {
     $result = $api_instance->createCart($body);
@@ -1164,7 +1157,7 @@ use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::CartsApi;
 
 my $api_instance = WWW::SwaggerClient::CartsApi->new();
-my $body = WWW::SwaggerClient::Object::Carts_body->new(); # Carts_body | 
+my $body = WWW::SwaggerClient::Object::CartCreateRequest->new(); # CartCreateRequest | 
 
 eval { 
     my $result = $api_instance->createCart(body => $body);
@@ -1184,10 +1177,27 @@ from pprint import pprint
 
 # create an instance of the API class
 api_instance = swagger_client.CartsApi()
-body =  # Carts_body | 
+body = {
+  "value" : {
+    "userId" : "user123",
+    "name" : "My Shopping Cart",
+    "description" : "Cart for weekly groceries",
+    "items" : [ {
+      "name" : "Apple",
+      "description" : "Fresh red apples",
+      "price" : 0.5,
+      "quantity" : 10
+    }, {
+      "name" : "Milk",
+      "price" : 1.2,
+      "quantity" : 2
+    } ],
+    "labels" : [ "groceries", "weekly" ]
+  }
+} # CartCreateRequest | 
 
 try: 
-    # Create a new cart with items
+    # Create new cart with items and labels
     api_response = api_instance.create_cart(body)
     pprint(api_response)
 except ApiException as e:
@@ -1215,7 +1225,27 @@ except ApiException as e:
   "content" : {
     "application/json" : {
       "schema" : {
-        "$ref" : "#/components/schemas/carts_body"
+        "$ref" : "#/components/schemas/CartCreateRequest"
+      },
+      "examples" : {
+        "example1" : {
+          "value" : {
+            "userId" : "user123",
+            "name" : "My Shopping Cart",
+            "description" : "Cart for weekly groceries",
+            "items" : [ {
+              "name" : "Apple",
+              "description" : "Fresh red apples",
+              "price" : 0.5,
+              "quantity" : 10
+            }, {
+              "name" : "Milk",
+              "price" : 1.2,
+              "quantity" : 2
+            } ],
+            "labels" : [ "groceries", "weekly" ]
+          }
+        }
       }
     }
   },
@@ -1265,7 +1295,15 @@ except ApiException as e:
   "content" : {
     "application/json" : {
       "schema" : {
-        "$ref" : "#/components/schemas/inline_response_200"
+        "$ref" : "#/components/schemas/StandardResponse"
+      },
+      "examples" : {
+        "success" : {
+          "value" : {
+            "message" : "Cart created successfully",
+            "cartId" : "abc123"
+          }
+        }
       }
     }
   }
@@ -1294,7 +1332,7 @@ except ApiException as e:
                                 </div>
                             </div>
 
-                            <h3> Status: 500 - Transaction failed </h3>
+                            <h3> Status: 500 - Server error </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
                                 <li class="active">
@@ -1309,11 +1347,11 @@ except ApiException as e:
                                     <script>
                                       $(document).ready(function() {
                                         var schemaWrapper = {
-  "description" : "Transaction failed",
+  "description" : "Server error",
   "content" : {
     "application/json" : {
       "schema" : {
-        "$ref" : "#/components/schemas/inline_response_500_1"
+        "$ref" : "#/components/schemas/ErrorResponse"
       }
     }
   }
@@ -1349,7 +1387,7 @@ except ApiException as e:
                       <article id="api-Carts-deleteCart-0" data-group="User" data-name="deleteCart" data-version="0">
                         <div class="pull-left">
                           <h1>deleteCart</h1>
-                          <p>Delete a cart by ID</p>
+                          <p>Delete cart by ID</p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
@@ -1379,7 +1417,7 @@ except ApiException as e:
                           <div class="tab-pane active" id="examples-Carts-deleteCart-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X DELETE\
 -H "Accept: application/json"\
-"http://localhost:3007//carts/{id}"</code></pre>
+"http://localhost:3007/carts/{id}"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-Carts-deleteCart-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -1395,9 +1433,9 @@ public class CartsApiExample {
     public static void main(String[] args) {
         
         CartsApi apiInstance = new CartsApi();
-        Integer id = 56; // Integer | Cart identifier
+        String id = id_example; // String | Cart ID
         try {
-            inline_response_200_2 result = apiInstance.deleteCart(id);
+            StandardResponse result = apiInstance.deleteCart(id);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling CartsApi#deleteCart");
@@ -1414,9 +1452,9 @@ public class CartsApiExample {
 
     public static void main(String[] args) {
         CartsApi apiInstance = new CartsApi();
-        Integer id = 56; // Integer | Cart identifier
+        String id = id_example; // String | Cart ID
         try {
-            inline_response_200_2 result = apiInstance.deleteCart(id);
+            StandardResponse result = apiInstance.deleteCart(id);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling CartsApi#deleteCart");
@@ -1430,13 +1468,13 @@ public class CartsApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-Carts-deleteCart-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Integer *id = 56; // Cart identifier
+                              <pre class="prettyprint"><code class="language-cpp">String *id = id_example; // Cart ID
 
 CartsApi *apiInstance = [[CartsApi alloc] init];
 
-// Delete a cart by ID
+// Delete cart by ID
 [apiInstance deleteCartWith:id
-              completionHandler: ^(inline_response_200_2 output, NSError* error) {
+              completionHandler: ^(StandardResponse output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
                             }
@@ -1448,10 +1486,10 @@ CartsApi *apiInstance = [[CartsApi alloc] init];
                             </div>
 
                             <div class="tab-pane" id="examples-Carts-deleteCart-0-javascript">
-                              <pre class="prettyprint"><code class="language-js">var CartService = require('cart_service');
+                              <pre class="prettyprint"><code class="language-js">var GeneratedApi202602021350 = require('generated_api_2026_02_02_1350');
 
-var api = new CartService.CartsApi()
-var id = 56; // {{Integer}} Cart identifier
+var api = new GeneratedApi202602021350.CartsApi()
+var id = id_example; // {{String}} Cart ID
 
 var callback = function(error, data, response) {
   if (error) {
@@ -1482,12 +1520,12 @@ namespace Example
         {
 
             var apiInstance = new CartsApi();
-            var id = 56;  // Integer | Cart identifier
+            var id = id_example;  // String | Cart ID
 
             try
             {
-                // Delete a cart by ID
-                inline_response_200_2 result = apiInstance.deleteCart(id);
+                // Delete cart by ID
+                StandardResponse result = apiInstance.deleteCart(id);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -1505,7 +1543,7 @@ namespace Example
 require_once(__DIR__ . '/vendor/autoload.php');
 
 $api_instance = new Swagger\Client\ApiCartsApi();
-$id = 56; // Integer | Cart identifier
+$id = id_example; // String | Cart ID
 
 try {
     $result = $api_instance->deleteCart($id);
@@ -1522,7 +1560,7 @@ use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::CartsApi;
 
 my $api_instance = WWW::SwaggerClient::CartsApi->new();
-my $id = 56; # Integer | Cart identifier
+my $id = id_example; # String | Cart ID
 
 eval { 
     my $result = $api_instance->deleteCart(id => $id);
@@ -1542,10 +1580,10 @@ from pprint import pprint
 
 # create an instance of the API class
 api_instance = swagger_client.CartsApi()
-id = 56 # Integer | Cart identifier
+id = id_example # String | Cart ID
 
 try: 
-    # Delete a cart by ID
+    # Delete cart by ID
     api_response = api_instance.delete_cart(id)
     pprint(api_response)
 except ApiException as e:
@@ -1569,11 +1607,11 @@ except ApiException as e:
                                           <div class="json-schema-view">
                                               <div class="primitive">
                                                   <span class="type">
-                                                      Integer
+                                                      String
                                                   </span>
                                   
                                                       <div class="inner description">
-                                                          Cart identifier
+                                                          Cart ID
                                                       </div>
                                               </div>
                                                   <div class="inner required">
@@ -1609,7 +1647,15 @@ except ApiException as e:
   "content" : {
     "application/json" : {
       "schema" : {
-        "$ref" : "#/components/schemas/inline_response_200_2"
+        "$ref" : "#/components/schemas/StandardResponse"
+      },
+      "examples" : {
+        "success" : {
+          "value" : {
+            "message" : "Cart deleted successfully",
+            "cartId" : "abc123"
+          }
+        }
       }
     }
   }
@@ -1657,7 +1703,14 @@ except ApiException as e:
   "content" : {
     "application/json" : {
       "schema" : {
-        "$ref" : "#/components/schemas/inline_response_404"
+        "$ref" : "#/components/schemas/ErrorResponse"
+      },
+      "examples" : {
+        "notFound" : {
+          "value" : {
+            "error" : "Cart not found"
+          }
+        }
       }
     }
   }
@@ -1686,7 +1739,7 @@ except ApiException as e:
                                 </div>
                             </div>
 
-                            <h3> Status: 500 - Failed to delete cart </h3>
+                            <h3> Status: 500 - Server error </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
                                 <li class="active">
@@ -1701,11 +1754,11 @@ except ApiException as e:
                                     <script>
                                       $(document).ready(function() {
                                         var schemaWrapper = {
-  "description" : "Failed to delete cart",
+  "description" : "Server error",
   "content" : {
     "application/json" : {
       "schema" : {
-        "$ref" : "#/components/schemas/inline_response_500_4"
+        "$ref" : "#/components/schemas/ErrorResponse"
       }
     }
   }
@@ -1741,7 +1794,7 @@ except ApiException as e:
                       <article id="api-Carts-getCartById-0" data-group="User" data-name="getCartById" data-version="0">
                         <div class="pull-left">
                           <h1>getCartById</h1>
-                          <p>Retrieve a cart by ID with items</p>
+                          <p>Retrieve cart details by ID</p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
@@ -1771,7 +1824,7 @@ except ApiException as e:
                           <div class="tab-pane active" id="examples-Carts-getCartById-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X GET\
 -H "Accept: application/json"\
-"http://localhost:3007//carts/{id}"</code></pre>
+"http://localhost:3007/carts/{id}"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-Carts-getCartById-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -1787,9 +1840,9 @@ public class CartsApiExample {
     public static void main(String[] args) {
         
         CartsApi apiInstance = new CartsApi();
-        Integer id = 56; // Integer | Cart identifier
+        String id = id_example; // String | Cart ID
         try {
-            Cart result = apiInstance.getCartById(id);
+            CartDetail result = apiInstance.getCartById(id);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling CartsApi#getCartById");
@@ -1806,9 +1859,9 @@ public class CartsApiExample {
 
     public static void main(String[] args) {
         CartsApi apiInstance = new CartsApi();
-        Integer id = 56; // Integer | Cart identifier
+        String id = id_example; // String | Cart ID
         try {
-            Cart result = apiInstance.getCartById(id);
+            CartDetail result = apiInstance.getCartById(id);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling CartsApi#getCartById");
@@ -1822,13 +1875,13 @@ public class CartsApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-Carts-getCartById-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Integer *id = 56; // Cart identifier
+                              <pre class="prettyprint"><code class="language-cpp">String *id = id_example; // Cart ID
 
 CartsApi *apiInstance = [[CartsApi alloc] init];
 
-// Retrieve a cart by ID with items
+// Retrieve cart details by ID
 [apiInstance getCartByIdWith:id
-              completionHandler: ^(Cart output, NSError* error) {
+              completionHandler: ^(CartDetail output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
                             }
@@ -1840,10 +1893,10 @@ CartsApi *apiInstance = [[CartsApi alloc] init];
                             </div>
 
                             <div class="tab-pane" id="examples-Carts-getCartById-0-javascript">
-                              <pre class="prettyprint"><code class="language-js">var CartService = require('cart_service');
+                              <pre class="prettyprint"><code class="language-js">var GeneratedApi202602021350 = require('generated_api_2026_02_02_1350');
 
-var api = new CartService.CartsApi()
-var id = 56; // {{Integer}} Cart identifier
+var api = new GeneratedApi202602021350.CartsApi()
+var id = id_example; // {{String}} Cart ID
 
 var callback = function(error, data, response) {
   if (error) {
@@ -1874,12 +1927,12 @@ namespace Example
         {
 
             var apiInstance = new CartsApi();
-            var id = 56;  // Integer | Cart identifier
+            var id = id_example;  // String | Cart ID
 
             try
             {
-                // Retrieve a cart by ID with items
-                Cart result = apiInstance.getCartById(id);
+                // Retrieve cart details by ID
+                CartDetail result = apiInstance.getCartById(id);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -1897,7 +1950,7 @@ namespace Example
 require_once(__DIR__ . '/vendor/autoload.php');
 
 $api_instance = new Swagger\Client\ApiCartsApi();
-$id = 56; // Integer | Cart identifier
+$id = id_example; // String | Cart ID
 
 try {
     $result = $api_instance->getCartById($id);
@@ -1914,7 +1967,7 @@ use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::CartsApi;
 
 my $api_instance = WWW::SwaggerClient::CartsApi->new();
-my $id = 56; # Integer | Cart identifier
+my $id = id_example; # String | Cart ID
 
 eval { 
     my $result = $api_instance->getCartById(id => $id);
@@ -1934,10 +1987,10 @@ from pprint import pprint
 
 # create an instance of the API class
 api_instance = swagger_client.CartsApi()
-id = 56 # Integer | Cart identifier
+id = id_example # String | Cart ID
 
 try: 
-    # Retrieve a cart by ID with items
+    # Retrieve cart details by ID
     api_response = api_instance.get_cart_by_id(id)
     pprint(api_response)
 except ApiException as e:
@@ -1961,11 +2014,11 @@ except ApiException as e:
                                           <div class="json-schema-view">
                                               <div class="primitive">
                                                   <span class="type">
-                                                      Integer
+                                                      String
                                                   </span>
                                   
                                                       <div class="inner description">
-                                                          Cart identifier
+                                                          Cart ID
                                                       </div>
                                               </div>
                                                   <div class="inner required">
@@ -1982,7 +2035,7 @@ except ApiException as e:
 
 
                           <h2>Responses</h2>
-                            <h3> Status: 200 - Cart object with items </h3>
+                            <h3> Status: 200 - Cart details </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
                                 <li class="active">
@@ -1997,11 +2050,32 @@ except ApiException as e:
                                     <script>
                                       $(document).ready(function() {
                                         var schemaWrapper = {
-  "description" : "Cart object with items",
+  "description" : "Cart details",
   "content" : {
     "application/json" : {
       "schema" : {
-        "$ref" : "#/components/schemas/Cart"
+        "$ref" : "#/components/schemas/CartDetail"
+      },
+      "examples" : {
+        "example1" : {
+          "value" : {
+            "id" : "abc123",
+            "name" : "My Shopping Cart",
+            "description" : "Cart for weekly groceries",
+            "created_at" : "2026-02-02T13:50:00Z",
+            "items" : [ {
+              "name" : "Apple",
+              "description" : "Fresh red apples",
+              "price" : 0.5,
+              "quantity" : 10
+            }, {
+              "name" : "Milk",
+              "price" : 1.2,
+              "quantity" : 2
+            } ],
+            "labels" : [ "groceries", "weekly" ]
+          }
+        }
       }
     }
   }
@@ -2030,7 +2104,7 @@ except ApiException as e:
                                 </div>
                             </div>
 
-                            <h3> Status: 500 - Failed to retrieve cart </h3>
+                            <h3> Status: 500 - Server error </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
                                 <li class="active">
@@ -2045,11 +2119,11 @@ except ApiException as e:
                                     <script>
                                       $(document).ready(function() {
                                         var schemaWrapper = {
-  "description" : "Failed to retrieve cart",
+  "description" : "Server error",
   "content" : {
     "application/json" : {
       "schema" : {
-        "$ref" : "#/components/schemas/inline_response_500_2"
+        "$ref" : "#/components/schemas/ErrorResponse"
       }
     }
   }
@@ -2081,11 +2155,11 @@ except ApiException as e:
                         </article>
                       </div>
                       <hr>
-                    <div id="api-Carts-getUserCarts">
-                      <article id="api-Carts-getUserCarts-0" data-group="User" data-name="getUserCarts" data-version="0">
+                    <div id="api-Carts-listCarts">
+                      <article id="api-Carts-listCarts-0" data-group="User" data-name="listCarts" data-version="0">
                         <div class="pull-left">
-                          <h1>getUserCarts</h1>
-                          <p>Retrieve all carts for a user</p>
+                          <h1>listCarts</h1>
+                          <p>List carts by userId with optional label filtering</p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
@@ -2098,26 +2172,26 @@ except ApiException as e:
                           <h3>Usage and SDK Samples</h3>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-Carts-getUserCarts-0-curl">Curl</a></li>
-                          <li class=""><a href="#examples-Carts-getUserCarts-0-java">Java</a></li>
-                          <li class=""><a href="#examples-Carts-getUserCarts-0-android">Android</a></li>
-                          <!--<li class=""><a href="#examples-Carts-getUserCarts-0-groovy">Groovy</a></li>-->
-                          <li class=""><a href="#examples-Carts-getUserCarts-0-objc">Obj-C</a></li>
-                          <li class=""><a href="#examples-Carts-getUserCarts-0-javascript">JavaScript</a></li>
-                          <!--<li class=""><a href="#examples-Carts-getUserCarts-0-angular">Angular</a></li>-->
-                          <li class=""><a href="#examples-Carts-getUserCarts-0-csharp">C#</a></li>
-                          <li class=""><a href="#examples-Carts-getUserCarts-0-php">PHP</a></li>
-                          <li class=""><a href="#examples-Carts-getUserCarts-0-perl">Perl</a></li>
-                          <li class=""><a href="#examples-Carts-getUserCarts-0-python">Python</a></li>
+                          <li class="active"><a href="#examples-Carts-listCarts-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Carts-listCarts-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Carts-listCarts-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Carts-listCarts-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Carts-listCarts-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Carts-listCarts-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Carts-listCarts-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Carts-listCarts-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Carts-listCarts-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Carts-listCarts-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Carts-listCarts-0-python">Python</a></li>
                         </ul>
 
                         <div class="tab-content">
-                          <div class="tab-pane active" id="examples-Carts-getUserCarts-0-curl">
+                          <div class="tab-pane active" id="examples-Carts-listCarts-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X GET\
 -H "Accept: application/json"\
-"http://localhost:3007//carts?userId="</code></pre>
+"http://localhost:3007/carts?userId=&label="</code></pre>
                           </div>
-                          <div class="tab-pane" id="examples-Carts-getUserCarts-0-java">
+                          <div class="tab-pane" id="examples-Carts-listCarts-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
 import io.swagger.client.auth.*;
 import io.swagger.client.model.*;
@@ -2131,47 +2205,51 @@ public class CartsApiExample {
     public static void main(String[] args) {
         
         CartsApi apiInstance = new CartsApi();
-        String userId = userId_example; // String | User identifier to filter carts
+        String userId = userId_example; // String | User ID to filter carts
+        label label = ; // label | Label(s) to filter carts, can be repeated
         try {
-            array[CartSummary] result = apiInstance.getUserCarts(userId);
+            array[CartSummary] result = apiInstance.listCarts(userId, label);
             System.out.println(result);
         } catch (ApiException e) {
-            System.err.println("Exception when calling CartsApi#getUserCarts");
+            System.err.println("Exception when calling CartsApi#listCarts");
             e.printStackTrace();
         }
     }
 }</code></pre>
                           </div>
 
-                          <div class="tab-pane" id="examples-Carts-getUserCarts-0-android">
+                          <div class="tab-pane" id="examples-Carts-listCarts-0-android">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.CartsApi;
 
 public class CartsApiExample {
 
     public static void main(String[] args) {
         CartsApi apiInstance = new CartsApi();
-        String userId = userId_example; // String | User identifier to filter carts
+        String userId = userId_example; // String | User ID to filter carts
+        label label = ; // label | Label(s) to filter carts, can be repeated
         try {
-            array[CartSummary] result = apiInstance.getUserCarts(userId);
+            array[CartSummary] result = apiInstance.listCarts(userId, label);
             System.out.println(result);
         } catch (ApiException e) {
-            System.err.println("Exception when calling CartsApi#getUserCarts");
+            System.err.println("Exception when calling CartsApi#listCarts");
             e.printStackTrace();
         }
     }
 }</code></pre>
                           </div>
   <!--
-  <div class="tab-pane" id="examples-Carts-getUserCarts-0-groovy">
+  <div class="tab-pane" id="examples-Carts-listCarts-0-groovy">
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
-                            <div class="tab-pane" id="examples-Carts-getUserCarts-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">String *userId = userId_example; // User identifier to filter carts
+                            <div class="tab-pane" id="examples-Carts-listCarts-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">String *userId = userId_example; // User ID to filter carts
+label *label = ; // Label(s) to filter carts, can be repeated (optional)
 
 CartsApi *apiInstance = [[CartsApi alloc] init];
 
-// Retrieve all carts for a user
-[apiInstance getUserCartsWith:userId
+// List carts by userId with optional label filtering
+[apiInstance listCartsWith:userId
+    label:label
               completionHandler: ^(array[CartSummary] output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
@@ -2183,12 +2261,14 @@ CartsApi *apiInstance = [[CartsApi alloc] init];
 </code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Carts-getUserCarts-0-javascript">
-                              <pre class="prettyprint"><code class="language-js">var CartService = require('cart_service');
+                            <div class="tab-pane" id="examples-Carts-listCarts-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var GeneratedApi202602021350 = require('generated_api_2026_02_02_1350');
 
-var api = new CartService.CartsApi()
-var userId = userId_example; // {{String}} User identifier to filter carts
-
+var api = new GeneratedApi202602021350.CartsApi()
+var userId = userId_example; // {{String}} User ID to filter carts
+var opts = { 
+  'label':  // {{label}} Label(s) to filter carts, can be repeated
+};
 var callback = function(error, data, response) {
   if (error) {
     console.error(error);
@@ -2196,14 +2276,14 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.getUserCarts(userId, callback);
+api.listCarts(userId, opts, callback);
 </code></pre>
                             </div>
 
-                            <!--<div class="tab-pane" id="examples-Carts-getUserCarts-0-angular">
+                            <!--<div class="tab-pane" id="examples-Carts-listCarts-0-angular">
               <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
             </div>-->
-                            <div class="tab-pane" id="examples-Carts-getUserCarts-0-csharp">
+                            <div class="tab-pane" id="examples-Carts-listCarts-0-csharp">
                               <pre class="prettyprint"><code class="language-cs">using System;
 using System.Diagnostics;
 using IO.Swagger.Api;
@@ -2212,23 +2292,24 @@ using IO.Swagger.Model;
 
 namespace Example
 {
-    public class getUserCartsExample
+    public class listCartsExample
     {
         public void main()
         {
 
             var apiInstance = new CartsApi();
-            var userId = userId_example;  // String | User identifier to filter carts
+            var userId = userId_example;  // String | User ID to filter carts
+            var label = new label(); // label | Label(s) to filter carts, can be repeated (optional) 
 
             try
             {
-                // Retrieve all carts for a user
-                array[CartSummary] result = apiInstance.getUserCarts(userId);
+                // List carts by userId with optional label filtering
+                array[CartSummary] result = apiInstance.listCarts(userId, label);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
             {
-                Debug.Print("Exception when calling CartsApi.getUserCarts: " + e.Message );
+                Debug.Print("Exception when calling CartsApi.listCarts: " + e.Message );
             }
         }
     }
@@ -2236,40 +2317,42 @@ namespace Example
 </code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Carts-getUserCarts-0-php">
+                            <div class="tab-pane" id="examples-Carts-listCarts-0-php">
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
 $api_instance = new Swagger\Client\ApiCartsApi();
-$userId = userId_example; // String | User identifier to filter carts
+$userId = userId_example; // String | User ID to filter carts
+$label = ; // label | Label(s) to filter carts, can be repeated
 
 try {
-    $result = $api_instance->getUserCarts($userId);
+    $result = $api_instance->listCarts($userId, $label);
     print_r($result);
 } catch (Exception $e) {
-    echo 'Exception when calling CartsApi->getUserCarts: ', $e->getMessage(), PHP_EOL;
+    echo 'Exception when calling CartsApi->listCarts: ', $e->getMessage(), PHP_EOL;
 }
 ?></code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Carts-getUserCarts-0-perl">
+                            <div class="tab-pane" id="examples-Carts-listCarts-0-perl">
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::CartsApi;
 
 my $api_instance = WWW::SwaggerClient::CartsApi->new();
-my $userId = userId_example; # String | User identifier to filter carts
+my $userId = userId_example; # String | User ID to filter carts
+my $label = ; # label | Label(s) to filter carts, can be repeated
 
 eval { 
-    my $result = $api_instance->getUserCarts(userId => $userId);
+    my $result = $api_instance->listCarts(userId => $userId, label => $label);
     print Dumper($result);
 };
 if ($@) {
-    warn "Exception when calling CartsApi->getUserCarts: $@\n";
+    warn "Exception when calling CartsApi->listCarts: $@\n";
 }</code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Carts-getUserCarts-0-python">
+                            <div class="tab-pane" id="examples-Carts-listCarts-0-python">
                               <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
 import time
 import swagger_client
@@ -2278,14 +2361,15 @@ from pprint import pprint
 
 # create an instance of the API class
 api_instance = swagger_client.CartsApi()
-userId = userId_example # String | User identifier to filter carts
+userId = userId_example # String | User ID to filter carts
+label =  # label | Label(s) to filter carts, can be repeated (optional)
 
 try: 
-    # Retrieve all carts for a user
-    api_response = api_instance.get_user_carts(userId)
+    # List carts by userId with optional label filtering
+    api_response = api_instance.list_carts(userId, label=label)
     pprint(api_response)
 except ApiException as e:
-    print("Exception when calling CartsApi->getUserCarts: %s\n" % e)</code></pre>
+    print("Exception when calling CartsApi->listCarts: %s\n" % e)</code></pre>
                             </div>
                           </div>
 
@@ -2305,7 +2389,7 @@ except ApiException as e:
                                 <td>
                                 
                                 
-                                    <div id="d2e199_getUserCarts_userId">
+                                    <div id="d2e199_listCarts_userId">
                                         <div class="json-schema-view">
                                             <div class="primitive">
                                                 <span class="type">
@@ -2313,7 +2397,7 @@ except ApiException as e:
                                                 </span>
                                 
                                                     <div class="inner description">
-                                                        User identifier to filter carts
+                                                        User ID to filter carts
                                                     </div>
                                             </div>
                                                 <div class="inner required">
@@ -2323,25 +2407,44 @@ except ApiException as e:
                                     </div>
                                 </td>
                                 </tr>
+                                <tr><td style="width:150px;">label</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_listCarts_label">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    label
+                                                </span>
+                                
+                                                    <div class="inner description">
+                                                        Label(s) to filter carts, can be repeated
+                                                    </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
                             </table>
 
                           <h2>Responses</h2>
-                            <h3> Status: 200 - List of carts for the user </h3>
+                            <h3> Status: 200 - List of carts </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
                                 <li class="active">
-                                  <a data-toggle="tab" href="#responses-getUserCarts-200-schema">Schema</a>
+                                  <a data-toggle="tab" href="#responses-listCarts-200-schema">Schema</a>
                                 </li>
 
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-getUserCarts-200-schema">
-                                  <div id='responses-getUserCarts-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                <div class="tab-pane active" id="responses-listCarts-200-schema">
+                                  <div id='responses-listCarts-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
                                     <script>
                                       $(document).ready(function() {
                                         var schemaWrapper = {
-  "description" : "List of carts for the user",
+  "description" : "List of carts",
   "content" : {
     "application/json" : {
       "schema" : {
@@ -2350,6 +2453,21 @@ except ApiException as e:
           "$ref" : "#/components/schemas/CartSummary"
         },
         "x-content-type" : "application/json"
+      },
+      "examples" : {
+        "example1" : {
+          "value" : [ {
+            "id" : "abc123",
+            "name" : "My Shopping Cart",
+            "description" : "Cart for weekly groceries",
+            "created_at" : "2026-02-02T13:50:00Z"
+          }, {
+            "id" : "def456",
+            "name" : "Work Supplies",
+            "description" : "",
+            "created_at" : "2026-01-15T09:30:00Z"
+          } ]
+        }
       }
     }
   }
@@ -2367,37 +2485,37 @@ except ApiException as e:
 
                                         //console.log(JSON.stringify(schema));
                                         var view = new JSONSchemaView(schema, 3);
-                                        $('#responses-getUserCarts-200-schema-data').val(stringify(schema));
-                                        var result = $('#responses-getUserCarts-200-schema-200');
+                                        $('#responses-listCarts-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-listCarts-200-schema-200');
                                         result.empty();
                                         result.append(view.render());
                                       });
                                     </script>
                                   </div>
-                                  <input id='responses-getUserCarts-200-schema-data' type='hidden' value=''></input>
+                                  <input id='responses-listCarts-200-schema-data' type='hidden' value=''></input>
                                 </div>
                             </div>
 
-                            <h3> Status: 500 - Failed to retrieve carts </h3>
+                            <h3> Status: 500 - Server error </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
                                 <li class="active">
-                                  <a data-toggle="tab" href="#responses-getUserCarts-500-schema">Schema</a>
+                                  <a data-toggle="tab" href="#responses-listCarts-500-schema">Schema</a>
                                 </li>
 
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-getUserCarts-500-schema">
-                                  <div id='responses-getUserCarts-500-schema-500' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                <div class="tab-pane active" id="responses-listCarts-500-schema">
+                                  <div id='responses-listCarts-500-schema-500' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
                                     <script>
                                       $(document).ready(function() {
                                         var schemaWrapper = {
-  "description" : "Failed to retrieve carts",
+  "description" : "Server error",
   "content" : {
     "application/json" : {
       "schema" : {
-        "$ref" : "#/components/schemas/inline_response_500"
+        "$ref" : "#/components/schemas/ErrorResponse"
       }
     }
   }
@@ -2415,14 +2533,14 @@ except ApiException as e:
 
                                         //console.log(JSON.stringify(schema));
                                         var view = new JSONSchemaView(schema, 3);
-                                        $('#responses-getUserCarts-500-schema-data').val(stringify(schema));
-                                        var result = $('#responses-getUserCarts-500-schema-500');
+                                        $('#responses-listCarts-500-schema-data').val(stringify(schema));
+                                        var result = $('#responses-listCarts-500-schema-500');
                                         result.empty();
                                         result.append(view.render());
                                       });
                                     </script>
                                   </div>
-                                  <input id='responses-getUserCarts-500-schema-data' type='hidden' value=''></input>
+                                  <input id='responses-listCarts-500-schema-data' type='hidden' value=''></input>
                                 </div>
                             </div>
 
@@ -2433,7 +2551,7 @@ except ApiException as e:
                       <article id="api-Carts-updateCart-0" data-group="User" data-name="updateCart" data-version="0">
                         <div class="pull-left">
                           <h1>updateCart</h1>
-                          <p>Update a cart and its items</p>
+                          <p>Update cart info, items, and labels by ID</p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
@@ -2464,7 +2582,7 @@ except ApiException as e:
                            <pre class="prettyprint"><code class="language-bsh">curl -X PUT\
 -H "Accept: application/json"\
 -H "Content-Type: application/json"\
-"http://localhost:3007//carts/{id}"</code></pre>
+"http://localhost:3007/carts/{id}"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-Carts-updateCart-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -2480,10 +2598,21 @@ public class CartsApiExample {
     public static void main(String[] args) {
         
         CartsApi apiInstance = new CartsApi();
-        Carts_id_body body = ; // Carts_id_body | 
-        Integer id = 56; // Integer | Cart identifier
+        CartUpdateRequest body = {
+  "value" : {
+    "name" : "Updated Cart Name",
+    "description" : "Updated description",
+    "items" : [ {
+      "name" : "Banana",
+      "price" : 0.3,
+      "quantity" : 5
+    } ],
+    "labels" : [ "fruits" ]
+  }
+}; // CartUpdateRequest | 
+        String id = id_example; // String | Cart ID
         try {
-            inline_response_200_1 result = apiInstance.updateCart(body, id);
+            StandardResponse result = apiInstance.updateCart(body, id);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling CartsApi#updateCart");
@@ -2500,10 +2629,21 @@ public class CartsApiExample {
 
     public static void main(String[] args) {
         CartsApi apiInstance = new CartsApi();
-        Carts_id_body body = ; // Carts_id_body | 
-        Integer id = 56; // Integer | Cart identifier
+        CartUpdateRequest body = {
+  "value" : {
+    "name" : "Updated Cart Name",
+    "description" : "Updated description",
+    "items" : [ {
+      "name" : "Banana",
+      "price" : 0.3,
+      "quantity" : 5
+    } ],
+    "labels" : [ "fruits" ]
+  }
+}; // CartUpdateRequest | 
+        String id = id_example; // String | Cart ID
         try {
-            inline_response_200_1 result = apiInstance.updateCart(body, id);
+            StandardResponse result = apiInstance.updateCart(body, id);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling CartsApi#updateCart");
@@ -2517,15 +2657,26 @@ public class CartsApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-Carts-updateCart-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Carts_id_body *body = ; // 
-Integer *id = 56; // Cart identifier
+                              <pre class="prettyprint"><code class="language-cpp">CartUpdateRequest *body = {
+  "value" : {
+    "name" : "Updated Cart Name",
+    "description" : "Updated description",
+    "items" : [ {
+      "name" : "Banana",
+      "price" : 0.3,
+      "quantity" : 5
+    } ],
+    "labels" : [ "fruits" ]
+  }
+}; // 
+String *id = id_example; // Cart ID
 
 CartsApi *apiInstance = [[CartsApi alloc] init];
 
-// Update a cart and its items
+// Update cart info, items, and labels by ID
 [apiInstance updateCartWith:body
     id:id
-              completionHandler: ^(inline_response_200_1 output, NSError* error) {
+              completionHandler: ^(StandardResponse output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
                             }
@@ -2537,11 +2688,22 @@ CartsApi *apiInstance = [[CartsApi alloc] init];
                             </div>
 
                             <div class="tab-pane" id="examples-Carts-updateCart-0-javascript">
-                              <pre class="prettyprint"><code class="language-js">var CartService = require('cart_service');
+                              <pre class="prettyprint"><code class="language-js">var GeneratedApi202602021350 = require('generated_api_2026_02_02_1350');
 
-var api = new CartService.CartsApi()
-var body = ; // {{Carts_id_body}} 
-var id = 56; // {{Integer}} Cart identifier
+var api = new GeneratedApi202602021350.CartsApi()
+var body = {
+  "value" : {
+    "name" : "Updated Cart Name",
+    "description" : "Updated description",
+    "items" : [ {
+      "name" : "Banana",
+      "price" : 0.3,
+      "quantity" : 5
+    } ],
+    "labels" : [ "fruits" ]
+  }
+}; // {{CartUpdateRequest}} 
+var id = id_example; // {{String}} Cart ID
 
 var callback = function(error, data, response) {
   if (error) {
@@ -2572,13 +2734,13 @@ namespace Example
         {
 
             var apiInstance = new CartsApi();
-            var body = new Carts_id_body(); // Carts_id_body | 
-            var id = 56;  // Integer | Cart identifier
+            var body = new CartUpdateRequest(); // CartUpdateRequest | 
+            var id = id_example;  // String | Cart ID
 
             try
             {
-                // Update a cart and its items
-                inline_response_200_1 result = apiInstance.updateCart(body, id);
+                // Update cart info, items, and labels by ID
+                StandardResponse result = apiInstance.updateCart(body, id);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -2596,8 +2758,19 @@ namespace Example
 require_once(__DIR__ . '/vendor/autoload.php');
 
 $api_instance = new Swagger\Client\ApiCartsApi();
-$body = ; // Carts_id_body | 
-$id = 56; // Integer | Cart identifier
+$body = {
+  "value" : {
+    "name" : "Updated Cart Name",
+    "description" : "Updated description",
+    "items" : [ {
+      "name" : "Banana",
+      "price" : 0.3,
+      "quantity" : 5
+    } ],
+    "labels" : [ "fruits" ]
+  }
+}; // CartUpdateRequest | 
+$id = id_example; // String | Cart ID
 
 try {
     $result = $api_instance->updateCart($body, $id);
@@ -2614,8 +2787,8 @@ use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::CartsApi;
 
 my $api_instance = WWW::SwaggerClient::CartsApi->new();
-my $body = WWW::SwaggerClient::Object::Carts_id_body->new(); # Carts_id_body | 
-my $id = 56; # Integer | Cart identifier
+my $body = WWW::SwaggerClient::Object::CartUpdateRequest->new(); # CartUpdateRequest | 
+my $id = id_example; # String | Cart ID
 
 eval { 
     my $result = $api_instance->updateCart(body => $body, id => $id);
@@ -2635,11 +2808,22 @@ from pprint import pprint
 
 # create an instance of the API class
 api_instance = swagger_client.CartsApi()
-body =  # Carts_id_body | 
-id = 56 # Integer | Cart identifier
+body = {
+  "value" : {
+    "name" : "Updated Cart Name",
+    "description" : "Updated description",
+    "items" : [ {
+      "name" : "Banana",
+      "price" : 0.3,
+      "quantity" : 5
+    } ],
+    "labels" : [ "fruits" ]
+  }
+} # CartUpdateRequest | 
+id = id_example # String | Cart ID
 
 try: 
-    # Update a cart and its items
+    # Update cart info, items, and labels by ID
     api_response = api_instance.update_cart(body, id)
     pprint(api_response)
 except ApiException as e:
@@ -2663,11 +2847,11 @@ except ApiException as e:
                                           <div class="json-schema-view">
                                               <div class="primitive">
                                                   <span class="type">
-                                                      Integer
+                                                      String
                                                   </span>
                                   
                                                       <div class="inner description">
-                                                          Cart identifier
+                                                          Cart ID
                                                       </div>
                                               </div>
                                                   <div class="inner required">
@@ -2696,7 +2880,21 @@ except ApiException as e:
   "content" : {
     "application/json" : {
       "schema" : {
-        "$ref" : "#/components/schemas/carts_id_body"
+        "$ref" : "#/components/schemas/CartUpdateRequest"
+      },
+      "examples" : {
+        "example1" : {
+          "value" : {
+            "name" : "Updated Cart Name",
+            "description" : "Updated description",
+            "items" : [ {
+              "name" : "Banana",
+              "price" : 0.3,
+              "quantity" : 5
+            } ],
+            "labels" : [ "fruits" ]
+          }
+        }
       }
     }
   },
@@ -2746,7 +2944,15 @@ except ApiException as e:
   "content" : {
     "application/json" : {
       "schema" : {
-        "$ref" : "#/components/schemas/inline_response_200_1"
+        "$ref" : "#/components/schemas/StandardResponse"
+      },
+      "examples" : {
+        "success" : {
+          "value" : {
+            "message" : "Cart updated successfully",
+            "cartId" : "abc123"
+          }
+        }
       }
     }
   }
@@ -2794,7 +3000,14 @@ except ApiException as e:
   "content" : {
     "application/json" : {
       "schema" : {
-        "$ref" : "#/components/schemas/inline_response_404"
+        "$ref" : "#/components/schemas/ErrorResponse"
+      },
+      "examples" : {
+        "notFound" : {
+          "value" : {
+            "error" : "Cart not found"
+          }
+        }
       }
     }
   }
@@ -2823,7 +3036,7 @@ except ApiException as e:
                                 </div>
                             </div>
 
-                            <h3> Status: 500 - Failed to update cart </h3>
+                            <h3> Status: 500 - Server error </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
                                 <li class="active">
@@ -2838,11 +3051,11 @@ except ApiException as e:
                                     <script>
                                       $(document).ready(function() {
                                         var schemaWrapper = {
-  "description" : "Failed to update cart",
+  "description" : "Server error",
   "content" : {
     "application/json" : {
       "schema" : {
-        "$ref" : "#/components/schemas/inline_response_500_3"
+        "$ref" : "#/components/schemas/ErrorResponse"
       }
     }
   }

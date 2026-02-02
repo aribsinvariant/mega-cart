@@ -42,7 +42,7 @@
             <button type="button" class="btn-close" @click="closeModal"></button>
           </div>
 
-          <form @submit.prevent="createCart">
+          <form @submit.prevent.stop="createCart">
             <div class="modal-body">
               <label class="form-label" for="cartName">Cart name</label>
               <input
@@ -77,12 +77,16 @@
 <script>
 export default {
   name: "CartsPage",
+  props: {
+    carts: {
+      type: Array,
+      default: () => [],
+    }
+  },
   data() {
     return {
-      carts: [],
       showModal: false,
-      newCartName: "",
-      nextId: 1,
+      newCartName: ""
     };
   },
   methods: {
@@ -102,9 +106,10 @@ export default {
       const name = this.newCartName.trim();
       if (!name) return;
 
-      this.carts.push({ id: this.nextId++, name, items: [] });
+      this.$emit("create-cart", name);
+
       this.closeModal();
-    },
+    }
   },
 };
 </script>

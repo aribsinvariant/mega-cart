@@ -68,11 +68,15 @@
 <script>
 export default {
   name: "CartDetailsPage",
-  props: ["cart"],
+  props: {
+    cart: {
+      type: Object,
+      default: null,
+    }
+  },
   data() {
     return {
       showModal: false,
-      nextId: 1,
       newItemName: "",
     };
   },
@@ -88,12 +92,13 @@ export default {
     closeModal() {
       this.showModal = false;
     },
-    addItems() {
-      const itemName = this.newItemName.trim();
+    addItems(){
+      const itemName = this.newItemName
       if (!itemName) return;
 
-      this.cart.items.push(itemName);
-      this.closeModal();
+      this.$emit("add-item", { cartId: this.cart.id, itemName });
+
+      this.closeModal(); 
     }
   },
 };

@@ -9,9 +9,12 @@
         :page="pages[activePage]"
         @signup-success="goLogin"
         @login-success="goHome"
+        :carts="carts"
         :selected-cart="selectedCart"
         @cart-selected="openCart"
         @back="goToCarts"
+        @create-cart="createCart"
+        @add-item="addItemToCart"
     />
 </template>
 
@@ -27,7 +30,10 @@ export default {
     data() {
         return {
             activePage: 0,
-            selectedCart: null,
+            selectedCartId: null,
+            carts: [],
+            nextCartId: 1,
+            currentUser: null,
             pages: [
                 {
                     link: { text: "Home", url: "index.html" },
@@ -57,6 +63,11 @@ export default {
             ]
         };
     },
+    computed: {
+        selectedCart(){
+            return this.carts.find( c => c.id === this.selectedCartId) || null;
+        }
+    },
     methods: {
         goLogin() {
             alert("Redirecting to login page...");
@@ -66,13 +77,32 @@ export default {
             alert("Redirecting to home page...");
             this.activePage = 0;
         },
+        createCart(name) {
+            const trimmed = (name || "").trim();
+            if (!trimmed) return;
+
+            this.carts.push({
+                id: this.nextCartId++,
+                name: trimmed,
+                items: []
+            });
+        },
+        addItemToCart({cartId, itemName}) {
+            const trimmed = (itemName || "").trim();
+            if (!trimmed) return;
+
+            const cart = this.carts.find(c => c.id === cartId);
+            if (!cart) return;
+
+            cart.items.push(trimmed);
+        },
         openCart(cart) {
-            this.selectedCart = cart;
+            this.selectedCartId = cart.id;
             this.activePage = 4; // CartDetailsPage index
         },
         goToCarts() {
             this.activePage = 3;
-            this.selectedCart = null;
+            this.selectedCartId = null;
         }
     }
 }

@@ -3,9 +3,13 @@
     :is="page.component"
     @signup-success="$emit('signup-success')"
     @login-success="$emit('login-success')"
+    :carts="carts"
     :cart="selectedCart"
     @cart-selected="$emit('cart-selected', $event)"
     @back="$emit('back')"
+
+    @create-cart="$emit('create-cart', $event)"
+    @add-item="$emit('add-item', $event)"
   />
 </template>
 
@@ -17,7 +21,7 @@ import CartPage from "./CartPage.vue";
 import CartDetailsPage from "./CartDetails.vue";
 
 export default {
-  props: ["page", "selectedCart"],
+  props: ["page", "selectedCart", "carts"],
   components: { HomePage, SignUpPage, LogInPage, CartPage, CartDetailsPage },
 };
 </script>

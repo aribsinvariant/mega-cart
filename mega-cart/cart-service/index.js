@@ -6,7 +6,15 @@ const { query } = require('./db');
 const app = express();
 app.use(express.json());
 
+const authMiddleware = require('./authMiddleware');
+app.use((req, res, next) => {
+  console.log("CART-SERVICE HIT:", req.method, req.originalUrl);
+  next();
+});
+app.use(authMiddleware);
 let channel;
+
+
 
 // rabbitmq not used right now, but may use it for deleting carts when users are deleted
 async function connectQueue() {
@@ -17,8 +25,9 @@ async function connectQueue() {
 connectQueue();
 
 // create cart with items
-app.post('/carts', async (req, res) => {
-    const { userId, name, description, items } = req.body;
+app.post('/', async (req, res) => {
+    const userId = req.user.id;
+    const { name, description, items = [] } = req.body;
 
     const client = await db.pool.connect();
 
@@ -53,8 +62,8 @@ app.post('/carts', async (req, res) => {
 });
 
 // this one will be the one that runs when you go to some /mycarts type page to view ALL of a user's carts
-app.get('/carts', async (req, res) => {
-    const { userId } = req.query;
+app.get('/', async (req, res) => {
+    const userId = req.user.id;
 
     const text = `
         SELECT id, name, description, created_at 
@@ -75,7 +84,7 @@ app.get('/carts', async (req, res) => {
 
 // this one will be the one that runs when you click on a specific cart, id refers to cartId not userId
 // will need to rewrite this so that it actually checks for authorization, right now anyone can see anyones carts
-app.get('/carts/:id', async (req, res) => {
+app.get('/:id', async (req, res) => {
     const { id } = req.params;
 
 
@@ -105,7 +114,7 @@ app.get('/carts/:id', async (req, res) => {
 });
 
 // update cart
-app.put('/carts/:id', async (req, res) => {
+app.put('/:id', async (req, res) => {
     const { id } = req.params;
     const { name, description, items } = req.body;
 
@@ -149,7 +158,7 @@ app.put('/carts/:id', async (req, res) => {
 });
 
 // delete cart
-app.delete('/carts/:id', async (req, res) => {
+app.delete('/:id', async (req, res) => {
     const { id } = req.params;
 
     try {

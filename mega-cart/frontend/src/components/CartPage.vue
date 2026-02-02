@@ -51,7 +51,7 @@
                 v-model.trim="newCartName"
                 placeholder="e.g. Groceries"
                 required
-                maxlength="40"
+                maxlength="255"
                 ref="cartNameInput"
               />
             </div>

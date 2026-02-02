@@ -13,5 +13,14 @@ CREATE TABLE IF NOT EXISTS items (
     price FLOAT(2),
     quantity INT,
     cart_id INTEGER REFERENCES carts(id) ON DELETE CASCADE
-    -- labels will reference a labels table
+);
+
+CREATE TABLE IF NOT EXISTS labels (
+    label_name VARCHAR(255) PRIMARY KEY
+);
+
+CREATE TABLE IF NOT EXISTS labeled_carts (
+    label_name VARCHAR(255) REFERENCES labels(label_name) ON DELETE CASCADE ON UPDATE CASCADE,
+    cart_id INTEGER REFERENCES carts(id) ON DELETE CASCADE,
+    PRIMARY KEY (cart_id, label_name)
 );

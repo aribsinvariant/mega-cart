@@ -18,7 +18,7 @@ connectQueue();
 
 // create cart with items
 app.post('/carts', async (req, res) => {
-    const { userId, name, description, items } = req.body;
+    const { userId, name, description, items, labels } = req.body;
 
     const client = await db.pool.connect();
 
@@ -31,11 +31,28 @@ app.post('/carts', async (req, res) => {
 
         const cartId = cartRes.rows[0].id;
 
-        for (const item of items) {
-            await client.query(
-                'INSERT INTO items (cart_id, name, description, price, quantity) VALUES ($1, $2, $3, $4, $5)',
-                [cartId, item.name, item.description, item.price, item.quantity]
-            );
+        if (items && items.length > 0) {
+            for (const item of items) {
+                await client.query(
+                    'INSERT INTO items (cart_id, name, description, price, quantity) VALUES ($1, $2, $3, $4, $5)',
+                    [cartId, item.name, item.description, item.price, item.quantity]
+                );
+            }
+        }
+
+        if (labels && labels.length > 0) {
+            for (const label of labels) {
+                // create label
+                await client.query(
+                    'INSERT INTO labels (label_name) VALUES ($1) ON CONFLICT (label_name) DO NOTHING',
+                    [label]
+                );
+                // link cart with label
+                await client.query(
+                    'INSERT INTO labeled_carts (cart_id, label_name) VALUES ($1, $2)',
+                    [cartId, label]
+                );
+            }
         }
 
         await client.query('COMMIT');
@@ -54,17 +71,35 @@ app.post('/carts', async (req, res) => {
 
 // this one will be the one that runs when you go to some /mycarts type page to view ALL of a user's carts
 app.get('/carts', async (req, res) => {
-    const { userId } = req.query;
-
-    const text = `
-        SELECT id, name, description, created_at 
-        FROM carts 
-        WHERE user_id = $1 
-        ORDER BY created_at DESC
-    `;
+    const { userId, label } = req.query;
 
     try {
-        const result = await query(text, [userId]);
+        let text, params;
+
+        if (label) { 
+
+            // turns the labels into an array, so ?label=ash&label=poop in the uri becomes ['ash',poop'] 
+            const tags = Array.isArray(label) ? label : [label]; 
+            
+            text = `
+                SELECT DISTINCT c.id, c.name, c.description, c.created_at 
+                FROM carts c
+                JOIN labeled_carts lc ON c.id = lc.cart_id
+                WHERE c.user_id = $1 AND lc.label_name = ANY($2)
+                ORDER BY c.created_at DESC
+            `;
+            params = [userId, tags];
+        } else {
+            text = `
+                SELECT id, name, description, created_at 
+                FROM carts 
+                WHERE user_id = $1 
+                ORDER BY created_at DESC
+            `;
+            params = [userId];
+        }
+
+        const result = await query(text, params);
         res.json(result.rows);
     }
     catch (err) {
@@ -80,11 +115,12 @@ app.get('/carts/:id', async (req, res) => {
 
 
     const text = `
-        SELECT c.*, COALESCE(json_agg(i.*) FILTER (WHERE i.id IS NOT NULL), '[]') as items
+        SELECT 
+            c.*, 
+            COALESCE((SELECT json_agg(i.*) FROM items i WHERE i.cart_id = c.id), '[]') as items,
+            COALESCE((SELECT json_agg(lc.label_name) FROM labeled_carts lc WHERE lc.cart_id = c.id), '[]') as labels
         FROM carts c
-        LEFT JOIN items i ON c.id = i.cart_id
         WHERE c.id = $1
-        GROUP BY c.id
     `;
     /*`
         SELECT c.*, json_agg(i.*) as items 
@@ -107,7 +143,7 @@ app.get('/carts/:id', async (req, res) => {
 // update cart
 app.put('/carts/:id', async (req, res) => {
     const { id } = req.params;
-    const { name, description, items } = req.body;
+    const { name, description, items, labels } = req.body;
 
     const client = await db.pool.connect();
 
@@ -128,11 +164,30 @@ app.put('/carts/:id', async (req, res) => {
 
         await client.query('DELETE FROM items WHERE cart_id = $1', [cartId]);
 
-        for (const item of items) {
-            await client.query(
-                'INSERT INTO items (cart_id, name, description, price, quantity) VALUES ($1, $2, $3, $4, $5)',
-                [cartId, item.name, item.description, item.price, item.quantity]
-            );
+        if (items && items.length > 0) { // <--- ADD THIS CHECK
+            for (const item of items) {
+                await client.query(
+                    'INSERT INTO items (cart_id, name, description, price, quantity) VALUES ($1, $2, $3, $4, $5)',
+                    [cartId, item.name, item.description, item.price, item.quantity]
+                );
+            }
+        }
+
+        await client.query('DELETE FROM labeled_carts WHERE cart_id = $1', [cartId]);
+
+        if (labels && labels.length > 0) {
+            for (const label of labels) {
+                // Ensure label exists in global table
+                await client.query(
+                    'INSERT INTO labels (label_name) VALUES ($1) ON CONFLICT (label_name) DO NOTHING',
+                    [label]
+                );
+                // Link label to cart
+                await client.query(
+                    'INSERT INTO labeled_carts (cart_id, label_name) VALUES ($1, $2)',
+                    [cartId, label]
+                );
+            }
         }
 
         await client.query('COMMIT');

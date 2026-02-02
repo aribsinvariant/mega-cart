@@ -5,7 +5,7 @@
         <div class="container-fluid">
             <a class="navbar-brand" href="#">Mega Cart</a>
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li v-for="(page, index) in pages" class="nav-item" :key="index">
+                <li v-for="(page, index) in visiblePages" class="nav-item" :key="index">
                     <navbar-link
                         :page="page"
                         :isActive="activePage === index"
@@ -23,6 +23,11 @@
 import NavbarLink from './NavbarLink.vue';
 
 export default {
+    computed: {
+        visiblePages() {
+            return this.pages.filter(page => page.visible);
+        }
+    },
     components: {
         NavbarLink
     },

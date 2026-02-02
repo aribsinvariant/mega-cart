@@ -9,6 +9,9 @@
         :page="pages[activePage]"
         @signup-success="goLogin"
         @login-success="goHome"
+        :selected-cart="selectedCart"
+        @cart-selected="openCart"
+        @back="goToCarts"
     />
 </template>
 
@@ -24,19 +27,33 @@ export default {
     data() {
         return {
             activePage: 0,
+            selectedCart: null,
             pages: [
                 {
                     link: { text: "Home", url: "index.html" },
                     component: "HomePage",
+                    visible: true
                 },
                 {
                     link: { text: "Sign up", url: "signup.html" },
                     component: "SignUpPage",
+                    visible: true
                 },
                 {
                     link: { text: "Log in", url: "login.html" },
                     component: "LogInPage",
-                }
+                    visible: true
+                },
+                {
+                    link: { text: "Carts", url: "cart.html" },
+                    component: "CartPage",
+                    visible: true
+                },
+                {
+                    link: { text: "Cart Details", url: "cart-details.html" },
+                    component: "CartDetailsPage",
+                    visible: false
+                },
             ]
         };
     },
@@ -49,6 +66,14 @@ export default {
             alert("Redirecting to home page...");
             this.activePage = 0;
         },
+        openCart(cart) {
+            this.selectedCart = cart;
+            this.activePage = 4; // CartDetailsPage index
+        },
+        goToCarts() {
+            this.activePage = 3;
+            this.selectedCart = null;
+        }
     }
 }
 </script>

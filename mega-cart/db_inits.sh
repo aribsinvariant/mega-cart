@@ -2,7 +2,6 @@
 set -e
 
 psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
-    CREATE USER myuser WITH PASSWORD 'mypassword';
     CREATE DATABASE carts_db;
-    GRANT ALL PRIVILEGES ON DATABASE carts_db TO myuser;
+    GRANT ALL PRIVILEGES ON DATABASE carts_db TO "$POSTGRES_USER";
 EOSQL

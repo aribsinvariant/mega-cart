@@ -56,6 +56,8 @@
 </template>
 
 <script>
+import { api } from "../api";
+
 export default {
   name: "SignUpPage",
   data() {
@@ -78,8 +80,8 @@ export default {
         },
     async submit() {
       try {
-        await api.post("/auth/signup", {
-          fullName: this.fullName,
+        await api.post("/auth/register", {
+          username: this.fullName,
           email: this.email,
           password: this.password,
         });

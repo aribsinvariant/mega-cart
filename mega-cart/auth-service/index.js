@@ -10,7 +10,7 @@ let channel;
 
 // rabbitmq
 async function connectQueue() {
-    const connection = await amqp.connect('amqp://localhost');
+    const connection = await amqp.connect('amqp://rabbitmq');
     channel = await connection.createChannel();
     await channel.assertQueue('USER_CREATED');
 }
@@ -25,13 +25,13 @@ app.post('/register', async (req, res) => {
         // Check user values
         if (!username) {
             return res.status(400).json({ error: 'Username value required' });
-        } 
+        }
         if (!email) {
             return res.status(400).json({ error: 'Email value required' });
-        } 
+        }
         if (!password) {
             return res.status(400).json({ error: 'Password value required' });
-        } 
+        }
 
         // Check if user already exists
         const userSelect = await db.query('SELECT * FROM users WHERE username = $1', [username]);
@@ -53,9 +53,14 @@ app.post('/register', async (req, res) => {
         );
 
         // Send success confirmation
-        channel.sendToQueue('USER_CREATED', Buffer.from(JSON.stringify({ username, email })));
+        if (channel) {
+            channel.sendToQueue('USER_CREATED', Buffer.from(JSON.stringify({ username, email })));
+        } else {
+            console.error("RabbitMQ channel is not available!");
+        }
         res.status(201).json({ message: 'User registered successfully' });
     } catch (error) {
+        console.error('Error in /register:', error);
         res.status(500).json({ error: 'Server error' });
     }
 });
@@ -68,7 +73,7 @@ app.post('/login', async (req, res) => {
         // Check user values
         if (!email) {
             return res.status(400).json({ error: 'Email value required' });
-        } 
+        }
         if (!password) {
             return res.status(400).json({ error: 'Password value required' });
         }

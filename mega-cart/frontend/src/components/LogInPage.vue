@@ -46,13 +46,12 @@
 
 <script>
 export default {
-  name: "SignUpPage",
+  name: "LogInPage",
   data() {
     return {
         email: "",
         password: "",
         showPassword: false,
-        isFormNotValid: true,
     };
   },
   computed: {
@@ -64,13 +63,31 @@ export default {
         togglePassword() {
         this.showPassword = !this.showPassword;
         },
-    submit() {
-        console.log("login:", { email: this.email, password: this.password});
-        if (this.email.includes("@") && this.password.length >= 6) {
-            this.$emit("login-success");
-        }
+    async submit() {
+        try {
+        const res = await api.post("/auth/login", {
+          email: this.email,
+          password: this.password,
+        });
+
+        // Typically you receive a token:
+        // { token: "....", user: {...} }
+        const { token } = res.data;
+
+        // store token so future requests are authenticated
+        localStorage.setItem("token", token);
+
+        // tell parent to go home
+        this.$emit("login-success");
+      } catch (err) {
+        // show a message instead of alert in real apps
+        console.error(err);
+        alert("Login failed. Check email/password.");
+      } finally {
         this.email = "";
         this.password = "";
+        this.showPassword = false;
+      }
     },
   },
 };

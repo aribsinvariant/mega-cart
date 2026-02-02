@@ -76,16 +76,29 @@ export default {
         togglePassword() {
         this.showPassword = !this.showPassword;
         },
-    submit() {
-        // replace this with axios call later
-        console.log("signup:", { email: this.email, password: this.password, fullName: this.fullName });
-        if (this.email.includes("@") && this.password.length >= 6 && this.fullName.length > 0) {
-            this.$emit("signup-success");
-        }
-        this.email = "";
-        this.password = "";
-        this.fullName = "";
-    },
-  },
+    async submit() {
+      try {
+        await api.post("/auth/signup", {
+          fullName: this.fullName,
+          email: this.email,
+          password: this.password,
+        });
+
+        // optionally auto-login after signup:
+        // const { token } = (await api.post("/auth/login", {...})).data
+        // localStorage.setItem("token", token)
+
+        this.$emit("signup-success");
+      } catch (err) {
+          console.error(err);
+          alert("Sign up failed (maybe email already used).");
+      } finally {
+          this.fullName = "";
+          this.email = "";
+          this.password = "";
+          this.showPassword = false;
+      }
+    }
+  }
 };
 </script>

@@ -5,9 +5,10 @@
         :nav-link-click="(index) => activePage = index"
     ></navbar>
     
-    <page-viewer 
+    <page-viewer
         :page="pages[activePage]"
-    ></page-viewer>
+        @signup-success="goLogin"
+    />
 </template>
 
 <script>
@@ -24,17 +25,21 @@ export default {
             activePage: 0,
             pages: [
                 {
-                    link: {text: 'Home', url: 'index.html'},
-                    pageTitle: 'Home Page',
-                    content: 'This is the home landing page'
+                    link: { text: "Home", url: "index.html" },
+                    component: "HomePage",
                 },
                 {
-                    link: {text: 'Sign up', url: 'about.html'},
-                    pageTitle: 'Carts Page',
-                    content: 'This is the sign up page, it is currently empty'
+                    link: { text: "Sign up", url: "signup.html" },
+                    component: "SignUpPage",
                 }
             ]
         };
     },
+    methods: {
+        goLogin() {
+            alert("Redirecting to login page...");
+            this.activePage = 0;
+        },
+    }
 }
 </script>

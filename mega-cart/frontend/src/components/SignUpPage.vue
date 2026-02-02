@@ -26,7 +26,7 @@
       </div>
 
        <div class="mb-3">
-        <label class="form-label" for="password">Password</label>
+        <label class="form-label" for="password">Password (at least 6 characters)</label>
 
         <div class="input-group">
           <input
@@ -79,10 +79,8 @@ export default {
     submit() {
         // replace this with axios call later
         console.log("signup:", { email: this.email, password: this.password, fullName: this.fullName });
-        if (this.email.includes("@") && this.password.length >= 6) {
+        if (this.email.includes("@") && this.password.length >= 6 && this.fullName.length > 0) {
             this.$emit("signup-success");
-        } else {
-            alert("Please enter a valid email address and password");
         }
         this.email = "";
         this.password = "";

@@ -1,9 +1,13 @@
 const express = require('express');
 const amqp = require('amqplib');
 const db = require('./db');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 // const { query } = require('./db');
 const app = express();
+
+const jwt = require('jsonwebtoken');
+
+const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret';
 app.use(express.json());
 
 let channel;
@@ -94,7 +98,24 @@ app.post('/login', async (req, res) => {
         }
 
         // Send success confirmation
-        res.status(200).json({ message: 'Login successful' });
+        const user = emailSelect.rows[0];
+        const token = jwt.sign(
+        {
+            id: user.id,
+            email: user.email,
+        },
+        JWT_SECRET,
+        { expiresIn: '1h' }
+        );
+
+        res.status(200).json({
+        token,
+        user: {
+            id: user.id,
+            email: user.email,
+            username: user.username,
+        },
+        });
     } catch (error) {
         res.status(500).json({ error: 'Server error' });
     }

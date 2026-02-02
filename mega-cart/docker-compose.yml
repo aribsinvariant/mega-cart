@@ -18,15 +18,14 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
-      - ./auth-service/init.sql:/docker-entrypoint-initdb.d/init.sql
-      - ./db_inits.sh:/docker-entrypoint-initdb.d/db_inits.sh
-      - ./cart-service/carts.sql:/docker-entrypoint-initdb.d/carts.sql
+      - ./auth-service/init.sql:/docker-entrypoint-initdb.d/01_init.sql
+      - ./cart-service/carts.sql:/docker-entrypoint-initdb.d/02_carts.sql
   
   auth-service:
     build: ./auth-service
     environment:
       - AMQP_URL=amqp://rabbitmq
-      - DATABASE_URL=postgresql://myuser:mypassword@postgres:5432/auth_db
+      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASS}@postgres:5432/auth_db
     depends_on:
       - rabbitmq
       - postgres
@@ -35,7 +34,7 @@ services:
     build: ./cart-service
     environment:
       - AMQP_URL=amqp://rabbitmq
-      - DATABASE_URL=postgresql://myuser:mypassword@postgres:5432/auth_db
+      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASS}@postgres:5432/auth_db
     depends_on:
       - rabbitmq
       - postgres

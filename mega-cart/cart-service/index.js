@@ -10,7 +10,7 @@ let channel;
 
 // rabbitmq not used right now, but may use it for deleting carts when users are deleted
 async function connectQueue() {
-    const connection = await amqp.connect('amqp://localhost');
+    const connection = await amqp.connect('amqp://rabbitmq');
     channel = await connection.createChannel();
     await channel.assertQueue('USER_CREATED');
 }

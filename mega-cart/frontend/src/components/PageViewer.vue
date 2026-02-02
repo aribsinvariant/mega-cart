@@ -7,7 +7,6 @@
     :cart="selectedCart"
     @cart-selected="$emit('cart-selected', $event)"
     @back="$emit('back')"
-
     @create-cart="$emit('create-cart', $event)"
     @add-item="$emit('add-item', $event)"
   />
@@ -23,5 +22,6 @@ import CartDetailsPage from "./CartDetails.vue";
 export default {
   props: ["page", "selectedCart", "carts"],
   components: { HomePage, SignUpPage, LogInPage, CartPage, CartDetailsPage },
+  emits: ["signup-success", "login-success", "cart-selected", "back", "create-cart", "add-item"]
 };
 </script>

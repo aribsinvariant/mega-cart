@@ -15,6 +15,7 @@
         @back="goToCarts"
         @create-cart="createCart"
         @add-item="addItemToCart"
+        @add-tag="addTagToCart"
     />
 </template>
 
@@ -73,6 +74,17 @@ export default {
         await this.loadCarts();
     },
     methods: {
+        async addTagToCart({cart, tagName}) {
+            const trimmed = (tagName || "").trim();
+            if (!trimmed) return;
+
+            try {
+                await api.put(`/carts/${cart.id}`, { name: cart.name, description: cart.description ?? null, items: cart.items, tags: [trimmed] });
+            } catch (err) {
+                console.error("Add tag failed:", err?.response?.status, err?.response?.data);
+                alert("Failed to add tag");
+            }
+        },
         async loadCarts() {
             try {
                 const res = await api.get("/carts"); 
@@ -112,19 +124,19 @@ export default {
             }
         },
         async openCart(cart) {
-    this.selectedCartId = cart.id;
-    this.activePage = 4;
+            this.selectedCartId = cart.id;
+            this.activePage = 4;
 
-    try {
-      const res = await api.get(`/carts/${cart.id}`);
-      const fullCart = res.data; // includes items
+            try {
+            const res = await api.get(`/carts/${cart.id}`);
+            const fullCart = res.data; // includes items
 
-      // replace in carts array
-      this.carts = this.carts.map((c) => (c.id === fullCart.id ? fullCart : c));
-    } catch (err) {
-      console.error(err);
-      alert("Failed to load cart details");
-    }
+            // replace in carts array
+            this.carts = this.carts.map((c) => (c.id === fullCart.id ? fullCart : c));
+            } catch (err) {
+            console.error(err);
+            alert("Failed to load cart details");
+            }
   },
 
   async addItemToCart({ cartId, itemName }) {

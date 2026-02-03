@@ -21,6 +21,9 @@
             <button class="btn btn-link text-decoration-none p-0" @click="$emit('cart-selected', cart)">
                 {{ cart.name }}
             </button>
+            <button class="btn btn-outline-primary ms-auto" @click="openTagModal(cart)">
+                Add Tags
+            </button>
             <small class="text-muted">#{{ cart.id }}</small>
         </li>
       </ul>
@@ -69,7 +72,49 @@
       </div>
     </div>
 
-    <!-- Backdrop -->
+    <div
+      v-if="showTagModal"
+      class="modal fade show"
+      tabindex="-1"
+      style="display: block;"
+      role="dialog"
+      aria-modal="true"
+      @click.self="closeTagModal"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Create New Tag</h5>
+            <button type="button" class="btn-close" @click="closeTagModal"></button>
+          </div>
+
+          <form @submit.prevent.stop="createTag">
+            <div class="modal-body">
+              <label class="form-label" for="tagName">Tag name</label>
+              <input
+                id="tagName"
+                class="form-control"
+                v-model.trim="newTagName"
+                placeholder="e.g. Groceries"
+                required
+                maxlength="255"
+                ref="tagNameInput"
+              />
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline-secondary" @click="closeTagModal">
+                Cancel
+              </button>
+              <button class="btn btn-primary" type="submit" :disabled="newTagName.length === 0">
+                Add
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
     <div v-if="showModal" class="modal-backdrop fade show"></div>
   </div>
 </template>
@@ -86,7 +131,10 @@ export default {
   data() {
     return {
       showModal: false,
-      newCartName: ""
+      showTagModal: false,
+      selectedCart: null,
+      newCartName: "",
+      newTagName: ""
     };
   },
   methods: {
@@ -94,7 +142,6 @@ export default {
       this.showModal = true;
       this.newCartName = "";
 
-      // focus the input after DOM updates
       this.$nextTick(() => {
         this.$refs.cartNameInput?.focus();
       });
@@ -109,6 +156,26 @@ export default {
       this.$emit("create-cart", name);
 
       this.closeModal();
+    },
+    openTagModal(cart) {
+      this.newTagName = "";
+      this.selectedCart = cart;
+      this.showTagModal = true;
+
+      this.$nextTick(() => {
+        this.$refs.tagNameInput?.focus();
+      });
+    },
+    closeTagModal() {
+      this.showTagModal = false;
+    },
+    createTag() {
+      const tagName = this.newTagName.trim();
+      if (!tagName) return;
+
+      this.$emit("add-tag", {cart: this.selectedCart, tagName: tagName});
+
+      this.closeTagModal();
     }
   },
 };

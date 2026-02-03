@@ -14,9 +14,18 @@ let channel;
 
 // rabbitmq
 async function connectQueue() {
-    const connection = await amqp.connect('amqp://rabbitmq');
-    channel = await connection.createChannel();
-    await channel.assertQueue('USER_CREATED');
+    const url = process.env.AMQP_URL
+    const tryConnect = async () => {
+        try {
+            const connection = await amqp.connect(url);
+            channel = await connection.createChannel();
+            await channel.assertQueue('USER_CREATED');
+            console.log('Connected to RabbitMQ');
+        } catch (error) {
+            console.log('RabbitMQ not ready; retrying in 3s...');
+            setTimeout(tryConnect, 3000);
+        }
+    }
 }
 connectQueue();
 
@@ -117,6 +126,7 @@ app.post('/login', async (req, res) => {
         },
         });
     } catch (error) {
+        console.error('Error in /login:', error);
         res.status(500).json({ error: 'Server error' });
     }
 });

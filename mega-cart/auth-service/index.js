@@ -46,12 +46,6 @@ app.post('/register', async (req, res) => {
             return res.status(400).json({ error: 'Password value required' });
         }
 
-        // Check if user already exists
-        const userSelect = await db.query('SELECT * FROM users WHERE username = $1', [username]);
-        if (userSelect.rows.length > 0) {
-            return res.status(409).json({ error: 'Username already taken' });
-        }
-
         // Check if email already exists
         const emailSelect = await db.query('SELECT * FROM users WHERE email = $1', [email]);
         if (emailSelect.rows.length > 0) {

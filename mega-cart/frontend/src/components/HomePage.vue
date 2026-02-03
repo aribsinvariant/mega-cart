@@ -1,7 +1,7 @@
 <template>
   <div class="container py-4">
-    <h1>Home Page</h1>
-    <p>This is the home landing page</p>
+    <img src="/Logo.png" class="d-block mx-auto" />
+    <p class="fs-2 text-center">Welcome to Mega Cart, the one-website solution to all your shopping problems.</p>
   </div>
 </template>
 

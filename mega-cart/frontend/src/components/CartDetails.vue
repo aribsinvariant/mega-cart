@@ -17,7 +17,12 @@
 
     <ul v-else class="list-group mt-3">
       <li v-for="(item, i) in cart.items" :key="i" class="list-group-item">
-        {{ item }}
+        <div class="d-flex justify-content-between bd-highlight mb-3">
+          <div class="p-2 bd-highlight">{{ item }}</div>
+          <div class="p-2 bd-highlight">
+            <button class="btn btn-close ms-auto" @click="removeItem()"></button>
+          </div>
+        </div>
       </li>
     </ul>
     <div
@@ -99,6 +104,10 @@ export default {
       this.$emit("add-item", { cartId: this.cart.id, itemName });
 
       this.closeModal(); 
+    },
+
+    removeItem(){
+      return;
     }
   },
 };

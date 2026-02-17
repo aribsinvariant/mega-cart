@@ -18,7 +18,7 @@
           :key="cart.id"
           class="list-group-item d-flex justify-content-between align-items-center"
         >
-            <button class="btn btn-link text-decoration-none p-0" @click="$emit('cart-selected', cart)">
+            <button class="btn btn-link text-decoration-none p-0" @click="openCart(cart)">
                 {{ cart.name }}
             </button>
             <button class="btn btn-outline-primary ms-auto" @click="openTagModal(cart)">
@@ -176,7 +176,10 @@ export default {
       this.$emit("add-tag", {cart: this.selectedCart, tagName: tagName});
 
       this.closeTagModal();
-    }
+    },
+    openCart(cart) {
+      this.$router.push({ name: "cartDetails", params: { id: cart.id } });
+    },
   },
 };
 </script>

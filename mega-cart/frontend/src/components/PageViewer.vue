@@ -18,11 +18,11 @@ import HomePage from "./HomePage.vue";
 import SignUpPage from "./SignUpPage.vue";
 import LogInPage from "./LogInPage.vue";
 import CartPage from "./CartPage.vue";
-import CartDetailsPage from "./CartDetails.vue";
+import CartDetails from "./CartDetails.vue";
 
 export default {
   props: ["page", "selectedCart", "carts"],
-  components: { HomePage, SignUpPage, LogInPage, CartPage, CartDetailsPage },
+  components: { HomePage, SignUpPage, LogInPage, CartPage, CartDetails },
   emits: ["signup-success", "login-success", "cart-selected", "back", "create-cart", "add-item", "add-tag"]
 };
 </script>

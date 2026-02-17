@@ -79,6 +79,9 @@ export default {
         // store token so future requests are authenticated
         localStorage.setItem("token", token);
 
+        this.$router.push({ name: "carts" });
+        this.$emit("login-success");
+
         // tell parent to go home
         this.$emit("login-success");
       } catch (err) {

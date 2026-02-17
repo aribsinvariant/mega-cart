@@ -1,36 +1,18 @@
 <template>
-    <nav 
-        :class="[`navbar-dark`, `bg-dark`, 'navbar', 'navbar-expand-lg']"
-    >
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">Mega Cart</a>
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li v-for="(page, index) in visiblePages" class="nav-item" :key="index">
-                    <navbar-link
-                        :page="page"
-                        :isActive="activePage === index"
-                        @click.prevent="navLinkClick(index)"
-                    ></navbar-link>
-                </li>
-            </ul>
-            <form class="d-flex">
-            </form>
-        </div>
-    </nav>
+  <nav class="navbar navbar-expand navbar-dark bg-dark px-3">
+    <ul class="navbar-nav me-auto">
+      <li class="nav-item">
+        <router-link class="nav-link" to="/">Home</router-link>
+      </li>
+      <li class="nav-item">
+        <router-link class="nav-link" to="/carts">Carts</router-link>
+      </li>
+      <li class="nav-item">
+        <router-link class="nav-link" to="/signup">Sign up</router-link>
+      </li>
+      <li class="nav-item">
+        <router-link class="nav-link" to="/login">Log in</router-link>
+      </li>
+    </ul>
+  </nav>
 </template>
-
-<script>
-import NavbarLink from './NavbarLink.vue';
-
-export default {
-    computed: {
-        visiblePages() {
-            return this.pages.filter(page => page.visible);
-        }
-    },
-    components: {
-        NavbarLink
-    },
-            props: ['pages', 'activePage', 'navLinkClick'],
-        }
-</script>

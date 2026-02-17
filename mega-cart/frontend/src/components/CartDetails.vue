@@ -20,7 +20,7 @@
         <div class="d-flex justify-content-between bd-highlight mb-3">
           <div class="p-2 bd-highlight">{{ item }}</div>
           <div class="p-2 bd-highlight">
-            <button class="btn btn-close ms-auto" @click="removeItem()"></button>
+            <button class="btn btn-close ms-auto" @click="removeItem(item)"></button>
           </div>
         </div>
       </li>
@@ -106,7 +106,7 @@ export default {
       this.closeModal(); 
     },
 
-    removeItem(){
+    removeItem(item){
       return;
     }
   },

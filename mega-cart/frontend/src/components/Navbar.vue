@@ -1,36 +1,69 @@
 <template>
-    <nav 
-        :class="[`navbar-dark`, `bg-dark`, 'navbar', 'navbar-expand-lg']"
-    >
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">Mega Cart</a>
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li v-for="(page, index) in visiblePages" class="nav-item" :key="index">
-                    <navbar-link
-                        :page="page"
-                        :isActive="activePage === index"
-                        @click.prevent="navLinkClick(index)"
-                    ></navbar-link>
-                </li>
+  <nav class="navbar navbar-expand navbar-dark bg-dark px-3">
+    <div class = "container-fluid">
+
+      <!-- clicking on the logo brings you home -->
+      <router-link class="navbar-brand d-flex align-items-center" to="/">
+        <img
+          src="/Logo.png"
+          alt="Mega Cart"
+          height="40"
+          class="me-2"
+        />
+      </router-link>
+
+
+      <ul class="navbar-nav align-items-center me-auto">
+        <!-- can add the same for shared carts -->
+        <li v-if="isLoggedIn" class="nav-item p-2">
+          <router-link class="nav-link" to="/carts">Carts</router-link>
+        </li>
+      </ul>
+
+      <ul class="navbar-nav d-flex align-items-center ms-auto">
+        <!-- doesnt show if logged in -->
+        <template v-if="!isLoggedIn">
+          <li class="nav-item p-2">
+            <router-link class="nav-link" to="/login">Log in</router-link>
+          </li>
+          <li class="nav-item p-2">
+            <router-link class="nav-link" to="/signup">Sign up</router-link>
+          </li>
+        </template>
+
+
+        <li class = "nav-item dropdown">
+          <button class="btn btn-outline-light btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+            Settings
+          </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li v-if="isLoggedIn">
+                <button class="dropdown-item" @click="logout">
+                  Log out
+                </button>
+              </li>
             </ul>
-            <form class="d-flex">
-            </form>
-        </div>
-    </nav>
+        </li>
+      </ul>
+    </div>
+  </nav>
 </template>
 
 <script>
-import NavbarLink from './NavbarLink.vue';
+import { isLoggedIn, auth } from "../logged/auth";
 
 export default {
-    computed: {
-        visiblePages() {
-            return this.pages.filter(page => page.visible);
-        }
+  name: "Navbar",
+  computed: {
+    isLoggedIn() {
+      return isLoggedIn.value;
     },
-    components: {
-        NavbarLink
+  },
+  methods: {
+    logout() {
+      auth.clear();
+      this.$router.push({ name: "login" });
     },
-            props: ['pages', 'activePage', 'navLinkClick'],
-        }
+  },
+};
 </script>

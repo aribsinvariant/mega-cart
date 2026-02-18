@@ -1,21 +1,21 @@
 <template>
   <div class="container py-4">
-    <button class="btn btn-link mb-3" @click="$emit('back')">
+    <button class="btn btn-link mb-3" @click="$router.push({ name: 'carts' })">
       ← Back to carts
     </button>
 
-    <h1>{{ cart.name }}</h1>
+    <h1 v-if="cart">{{ cart.name }}</h1>
     <p align="right" class="mb-0">
         <button class="btn btn-primary" type="button" @click="openModal">
             + Add Item
         </button>
     </p>
 
-    <p v-if="cart.items.length === 0" class="mt-3">
+    <p v-if="cart && cart.items.length === 0" class="mt-3">
       This cart is empty.
     </p>
 
-    <ul v-else class="list-group mt-3">
+    <ul v-if="cart && cart.items.length > 0" class="list-group mt-3">
       <li v-for="(item, i) in cart.items" :key="i" class="list-group-item">
         <div class="d-flex justify-content-between bd-highlight mb-3">
           <div class="p-2 bd-highlight">{{ item }}</div>
@@ -71,16 +71,20 @@
 </template>
 
 <script>
+import { api } from "../api";
+
 export default {
   name: "CartDetailsPage",
   props: {
-    cart: {
-      type: Object,
-      default: null,
-    }
+    id: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
+      cart: null,
+      loading: true,
       showModal: false,
       newItemName: "",
     };
@@ -97,18 +101,46 @@ export default {
     closeModal() {
       this.showModal = false;
     },
-    addItems(){
-      const itemName = this.newItemName
-      if (!itemName) return;
+    async addItems() {
+  const itemName = (this.newItemName || "").trim();
+  if (!itemName || !this.cart) return;
 
-      this.$emit("add-item", { cartId: this.cart.id, itemName });
+  const full = (await api.get(`/carts/${this.id}`)).data;
+  const existing = Array.isArray(full.items) ? full.items : [];
 
-      this.closeModal(); 
-    },
+  await api.put(`/carts/${this.id}`, {
+    name: full.name,
+    description: full.description ?? null,
+    items: [
+      ...existing.map(i =>
+        typeof i === "string"
+          ? { name: i, description: null, price: 0, quantity: 1 }
+          : { name: i.name, description: i.description ?? null, price: i.price ?? 0, quantity: i.quantity ?? 1 }
+      ),
+      { name: itemName, description: null, price: 0, quantity: 1 },
+    ],
+  });
+
+  await this.getCart();
+  this.closeModal();
+},
 
     removeItem(item){
       return;
-    }
+    },
+    async getCart() {
+      const res = await api.get(`/carts/${this.id}`);
+      this.cart = { ...res.data, items: res.data.items || [] };
+      this.loading = false;
+    },
+  },
+  mounted() {
+    this.getCart();
+  },
+  watch: {
+    id() {
+      this.getCart();
+    },
   },
 };
 </script>

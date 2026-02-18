@@ -46,6 +46,7 @@
 
 <script>
 import { api } from "../api";
+import { auth } from "../logged/auth";
 
 export default {
   name: "LogInPage",
@@ -77,7 +78,11 @@ export default {
         const { token } = res.data;
 
         // store token so future requests are authenticated
-        localStorage.setItem("token", token);
+        auth.setToken(token);
+        this.$router.push({ name: "carts" });
+
+        this.$router.push({ name: "carts" });
+        this.$emit("login-success");
 
         // tell parent to go home
         this.$emit("login-success");

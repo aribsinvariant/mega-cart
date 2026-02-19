@@ -1,5 +1,7 @@
 <template>
-  <Navbar />
+  <Navbar 
+    @theme="toggleDarkMode"
+  />
   <router-view
     :carts="carts"
     :selected-cart="selectedCart"
@@ -10,6 +12,21 @@
     @add-tag="addTagToCart"
   />
 </template>
+
+<style>
+  .dark-mode {
+    background-color: #121212 !important;
+    color: #ffffff !important;
+  }
+  .dark-mode .modal{
+    background-color: #121212 !important;
+    color: #ffffff !important;
+  }
+  .dark-mode .list-group-item {
+    background-color: #1e1e1e !important;
+    color: #ffffff !important;
+  }
+</style>
 
 <script>
 import Navbar from './components/Navbar.vue';
@@ -164,6 +181,13 @@ export default {
       this.selectedCartId = null;
       this.$router.push({ name: "carts" });
     },
-  },
+    toggleDarkMode(isDark) {
+      if (isDark) {
+        document.body.classList.add('dark-mode');
+      } else {
+        document.body.classList.remove('dark-mode');
+      }
+    },
+  }
 };
 </script>

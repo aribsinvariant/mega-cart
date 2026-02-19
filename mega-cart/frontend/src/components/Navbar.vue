@@ -42,6 +42,11 @@
                   Log out
                 </button>
               </li>
+              <li>
+                <button class="dropdown-item" @click="toggleDarkMode">
+                  Toggle Dark Mode
+                </button>
+              </li>
             </ul>
         </li>
       </ul>
@@ -54,6 +59,11 @@ import { isLoggedIn, auth } from "../logged/auth";
 
 export default {
   name: "Navbar",
+  data() {
+    return {
+      toggleTheme: false
+    };
+  },
   computed: {
     isLoggedIn() {
       return isLoggedIn.value;
@@ -63,6 +73,10 @@ export default {
     logout() {
       auth.clear();
       this.$router.push({ name: "login" });
+    },
+    toggleDarkMode() {
+      this.toggleTheme = !this.toggleTheme;
+      this.$emit("theme", this.toggleTheme);
     },
   },
 };

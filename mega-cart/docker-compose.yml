@@ -28,6 +28,10 @@ services:
     environment:
       - AMQP_URL=amqp://rabbitmq
       - DATABASE_URL=postgresql://${DB_USER}:${DB_PASS}@postgres:5432/auth_db
+      - MAIL_HOST=${MAIL_HOST}
+      - MAIL_PORT=${MAIL_PORT}
+      - MAIL_USER=${MAIL_USER}
+      - MAIL_PASS=${MAIL_PASS}
     depends_on:
       - rabbitmq
       - postgres

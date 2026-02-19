@@ -1,16 +1,26 @@
+const nodemailer = require('nodemailer');
+const jwt = require('jsonwebtoken');
 const express = require('express');
+const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 const amqp = require('amqplib');
 const db = require('./db');
-const bcrypt = require('bcryptjs');
-// const { query } = require('./db');
 const app = express();
-
-const jwt = require('jsonwebtoken');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret';
 app.use(express.json());
 
 let channel;
+
+// Nodemailer
+const transporter = nodemailer.createTransport({
+    host: process.env.MAIL_HOST,
+    port: process.env.MAIL_PORT,
+    auth: {
+        user: process.env.MAIL_USER,
+        pass: process.env.MAIL_PASS,
+    }
+});
 
 // rabbitmq
 async function connectQueue() {
@@ -94,7 +104,6 @@ app.post('/login', async (req, res) => {
         // Get hashed password
         const hashedPassword = emailSelect.rows[0].password_hash;
 
-        // 
         const passwordMatch = await bcrypt.compare(password, hashedPassword)
         if (!passwordMatch) {
             return res.status(401).json({ error: 'Invalid credentials' });
@@ -122,6 +131,87 @@ app.post('/login', async (req, res) => {
     } catch (error) {
         console.error('Error in /login:', error);
         res.status(500).json({ error: 'Server error' });
+    }
+});
+
+app.post('/forgot-password', async (req, res) => {
+    try {
+        const email = req.body.email;
+
+        // Check if email doesn't exist
+        const emailSelect = await db.query('SELECT * FROM users WHERE email = $1', [email]);
+        if (emailSelect.rows.length == 0) {
+            return res.status(404).json({ error: 'Email not found' });
+        }
+
+        // Generate random token
+        const passwordToken = crypto.randomBytes(32).toString('hex')
+
+        // Expiry date (15 minutes from)
+        const tokenExpiry = new Date(Date.now() + 1000 * 60 * 15)
+
+        // Add token and expiry to user db entry
+        await db.query(
+            'UPDATE users SET reset_token = $1, reset_token_expires = $2 WHERE email = $3',
+            [passwordToken, tokenExpiry, email]
+        );
+
+        await transporter.sendMail({
+            from: 'no-reply@megacart.com',
+            to: email,
+            subject: 'Password Reset',
+            text: `Your password reset token is: ${passwordToken}`
+        });
+
+        res.status(200).json({ message: 'Password reset email sent' });
+    } catch (error) {
+        console.error('Error in /forgot-password:', error);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+app.post('/reset-password', async (req, res) => {
+    try {
+        const passwordToken = req.body.token;
+        const newPassword = req.body.password;
+
+        // Attempt to fetch non-expired token user
+        const result = await db.query(
+            'SELECT * FROM users WHERE reset_token = $1 AND reset_token_expires > NOW()',
+            [passwordToken]
+        );
+
+        // If token does not exist
+        if (result.rows.length === 0) {
+            return res.status(400).json({ error: 'Token invalid or expired' });
+        }
+
+        // Compare new password to old password
+        const oldHashedPassword = result.rows[0].password_hash;
+        const passwordMatch = await bcrypt.compare(newPassword, oldHashedPassword);
+        if (passwordMatch) {
+            return res.status(409).json({ error: 'New password cannot be the same as the old password'});
+        }
+
+        const newHashedPassword = await bcrypt.hash(newPassword, 10);
+
+        const email = result.rows[0].email;
+        await db.query(
+            'UPDATE users SET password_hash = $1 WHERE email = $2',
+            [newHashedPassword, email]
+        );
+
+        // Remove token and expiry from user db entry
+        await db.query(
+            'UPDATE users SET reset_token = NULL, reset_token_expires = NULL WHERE email = $1',
+            [email]
+        );
+
+
+        res.status(200).json({ message: 'Password successfully reset' });
+    } catch (error) {
+        console.error('Error in /reset-password:', error);
+        res.status(500).json({ error: 'Server error'});
     }
 });
 

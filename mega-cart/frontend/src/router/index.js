@@ -5,11 +5,15 @@ import LogInPage from "../components/LogInPage.vue";
 import SignUpPage from "../components/SignUpPage.vue";
 import CartPage from "../components/CartPage.vue";
 import CartDetails from "../components/CartDetails.vue";
+import RecoverPage from "@/components/RecoverPage.vue";
+import ResetPage from "@/components/ResetPage.vue";
 
 const routes = [
   { path: "/", name: "home", component: HomePage },
   { path: "/login", name: "login", component: LogInPage },
   { path: "/signup", name: "signup", component: SignUpPage },
+  { path: "/login/recovery", name: "passwordRecovery", component: RecoverPage },
+  { path: "/login/reset", name: "passwordReset", component: ResetPage },
 
   // after logging in
   { path: "/carts", name: "carts", component: CartPage, meta: { requiresAuth: true } },

@@ -42,6 +42,20 @@
       <button class="btn btn-primary" type="submit" :disabled="isFormNotValid">Log In</button>
     </form>
   </div>
+
+  <div class="container py-4">
+    <p>
+      Don't have an account?
+      <router-link :to="{ name: 'signup' }">Sign Up</router-link>
+    </p>
+  </div>
+
+  <div class="container py-4">
+    <p>
+      Forgot your password?
+      <router-link :to="{ name: 'passwordRecovery' }">Reset Password</router-link>
+    </p>
+  </div>
 </template>
 
 <script>

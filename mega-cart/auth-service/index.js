@@ -22,7 +22,6 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-
 // rabbitmq
 async function connectQueue() {
     const url = process.env.AMQP_URL

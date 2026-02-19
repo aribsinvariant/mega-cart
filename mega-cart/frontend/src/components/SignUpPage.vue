@@ -53,6 +53,13 @@
       <button class="btn btn-primary" type="submit" :disabled="isFormNotValid">Create account</button>
     </form>
   </div>
+
+  <div class="container py-4">
+    <p>
+      Already have an account?
+      <router-link :to="{ name: 'login' }">Log In</router-link>
+    </p>
+  </div>
 </template>
 
 <script>

@@ -24,8 +24,8 @@
     color: #ffffff !important;
   }
   .dark-mode .list-group-item {
-    background-color: #1e1e1e !important;
-    color: #ffffff !important;
+    background-color: #1e1e1e;
+    color: #ffffff;
   }
   .dark-mode .modal-content {
     background-color: #212529;
@@ -203,13 +203,13 @@ export default {
         document.body.classList.remove('dark-mode');
       }
     },
-    async editCart({ cart, newName }) {
+    async editCart({ cart, newName, newColor }) {
       const full = (await api.get(`/carts/${cart.id}`)).data;
 
       try {
         await api.put(`/carts/${cart.id}`, {
           name: newName,
-          description: full.description ?? null,
+          description: newColor ?? null,
           items: full.items || [],
           tags: full.tags || [],
         });

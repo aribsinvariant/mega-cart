@@ -8,8 +8,8 @@ app.use(express.json());
 
 const authMiddleware = require('./authMiddleware');
 app.use((req, res, next) => {
-  console.log("CART-SERVICE HIT:", req.method, req.originalUrl);
-  next();
+    console.log("CART-SERVICE HIT:", req.method, req.originalUrl);
+    next();
 });
 app.use(authMiddleware);
 let channel;
@@ -18,16 +18,22 @@ let channel;
 
 // rabbitmq not used right now, but may use it for deleting carts when users are deleted
 async function connectQueue() {
-    const connection = await amqp.connect('amqp://rabbitmq');
-    channel = await connection.createChannel();
-    await channel.assertQueue('USER_CREATED');
+    try {
+        const connection = await amqp.connect('amqp://rabbitmq');
+        channel = await connection.createChannel();
+        await channel.assertQueue('USER_CREATED');
+        console.log('Connected to RabbitMQ');
+    } catch (err) {
+        console.log('RabbitMQ not ready; retrying in 3s...');
+        setTimeout(connectQueue, 3000);
+    }
 }
 connectQueue();
 
 // create cart with items
 app.post('/', async (req, res) => {
     const userId = req.user.id;
-    const { name, description, items = [], labels} = req.body;
+    const { name, description, items = [], labels } = req.body;
 
     const client = await db.pool.connect();
 
@@ -86,11 +92,11 @@ app.get('/', async (req, res) => {
     try {
         let text, params;
 
-        if (label) { 
+        if (label) {
 
             // turns the labels into an array, so ?label=ash&label=poop in the uri becomes ['ash',poop'] 
-            const tags = Array.isArray(label) ? label : [label]; 
-            
+            const tags = Array.isArray(label) ? label : [label];
+
             text = `
                 SELECT DISTINCT c.id, c.name, c.description, c.created_at 
                 FROM carts c

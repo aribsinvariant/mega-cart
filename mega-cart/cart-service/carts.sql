@@ -28,5 +28,6 @@ CREATE TABLE IF NOT EXISTS labeled_carts (
 CREATE TABLE IF NOT EXISTS shared_carts (
     cart_id INTEGER REFERENCES carts(id) ON DELETE CASCADE,
     user_id INT NOT NULL,
+    status VARCHAR(20) DEFAULT 'pending',
     PRIMARY KEY (cart_id, user_id)
 );

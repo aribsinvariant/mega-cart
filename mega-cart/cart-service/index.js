@@ -109,6 +109,65 @@ app.post('/:id/share', async (req, res) => {
     }
 });
 
+// list pending cart invites
+app.get('/invites', async (req, res) => {
+    const userId = req.user.id;
+    try {
+        const text = `
+            SELECT c.id, c.name, c.description, c.created_at, sc.status
+            FROM carts c
+            JOIN shared_carts sc ON c.id = sc.cart_id
+            WHERE sc.user_id = $1 AND sc.status = 'pending'
+            ORDER BY c.created_at DESC
+        `;
+        const result = await query(text, [userId]);
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Get Invites Failed" });
+    }
+});
+
+// accept a cart invite
+app.post('/:id/invites/accept', async (req, res) => {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    try {
+        const result = await query(
+            "UPDATE shared_carts SET status = 'accepted' WHERE cart_id = $1 AND user_id = $2 AND status = 'pending' RETURNING *",
+            [id, userId]
+        );
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Pending invite not found" });
+        }
+        res.json({ message: "Invite accepted" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to accept invite" });
+    }
+});
+
+// decline a cart invite
+app.post('/:id/invites/decline', async (req, res) => {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    try {
+        const result = await query(
+            "DELETE FROM shared_carts WHERE cart_id = $1 AND user_id = $2 AND status = 'pending' RETURNING *",
+            [id, userId]
+        );
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Pending invite not found" });
+        }
+        res.json({ message: "Invite declined" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to decline invite" });
+    }
+});
+
 // this one will be the one that runs when you go to some /mycarts type page to view ALL of a user's carts
 app.get('/', async (req, res) => {
     const userId = req.user.id;
@@ -126,8 +185,8 @@ app.get('/', async (req, res) => {
                 SELECT DISTINCT c.id, c.name, c.description, c.created_at 
                 FROM carts c
                 JOIN labeled_carts lc ON c.id = lc.cart_id
-                LEFT JOIN shared_carts sc ON c.id = sc.cart_id
-                WHERE (c.user_id = $1 OR sc.user_id = $1) AND lc.label_name = ANY($2)
+                LEFT JOIN shared_carts sc ON c.id = sc.cart_id AND sc.status = 'accepted'
+                WHERE (c.user_id = $1 OR (sc.user_id = $1 AND sc.status = 'accepted')) AND lc.label_name = ANY($2)
                 ORDER BY c.created_at DESC
             `;
             params = [userId, tags];
@@ -135,8 +194,8 @@ app.get('/', async (req, res) => {
             text = `
                 SELECT DISTINCT c.id, c.name, c.description, c.created_at 
                 FROM carts c
-                LEFT JOIN shared_carts sc ON c.id = sc.cart_id
-                WHERE c.user_id = $1 OR sc.user_id = $1
+                LEFT JOIN shared_carts sc ON c.id = sc.cart_id AND sc.status = 'accepted'
+                WHERE c.user_id = $1 OR (sc.user_id = $1 AND sc.status = 'accepted')
                 ORDER BY c.created_at DESC
             `;
             params = [userId];
@@ -151,8 +210,7 @@ app.get('/', async (req, res) => {
     }
 });
 
-// this one will be the one that runs when you click on a specific cart, id refers to cartId not userId
-// will need to rewrite this so that it actually checks for authorization, right now anyone can see anyones carts
+// view a specific cart, id refers to cartId not userId
 app.get('/:id', async (req, res) => {
     const { id } = req.params;
 
@@ -183,7 +241,7 @@ app.get('/:id', async (req, res) => {
         const userId = req.user.id;
 
         if (cart.user_id !== userId) {
-            const sharedRes = await db.query('SELECT 1 FROM shared_carts WHERE cart_id = $1 AND user_id = $2', [id, userId]);
+            const sharedRes = await db.query("SELECT 1 FROM shared_carts WHERE cart_id = $1 AND user_id = $2 AND status = 'accepted'", [id, userId]);
             if (sharedRes.rows.length === 0) {
                 return res.status(403).json({ error: "Forbidden: You do not have access to this cart" });
             }

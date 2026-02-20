@@ -14,13 +14,14 @@
 
       <ul v-else class="list-group">
         <li
-          v-for="cart in carts"
+          v-for="cart in [...carts].sort((a, b) => a.id - b.id)"
           :key="cart.id"
           class="list-group-item d-flex justify-content-between align-items-center"
         >
             <button class="btn btn-link text-decoration-none p-0" @click="openCart(cart)">
                 {{ cart.name }}
             </button>
+            <button class="edit-btn" title="Edit" @click="openEditModal(cart)">✏️</button>
             <button class="btn btn-outline-primary ms-auto" @click="openTagModal(cart)">
                 Add Tags
             </button>
@@ -30,13 +31,54 @@
     </div>
 
     <div
+      v-if="showEditModal"
+      class="modal fade show"
+      tabindex="-1"
+      style="display: block;"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Edit Cart</h5>
+            <button type="button" class="btn-close" @click="closeEditModal"></button>
+          </div>
+
+          <form @submit.prevent.stop="updateCart">
+            <div class="modal-body">
+              <label class="form-label" for="cartName">Cart name</label>
+              <input
+                id="cartName"
+                class="form-control"
+                v-model.trim="updatedCartName"
+                placeholder="e.g. Groceries"
+                required
+                maxlength="255"
+                ref="cartNameInput"
+              />
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline-secondary" @click="closeEditModal">
+                Cancel
+              </button>
+              <button class="btn btn-primary" type="submit" :disabled="updatedCartName.length === 0" @click="editCart(selectedCart)">
+                Update
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div
       v-if="showModal"
       class="modal fade show"
       tabindex="-1"
       style="display: block;"
       role="dialog"
       aria-modal="true"
-      @click.self="closeModal"
     >
       <div class="modal-dialog">
         <div class="modal-content">
@@ -79,7 +121,6 @@
       style="display: block;"
       role="dialog"
       aria-modal="true"
-      @click.self="closeTagModal"
     >
       <div class="modal-dialog">
         <div class="modal-content">
@@ -119,6 +160,24 @@
   </div>
 </template>
 
+<style>
+  .edit-btn {
+    background: none !important;
+    border: none !important;
+    cursor: pointer !important;
+    color: #aaa !important;
+    font-size: 13px !important;
+    padding: 2px 5px !important;
+    border-radius: 4px !important;
+    filter: grayscale(100%) !important;
+  } 
+
+  .edit-btn:hover {
+    color: #666 !important;
+    background-color: #f0f0f0 !important;
+  }
+</style>
+
 <script>
 export default {
   name: "CartsPage",
@@ -132,9 +191,11 @@ export default {
     return {
       showModal: false,
       showTagModal: false,
+      showEditModal: false,
       selectedCart: null,
       newCartName: "",
-      newTagName: ""
+      newTagName: "",
+      updatedCartName: "",
     };
   },
   methods: {
@@ -180,6 +241,25 @@ export default {
     openCart(cart) {
       this.$router.push({ name: "cartDetails", params: { id: cart.id } });
     },
+    openEditModal(cart) {
+      this.selectedCart = cart;
+      this.updatedCartName = cart.name;
+      this.showEditModal = true;
+
+      this.$nextTick(() => {
+        this.$refs.cartNameInput?.focus();
+      });
+    },
+    closeEditModal() {
+      this.showEditModal = false;
+    },
+    editCart(cart) {
+      const newName = this.updatedCartName.trim();
+      if (newName && newName !== cart.name) {
+        this.$emit("edit-cart", { cart, newName });
+        this.closeEditModal();
+      }
+    }
   },
 };
 </script>

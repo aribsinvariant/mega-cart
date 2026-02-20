@@ -10,6 +10,7 @@
     @create-cart="createCart"
     @add-item="addItemToCart"
     @add-tag="addTagToCart"
+    @edit-cart="editCart"
   />
 </template>
 
@@ -25,6 +26,20 @@
   .dark-mode .list-group-item {
     background-color: #1e1e1e !important;
     color: #ffffff !important;
+  }
+  .dark-mode .modal-content {
+    background-color: #212529;
+    color: #fff;
+  }
+  .dark-mode .modal-header,
+  .dark-mode .modal-footer {
+    border-color: #444;
+  }
+  .dark-mode .modal {
+    background: rgba(255, 255, 255, 0.1) !important;
+  }
+  .modal {
+    background: rgba(0, 0, 0, 0.5);
   }
 </style>
 
@@ -186,6 +201,26 @@ export default {
         document.body.classList.add('dark-mode');
       } else {
         document.body.classList.remove('dark-mode');
+      }
+    },
+    async editCart({ cart, newName }) {
+      const full = (await api.get(`/carts/${cart.id}`)).data;
+
+      try {
+        await api.put(`/carts/${cart.id}`, {
+          name: newName,
+          description: full.description ?? null,
+          items: full.items || [],
+          tags: full.tags || [],
+        });
+
+        // refresh
+        const res= await api.get(`/carts/${cart.id}`);
+        this.carts = this.carts.map((c) => (c.id === cart.id ? res.data : c));
+        this.$router.push({ name: "carts" });
+      } catch (err) {
+        console.error("Edit cart failed:", err?.response?.status, err?.response?.data);
+        alert("Failed to edit cart");
       }
     },
   }

@@ -84,6 +84,31 @@ app.post('/', async (req, res) => {
 
 });
 
+// share cart
+app.post('/:id/share', async (req, res) => {
+    const cartId = req.params.id;
+    const { userId } = req.body; // user to share with
+    const ownerId = req.user.id;
+
+    try {
+        // verify ownership
+        const cartRes = await query('SELECT user_id FROM carts WHERE id = $1', [cartId]);
+        if (cartRes.rows.length === 0) {
+            return res.status(404).json({ error: "Cart not found" });
+        }
+        if (cartRes.rows[0].user_id !== ownerId) {
+            return res.status(403).json({ error: "Forbidden: Only the owner can share this cart" });
+        }
+
+        await query('INSERT INTO shared_carts (cart_id, user_id) VALUES ($1, $2) ON CONFLICT DO NOTHING', [cartId, userId]);
+
+        res.json({ message: "Cart shared successfully" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to share cart" });
+    }
+});
+
 // this one will be the one that runs when you go to some /mycarts type page to view ALL of a user's carts
 app.get('/', async (req, res) => {
     const userId = req.user.id;
@@ -101,16 +126,18 @@ app.get('/', async (req, res) => {
                 SELECT DISTINCT c.id, c.name, c.description, c.created_at 
                 FROM carts c
                 JOIN labeled_carts lc ON c.id = lc.cart_id
-                WHERE c.user_id = $1 AND lc.label_name = ANY($2)
+                LEFT JOIN shared_carts sc ON c.id = sc.cart_id
+                WHERE (c.user_id = $1 OR sc.user_id = $1) AND lc.label_name = ANY($2)
                 ORDER BY c.created_at DESC
             `;
             params = [userId, tags];
         } else {
             text = `
-                SELECT id, name, description, created_at 
-                FROM carts 
-                WHERE user_id = $1 
-                ORDER BY created_at DESC
+                SELECT DISTINCT c.id, c.name, c.description, c.created_at 
+                FROM carts c
+                LEFT JOIN shared_carts sc ON c.id = sc.cart_id
+                WHERE c.user_id = $1 OR sc.user_id = $1
+                ORDER BY c.created_at DESC
             `;
             params = [userId];
         }
@@ -148,7 +175,21 @@ app.get('/:id', async (req, res) => {
 
     try {
         const result = await db.query(text, [id]);
-        res.json(result.rows[0]);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Cart not found" });
+        }
+
+        const cart = result.rows[0];
+        const userId = req.user.id;
+
+        if (cart.user_id !== userId) {
+            const sharedRes = await db.query('SELECT 1 FROM shared_carts WHERE cart_id = $1 AND user_id = $2', [id, userId]);
+            if (sharedRes.rows.length === 0) {
+                return res.status(403).json({ error: "Forbidden: You do not have access to this cart" });
+            }
+        }
+
+        res.json(cart);
     }
     catch (err) {
         console.error(err);
@@ -160,21 +201,29 @@ app.get('/:id', async (req, res) => {
 app.put('/:id', async (req, res) => {
     const { id } = req.params;
     const { name, description, items, labels } = req.body;
+    const userId = req.user.id;
 
     const client = await db.pool.connect();
 
     try {
         await client.query('BEGIN');
-        const cartRes = await client.query(
-            'UPDATE carts SET name = $1, description = $2 WHERE id = $3 RETURNING id',
-            [name, description, id]
-        );
 
-        if (cartRes.rows.length === 0) {
+        const cartCheck = await client.query('SELECT user_id FROM carts WHERE id = $1', [id]);
+        if (cartCheck.rows.length === 0) {
             await client.query('ROLLBACK');
             client.release();
             return res.status(404).json({ error: "Cart not found" });
         }
+        if (cartCheck.rows[0].user_id !== userId) {
+            await client.query('ROLLBACK');
+            client.release();
+            return res.status(403).json({ error: "Forbidden: Only the owner can update this cart" });
+        }
+
+        const cartRes = await client.query(
+            'UPDATE carts SET name = $1, description = $2 WHERE id = $3 RETURNING id',
+            [name, description, id]
+        );
 
         const cartId = cartRes.rows[0].id;
 
@@ -222,16 +271,21 @@ app.put('/:id', async (req, res) => {
 // delete cart
 app.delete('/:id', async (req, res) => {
     const { id } = req.params;
+    const userId = req.user.id;
 
     try {
+        const cartCheck = await query('SELECT user_id FROM carts WHERE id = $1', [id]);
+        if (cartCheck.rows.length === 0) {
+            return res.status(404).json({ error: "Cart not found" });
+        }
+        if (cartCheck.rows[0].user_id !== userId) {
+            return res.status(403).json({ error: "Forbidden: Only the owner can delete this cart" });
+        }
+
         const cartRes = await query(
             'DELETE FROM carts WHERE id = $1 RETURNING id',
             [id]
         );
-
-        if (cartRes.rows.length === 0) {
-            return res.status(404).json({ error: "Cart not found" });
-        }
 
         res.json({ message: "Cart deleted", cartId: cartRes.rows[0].id });
     }

@@ -1,10 +1,10 @@
 <template>
   <div class="container py-4">
-    <h1>Forgot Password</h1>
+    <h1>{{ $t("recover.forgot_password") }}</h1>
 
     <form class="mt-3" @submit.prevent="submit">
       <div class="mb-3">
-        <label class="form-label" for="email">Email</label>
+        <label class="form-label" for="email">{{ $t("recover.email") }}</label>
         <input
           id="email"
           class="form-control"
@@ -13,13 +13,13 @@
           required
         />
       </div>
-      <button class="btn btn-primary" type="submit" >Send Recovery Email</button>
+      <button class="btn btn-primary" type="submit" >{{ $t("recover.send_recovery_email") }}</button>
     </form>
   </div>
 
   <div class="container py-4">
     <p>
-      <router-link :to="{ name: 'login' }">Back to Login</router-link>
+      <router-link :to="{ name: 'login' }">{{ $t("recover.back_to_login") }}</router-link>
     </p>
   </div>
 

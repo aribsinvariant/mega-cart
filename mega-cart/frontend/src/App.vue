@@ -11,6 +11,7 @@
     @add-item="addItemToCart"
     @add-tag="addTagToCart"
     @edit-cart="editCart"
+    @share-cart="shareCart"
   />
 </template>
 
@@ -223,6 +224,39 @@ export default {
         alert("Failed to edit cart");
       }
     },
+    async shareCart({ cart, email, viewOnly }) {
+      const trimmedEmail = (email || "").trim();
+      if (!trimmedEmail) return;
+
+      try {
+        // 1) email -> userId (AUTH service)
+        // If your api instance already points to the gateway, this path must route to auth-service.
+        const lookup = await api.get("/auth/users/by-email", {
+          params: { email: trimmedEmail },
+        });
+
+        const userId = lookup.data.userId;
+        if (!userId) {
+          alert("Unable to share cart");
+          return;
+        }
+
+        // 2) share cart (CART service)
+        await api.post(`/carts/${cart.id}/share`, {
+          userId,
+          //viewOnly: !!viewOnly,
+        });
+
+        alert("Cart shared successfully");
+      } catch (err) {
+        const msg =
+          err?.response?.data?.error ||
+          err?.response?.data?.message ||
+          `Failed to share cart (${err?.response?.status || "no status"})`;
+        console.error("Share cart failed:", err?.response?.status, err?.response?.data);
+        alert(msg);
+      }
+    }
   }
 };
 </script>

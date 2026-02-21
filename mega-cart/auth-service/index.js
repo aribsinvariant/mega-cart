@@ -39,6 +39,29 @@ async function connectQueue() {
 }
 connectQueue();
 
+app.get('/users/by-email', async (req, res) => {
+  try {
+    const email = (req.query.email || "").trim().toLowerCase();
+    if (!email) {
+      return res.status(400).json({ error: "Email is required" });
+    }
+
+    const result = await db.query(
+      "SELECT id FROM users WHERE lower(email) = $1",
+      [email]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    return res.json({ userId: result.rows[0].id });
+  } catch (err) {
+    console.error("Error in /users/by-email:", err);
+    return res.status(500).json({ error: "Server error" });
+  }
+});
+
 app.post('/register', async (req, res) => {
     try {
         const username = req.body.username;

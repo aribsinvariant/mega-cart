@@ -59,6 +59,12 @@ services:
     depends_on:
       - gateway
 
+  mailpit:
+    image: axllent/mailpit:latest
+    ports:
+      - "8025:8025"   
+      - "1025:1025"   
+
 volumes:
   pgdata:
   rabbitmq_data:

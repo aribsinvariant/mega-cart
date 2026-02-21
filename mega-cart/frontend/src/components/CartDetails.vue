@@ -1,18 +1,18 @@
 <template>
   <div class="container py-4">
     <button class="btn btn-link mb-3" @click="$router.push({ name: 'carts' })">
-      ← Back to carts
+      {{ $t("cart_details.back_to_carts") }}
     </button>
 
     <h1 v-if="cart">{{ cart.name }}</h1>
     <p align="right" class="mb-0">
         <button class="btn btn-primary" type="button" @click="openModal">
-            + Add Item
+            {{ $t("cart_details.add_item") }}
         </button>
     </p>
 
     <p v-if="cart && cart.items.length === 0" class="mt-3">
-      This cart is empty.
+      {{ $t("cart_details.this_cart_is_empty") }}
     </p>
 
     <ul v-if="cart && cart.items.length > 0" class="list-group mt-3">
@@ -37,18 +37,18 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Add Item</h5>
+            <h5 class="modal-title">{{ $t("cart_details.item_name") }}</h5>
             <button type="button" class="btn-close" @click="closeModal"></button>
           </div>
 
           <form @submit.prevent="addItems">
             <div class="modal-body">
-              <label class="form-label" for="itemName">Item name</label>
+              <label class="form-label" for="itemName">{{ $t("cart_details.item_name") }}</label>
               <input
                 id="itemName"
                 class="form-control"
                 v-model.trim="newItemName"
-                placeholder="e.g. Milk"
+                :placeholder="$t('cart_details.eg_milk')"
                 required
                 maxlength="40"
                 ref="itemNameInput"
@@ -57,10 +57,10 @@
 
             <div class="modal-footer">
               <button type="button" class="btn btn-outline-secondary" @click="closeModal">
-                Cancel
+                {{ $t("cart_details.cancel") }}
               </button>
               <button class="btn btn-primary" type="submit" :disabled="newItemName.length === 0">
-                Add Item
+                {{ $t("cart_details.add_item") }}
               </button>
             </div>
           </form>

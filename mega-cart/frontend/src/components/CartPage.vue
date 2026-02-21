@@ -1,7 +1,7 @@
 <template>
   <div class="container py-4">
     <div class="d-flex align-items-center justify-content-between">
-      <h1 class="mb-0">Carts</h1>
+      <h1 class="mb-0">{{ $t("cart.carts") }}</h1>
       <button class="btn btn-primary" type="button" @click="openModal">
         {{ $t("cart.add_new_cart") }}
       </button>
@@ -72,7 +72,7 @@
                 id="cartName"
                 class="form-control"
                 v-model.trim="updatedCartName"
-                placeholder="e.g. Groceries"
+                :placeholder="$t('cart.eg_groceries')"
                 required
                 maxlength="255"
                 ref="cartNameInput"
@@ -117,7 +117,7 @@
                 id="cartName"
                 class="form-control"
                 v-model.trim="newCartName"
-                placeholder="e.g. Groceries"
+                :placeholder="$t('cart.eg_groceries')"
                 required
                 maxlength="255"
                 ref="cartNameInput"
@@ -129,7 +129,7 @@
                 {{ $t("cart.cancel") }}
               </button>
               <button class="btn btn-primary" type="submit" :disabled="newCartName.length === 0">
-                {{ $t("cart.create") }}
+                {{ $t("cart.add") }}
               </button>
             </div>
           </form>
@@ -159,7 +159,7 @@
                 id="tagName"
                 class="form-control"
                 v-model.trim="newTagName"
-                placeholder="e.g. Groceries"
+                :placeholder="$t('cart.eg_groceries')"
                 required
                 maxlength="255"
                 ref="tagNameInput"
@@ -200,7 +200,7 @@
                 id="shareEmail"
                 class="form-control"
                 v-model.trim="shareEmail"
-                placeholder="e.g. user@example.com"
+                :placeholder="$t('cart.eg_email')"
                 required
                 maxlength="255"
                 ref="shareEmailInput"
@@ -218,7 +218,7 @@
             <div class="modal-footer">
               <div class = "form-check form-switch me-auto">
                 <input class="form-check-input" type="checkbox" id="viewOnlySwitch" v-model="isViewOnly">
-                <label class="form-check-label" for="viewOnlySwitch">View-{{ $t("cart.view_only") }}</label>
+                <label class="form-check-label" for="viewOnlySwitch">{{ $t("cart.view_only") }}</label>
               </div>
               <button type="button" class="btn btn-outline-secondary" @click="closeShareModal">
                 {{ $t("cart.cancel") }}

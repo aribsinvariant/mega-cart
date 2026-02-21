@@ -1,5 +1,15 @@
 {
+    "cart_details": {
+        "back_to_carts":"← Back to carts", 
+        "add_item":"+ Add Item", 
+        "this_cart_is_empty":"This cart is empty.", 
+        "item_name":"Item name", 
+        "cancel":"Cancel", 
+        "eg_milk":"e.g. Milk"
+
+    },
     "cart": {
+        "carts":"Carts",
         "add_new_cart":"+ New Cart",
         "no_carts_yet_create_one":"No carts yet. Create one!",
         "add_tags":"Add Tags",
@@ -15,7 +25,9 @@
         "tag_name":"Tag name",
         "email_address":"Email address", 
         "share_a_copy_with_link_instead":"Share a copy with link instead", 
-        "view_only":"View-only"
+        "view_only":"View-only", 
+        "eg_groceries":"e.g. Groceries", 
+        "eg_email":"e.g. user@example.com"
     }, 
     "home": {
         "welcome":"Welcome to Mega Cart, the one-website solution to all your shopping problems."
@@ -29,6 +41,14 @@
         "forgot_your_password":"Forgot your password?",
         "reset_password":"Reset Password"
     }, 
+    "nav": {
+        "carts":"Carts", 
+        "log_in":"Log in", 
+        "sign_up":"Sign up", 
+        "settings":"Settings",
+        "log_out":"Log out", 
+        "toggle_dark_mode":"Toggle Dark Mode"
+    },
     "recover": {
         "forgot_password":"Forgot Password", 
         "email":"Email", 

@@ -1,0 +1,64 @@
+{
+  "cart": {
+    "add_new_cart": "+ عربة جديدة",
+    "no_carts_yet_create_one": "لا توجد عربات بعد. أنشئ واحدة!",
+    "add_tags": "إضافة علامات",
+    "share": "مشاركة",
+    "edit_cart": "تعديل العربة",
+    "cart_name": "اسم العربة",
+    "cart_colour": "لون العربة:",
+    "cancel": "إلغاء",
+    "update": "تحديث",
+    "add": "إضافة",
+    "create_new_cart": "إنشاء عربة جديدة",
+    "create_new_tag": "إنشاء علامة جديدة",
+    "tag_name": "اسم العلامة",
+    "email_address": "عنوان البريد الإلكتروني",
+    "share_a_copy_with_link_instead": "مشاركة نسخة عبر رابط بدلاً من ذلك",
+    "view_only": "عرض فقط"
+  },
+  "home": {
+    "welcome": "مرحبًا بك في ميجا كارت، الحل الشامل لكل احتياجات التسوق الخاصة بك."
+  },
+  "login": {
+    "log_in": "تسجيل الدخول",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "dont_have_an_account": "ليس لديك حساب؟",
+    "sign_up": "إنشاء حساب",
+    "forgot_your_password": "هل نسيت كلمة المرور؟",
+    "reset_password": "إعادة تعيين كلمة المرور"
+  },
+  "nav": {
+    "carts": "السلات",
+    "log_in": "تسجيل الدخول",
+    "sign_up": "إنشاء حساب",
+    "settings": "الإعدادات",
+    "log_out": "تسجيل الخروج",
+    "toggle_dark_mode": "تبديل الوضع الداكن"
+  },
+  "recover": {
+    "forgot_password": "نسيت كلمة المرور",
+    "email": "البريد الإلكتروني",
+    "send_recovery_email": "إرسال بريد الاستعادة",
+    "back_to_login": "العودة إلى تسجيل الدخول"
+  },
+  "reset": {
+    "password_reset": "إعادة تعيين كلمة المرور",
+    "token": "الرمز",
+    "new_password": "كلمة المرور الجديدة",
+    "verify_new_password": "تأكيد كلمة المرور الجديدة",
+    "log_in": "تسجيل الدخول",
+    "didnt_receive_a_reset_email": "لم تستلم بريد إعادة التعيين؟",
+    "back_to_password_recovery": "العودة إلى استعادة كلمة المرور"
+  },
+  "signup": {
+    "sign_up": "إنشاء حساب",
+    "email": "البريد الإلكتروني",
+    "full_name": "الاسم الكامل",
+    "password_at_least_6_char": "كلمة المرور (6 أحرف على الأقل)",
+    "create_account": "إنشاء الحساب",
+    "already_have_an_account": "لديك حساب بالفعل؟",
+    "log_in": "تسجيل الدخول"
+  }
+}

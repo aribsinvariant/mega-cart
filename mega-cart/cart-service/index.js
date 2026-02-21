@@ -13,6 +13,33 @@ app.use((req, res, next) => {
     console.log("CART-SERVICE HIT:", req.method, req.originalUrl);
     next();
 });
+
+// Show shared cart [no login necessary]
+app.get('/shared/:token', async (req, res) => {
+    const { token } = req.params;
+
+    const text = `
+        SELECT 
+            c.*, 
+            COALESCE((SELECT json_agg(i.*) FROM items i WHERE i.cart_id = c.id), '[]') as items,
+            COALESCE((SELECT json_agg(lc.label_name) FROM labeled_carts lc WHERE lc.cart_id = c.id), '[]') as labels
+        FROM carts c
+        WHERE c.share_token = $1
+    `;
+    try {
+        const result = await db.query(text, [token]);
+
+        if (result.rows.length == 0){
+            return res.status(404).json({ error: 'Cart not found' });   
+        }
+
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Get Shared Cart Failed" });          
+    }
+});
+
 app.use(authMiddleware);
 let channel;
 
@@ -275,6 +302,5 @@ app.post('/:id/share', async (req, res) => {
         res.status(500).json({ error: "Share Failed" });    
     }
 });
-
 
 app.listen(3007, () => console.log('Cart Service running on 3007'))

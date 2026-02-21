@@ -1,0 +1,56 @@
+{
+    "cart": {
+        "add_new_cart":"+ New Cart",
+        "no_carts_yet_create_one":"No carts yet. Create one!",
+        "add_tags":"Add Tags",
+        "share":"Share",
+        "edit_cart":"Edit Cart", 
+        "cart_name":"Cart name",
+        "cart_colour":"Cart Colour:", 
+        "cancel":"Cancel", 
+        "update":"Update", 
+        "add":"Add",
+        "create_new_cart":"Create New Cart",
+        "create_new_tag":"Create New Tag",
+        "tag_name":"Tag name",
+        "email_address":"Email address", 
+        "share_a_copy_with_link_instead":"Share a copy with link instead", 
+        "view_only":"View-only"
+    }, 
+    "home": {
+        "welcome":"Welcome to Mega Cart, the one-website solution to all your shopping problems."
+    }, 
+    "login": {
+        "log_in":"Log In", 
+        "email":"Email", 
+        "password":"Password", 
+        "dont_have_an_account":"Don't have an account?",
+        "sign_up":"Sign Up", 
+        "forgot_your_password":"Forgot your password?",
+        "reset_password":"Reset Password"
+    }, 
+    "recover": {
+        "forgot_password":"Forgot Password", 
+        "email":"Email", 
+        "send_recovery_email":"Send Recovery Email", 
+        "back_to_login":"Back to login"
+    }, 
+    "reset": {
+        "password_reset":"Password Reset", 
+        "token":"Token", 
+        "new_password":"New Password", 
+        "verify_new_password":"Verify New Password", 
+        "log_in":"Log In", 
+        "didnt_receive_a_reset_email":"Didn't receive a reset email?", 
+        "back_to_password_recovery":"Back to Password Recovery"
+    }, 
+    "signup": {
+        "sign_up":"Sign up",
+        "email":"Email", 
+        "full_name":"Full Name", 
+        "password_at_least_6_char":"Password (at least 6 characters)", 
+        "create_account":"Create account", 
+        "already_have_an_account":"Already have an account?", 
+        "log_in":"Log In"
+    }
+}

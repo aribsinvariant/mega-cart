@@ -1,10 +1,10 @@
 <template>
   <div class="container py-4">
-    <h1>Log In</h1>
+    <h1>{{ $t("login.log_in") }}</h1>
 
     <form class="mt-3" @submit.prevent="submit">
       <div class="mb-3">
-        <label class="form-label" for="email">Email</label>
+        <label class="form-label" for="email">{{ $t("login.email") }}</label>
         <input
           id="email"
           class="form-control"
@@ -15,7 +15,7 @@
       </div>
 
        <div class="mb-3">
-        <label class="form-label" for="password">Password</label>
+        <label class="form-label" for="password">{{ $t("login.password") }}</label>
 
         <div class="input-group">
           <input
@@ -39,21 +39,21 @@
         </div>
       </div>
 
-      <button class="btn btn-primary" type="submit" :disabled="isFormNotValid">Log In</button>
+      <button class="btn btn-primary" type="submit" :disabled="isFormNotValid">{{ $t("login.log_in") }}</button>
     </form>
   </div>
 
   <div class="container py-4">
     <p>
-      Don't have an account?
-      <router-link :to="{ name: 'signup' }">Sign Up</router-link>
+      {{ $t("login.dont_have_an_account") }}
+      <router-link :to="{ name: 'signup' }">{{ $t("login.sign_up") }}</router-link>
     </p>
   </div>
 
   <div class="container py-4">
     <p>
-      Forgot your password?
-      <router-link :to="{ name: 'passwordRecovery' }">Reset Password</router-link>
+      {{ $t("login.forgot_your_password") }}
+      <router-link :to="{ name: 'passwordRecovery' }">{{ $t("login.reset_password") }}</router-link>
     </p>
   </div>
 </template>

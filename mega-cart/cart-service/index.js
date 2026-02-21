@@ -87,7 +87,7 @@ app.post('/', async (req, res) => {
 // share cart
 app.post('/:id/share', async (req, res) => {
     const cartId = req.params.id;
-    const { userId } = req.body; // user to share with
+    const { userId, canEdit = false } = req.body; // user to share with
     const ownerId = req.user.id;
 
     try {
@@ -100,7 +100,8 @@ app.post('/:id/share', async (req, res) => {
             return res.status(403).json({ error: "Forbidden: Only the owner can share this cart" });
         }
 
-        await query('INSERT INTO shared_carts (cart_id, user_id) VALUES ($1, $2) ON CONFLICT DO NOTHING', [cartId, userId]);
+        // can still update can_edit if cart is already shared
+        await query('INSERT INTO shared_carts (cart_id, user_id, can_edit) VALUES ($1, $2, $3) ON CONFLICT (cart_id, user_id) DO UPDATE SET can_edit = EXCLUDED.can_edit', [cartId, userId, canEdit]);
 
         res.json({ message: "Cart shared successfully" });
     } catch (err) {
@@ -114,7 +115,7 @@ app.get('/invites', async (req, res) => {
     const userId = req.user.id;
     try {
         const text = `
-            SELECT c.id, c.name, c.description, c.created_at, sc.status
+            SELECT c.id, c.name, c.description, c.created_at, sc.status, sc.can_edit
             FROM carts c
             JOIN shared_carts sc ON c.id = sc.cart_id
             WHERE sc.user_id = $1 AND sc.status = 'pending'
@@ -178,23 +179,24 @@ app.get('/', async (req, res) => {
 
         if (label) {
 
+            // man wtf is this comment robert
             // turns the labels into an array, so ?label=ash&label=poop in the uri becomes ['ash',poop'] 
             const tags = Array.isArray(label) ? label : [label];
 
             text = `
-                SELECT DISTINCT c.id, c.name, c.description, c.created_at 
+                SELECT DISTINCT c.id, c.name, c.description, c.created_at, sc.can_edit 
                 FROM carts c
                 JOIN labeled_carts lc ON c.id = lc.cart_id
-                LEFT JOIN shared_carts sc ON c.id = sc.cart_id AND sc.status = 'accepted'
+                LEFT JOIN shared_carts sc ON c.id = sc.cart_id AND sc.user_id = $1 AND sc.status = 'accepted'
                 WHERE (c.user_id = $1 OR (sc.user_id = $1 AND sc.status = 'accepted')) AND lc.label_name = ANY($2)
                 ORDER BY c.created_at DESC
             `;
             params = [userId, tags];
         } else {
             text = `
-                SELECT DISTINCT c.id, c.name, c.description, c.created_at 
+                SELECT DISTINCT c.id, c.name, c.description, c.created_at, sc.can_edit 
                 FROM carts c
-                LEFT JOIN shared_carts sc ON c.id = sc.cart_id AND sc.status = 'accepted'
+                LEFT JOIN shared_carts sc ON c.id = sc.cart_id AND sc.user_id = $1 AND sc.status = 'accepted'
                 WHERE c.user_id = $1 OR (sc.user_id = $1 AND sc.status = 'accepted')
                 ORDER BY c.created_at DESC
             `;
@@ -241,10 +243,13 @@ app.get('/:id', async (req, res) => {
         const userId = req.user.id;
 
         if (cart.user_id !== userId) {
-            const sharedRes = await db.query("SELECT 1 FROM shared_carts WHERE cart_id = $1 AND user_id = $2 AND status = 'accepted'", [id, userId]);
+            const sharedRes = await db.query("SELECT can_edit FROM shared_carts WHERE cart_id = $1 AND user_id = $2 AND status = 'accepted'", [id, userId]);
             if (sharedRes.rows.length === 0) {
                 return res.status(403).json({ error: "Forbidden: You do not have access to this cart" });
             }
+            cart.can_edit = sharedRes.rows[0].can_edit;
+        } else {
+            cart.can_edit = true;
         }
 
         res.json(cart);
@@ -272,10 +277,19 @@ app.put('/:id', async (req, res) => {
             client.release();
             return res.status(404).json({ error: "Cart not found" });
         }
-        if (cartCheck.rows[0].user_id !== userId) {
+
+        let canEdit = false;
+        if (!(cartCheck.rows[0].user_id === userId)) {
+            const sharedCheck = await client.query("SELECT can_edit FROM shared_carts WHERE cart_id = $1 AND user_id = $2 AND status = 'accepted'", [id, userId]);
+            if (sharedCheck.rows.length > 0 && sharedCheck.rows[0].can_edit) {
+                canEdit = true;
+            }
+        }
+        // if user is not owner and cannot edit, return 403
+        if (!(canEdit || cartCheck.rows[0].user_id === userId)) {
             await client.query('ROLLBACK');
             client.release();
-            return res.status(403).json({ error: "Forbidden: Only the owner can update this cart" });
+            return res.status(403).json({ error: "Forbidden: You do not have permission to update this cart" });
         }
 
         const cartRes = await client.query(
@@ -287,7 +301,7 @@ app.put('/:id', async (req, res) => {
 
         await client.query('DELETE FROM items WHERE cart_id = $1', [cartId]);
 
-        if (items && items.length > 0) { // <--- ADD THIS CHECK
+        if (items && items.length > 0) { // <--- ADD THIS CHECK  <----- kiratgpt
             for (const item of items) {
                 await client.query(
                     'INSERT INTO items (cart_id, name, description, price, quantity) VALUES ($1, $2, $3, $4, $5)',

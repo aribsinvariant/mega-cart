@@ -29,5 +29,6 @@ CREATE TABLE IF NOT EXISTS shared_carts (
     cart_id INTEGER REFERENCES carts(id) ON DELETE CASCADE,
     user_id INT NOT NULL,
     status VARCHAR(20) DEFAULT 'pending',
+    can_edit BOOLEAN DEFAULT FALSE,
     PRIMARY KEY (cart_id, user_id)
 );

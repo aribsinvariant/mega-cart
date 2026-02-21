@@ -1,9 +1,11 @@
-const axios = require('axios');
 const express = require('express');
-const amqp = require('amqplib');
-const db = require('./db');
 const { query } = require('./db');
+const crypto = require('crypto');
+const amqp = require('amqplib');
+const axios = require('axios');
+const db = require('./db');
 const app = express();
+
 app.use(express.json());
 
 const authMiddleware = require('./authMiddleware');
@@ -241,6 +243,38 @@ app.delete('/:id', async (req, res) => {
     }
 });
 
+// create cart share link
+app.post('/:id/share', async (req, res) => {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    try {
+        // Check if cart id doesn't exist
+        const cartSelect = await db.query('SELECT * FROM carts WHERE id = $1', [id]);
+        if (cartSelect.rows.length == 0) {
+            return res.status(404).json({ error: 'Cart not found' });
+        }
+
+        // Check if cart belongs to logged in user
+        if (cartSelect.rows[0].user_id != userId) {
+            return res.status(401).json({ error: 'Cart not found' });
+        }
+
+        // Generate random token
+        const shareToken = crypto.randomBytes(32).toString('hex');
+
+        // Add token to cart db entry
+        await db.query(
+            'UPDATE carts SET share_token = $1 WHERE id = $2',
+            [shareToken, id]           
+        );
+
+        res.status(200).json({message: "Cart link created", token: shareToken });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Share Failed" });    
+    }
+});
 
 
 app.listen(3007, () => console.log('Cart Service running on 3007'))

@@ -78,7 +78,7 @@ app.post('/register', async (req, res) => {
         res.status(201).json({ message: 'User registered successfully' });
     } catch (error) {
         console.error('Error in /register:', error);
-        res.status(500).json({ error: 'Server error' });
+        res.status(500).json({ error: 'Register Failed' });
     }
 });
 
@@ -130,7 +130,7 @@ app.post('/login', async (req, res) => {
         });
     } catch (error) {
         console.error('Error in /login:', error);
-        res.status(500).json({ error: 'Server error' });
+        res.status(500).json({ error: 'Login Failed' });
     }
 });
 
@@ -166,7 +166,7 @@ app.post('/forgot-password', async (req, res) => {
         res.status(200).json({ message: 'Password reset email sent' });
     } catch (error) {
         console.error('Error in /forgot-password:', error);
-        res.status(500).json({ error: 'Server error' });
+        res.status(500).json({ error: 'Forgot Password Failed' });
     }
 });
 
@@ -211,7 +211,7 @@ app.post('/reset-password', async (req, res) => {
         res.status(200).json({ message: 'Password successfully reset' });
     } catch (error) {
         console.error('Error in /reset-password:', error);
-        res.status(500).json({ error: 'Server error'});
+        res.status(500).json({ error: 'Reset Password Failed'});
     }
 });
 

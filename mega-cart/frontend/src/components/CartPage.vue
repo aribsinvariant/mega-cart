@@ -14,19 +14,72 @@
 
       <ul v-else class="list-group">
         <li
-          v-for="cart in carts"
+          v-for="cart in [...carts].sort((a, b) => a.id - b.id)"
           :key="cart.id"
           class="list-group-item d-flex justify-content-between align-items-center"
+          :style="{ backgroundColor: cart.description || 'var(--bs-body-bg)', color: getContrastColor(cart.description) }"
         >
-            <button class="btn btn-link text-decoration-none p-0" @click="openCart(cart)">
+            <button class="btn btn-link p-0" @click="openCart(cart)" :style="{ color: cart.description ? getContrastColor(cart.description) : 'var(--bs-body-color)' }">
                 {{ cart.name }}
             </button>
-            <button class="btn btn-outline-primary ms-auto" @click="openTagModal(cart)">
-                Add Tags
+            <button class="edit-btn" title="Edit" @click="openEditModal(cart)" :style="{ color: cart.description ? getContrastColor(cart.description) : 'var(--bs-body-color)' }">✏️</button>
+            <button 
+              class="btn ms-auto"
+              :style="cartButtonStyle(cart)"
+              @mouseenter="e => e.target.style.backgroundColor = getContrastColor(cart.description) === '#000000' ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.3)'"
+              @mouseleave="e => e.target.style.backgroundColor = 'transparent'"
+              @click="openTagModal(cart)"
+            >
+              Add Tags
             </button>
-            <small class="text-muted">#{{ cart.id }}</small>
+            <small :style="{ color: cart.description ? getContrastColor(cart.description) : 'var(--bs-body-color)' }">#{{ cart.id }}</small>
         </li>
       </ul>
+    </div>
+
+    <div
+      v-if="showEditModal"
+      class="modal fade show"
+      tabindex="-1"
+      style="display: block;"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Edit Cart</h5>
+            <button type="button" class="btn-close" @click="closeEditModal"></button>
+          </div>
+
+          <form @submit.prevent.stop="updateCart">
+            <div class="modal-body">
+              <label class="form-label" for="cartName">Cart name</label>
+              <input
+                id="cartName"
+                class="form-control"
+                v-model.trim="updatedCartName"
+                placeholder="e.g. Groceries"
+                required
+                maxlength="255"
+                ref="cartNameInput"
+              />
+              <div class="d-flex align-items-center gap-2">
+                <label for="colorPicker" class="mb-0">Cart Colour:</label>
+                <input type="color" id="colorPicker" v-model="selectedColor"/>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline-secondary" @click="closeEditModal">
+                Cancel
+              </button>
+              <button class="btn btn-primary" type="submit" :disabled="updatedCartName.length === 0" @click="editCart(selectedCart)">
+                Update
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
 
     <div
@@ -36,7 +89,6 @@
       style="display: block;"
       role="dialog"
       aria-modal="true"
-      @click.self="closeModal"
     >
       <div class="modal-dialog">
         <div class="modal-content">
@@ -79,7 +131,6 @@
       style="display: block;"
       role="dialog"
       aria-modal="true"
-      @click.self="closeTagModal"
     >
       <div class="modal-dialog">
         <div class="modal-content">
@@ -119,6 +170,30 @@
   </div>
 </template>
 
+<style scoped>
+  .edit-btn {
+    background: none !important;
+    border: none !important;
+    cursor: pointer !important;
+    color: #aaa !important;
+    font-size: 13px !important;
+    padding: 2px 5px !important;
+    border-radius: 4px !important;
+    filter: grayscale(100%) !important;
+  } 
+
+  .edit-btn:hover {
+    color: #666 !important;
+    background-color: #f0f0f0 !important;
+  }
+
+  .list-group-item .btn-outline-primary:hover {
+    background-color: rgba(0, 0, 0, 0.1) !important;
+    color: inherit !important;
+    border-color: inherit !important;
+  } 
+</style>
+
 <script>
 export default {
   name: "CartsPage",
@@ -132,9 +207,12 @@ export default {
     return {
       showModal: false,
       showTagModal: false,
+      showEditModal: false,
       selectedCart: null,
+      selectedColor: "",
       newCartName: "",
-      newTagName: ""
+      newTagName: "",
+      updatedCartName: "",
     };
   },
   methods: {
@@ -180,6 +258,45 @@ export default {
     openCart(cart) {
       this.$router.push({ name: "cartDetails", params: { id: cart.id } });
     },
+    openEditModal(cart) {
+      this.selectedCart = cart;
+      this.updatedCartName = cart.name;
+      this.selectedColor = cart.description || '#ffffff';
+      this.showEditModal = true;
+
+      this.$nextTick(() => {
+        this.$refs.cartNameInput?.focus();
+      });
+    },
+    closeEditModal() {
+      this.showEditModal = false;
+    },
+    editCart(cart) {
+      const newName = this.updatedCartName.trim();
+      const newColor = this.selectedColor
+      if (newName) {
+        this.$emit("edit-cart", { cart, newName, newColor});
+        this.closeEditModal();
+      }
+    },
+    getContrastColor(hex) {
+      if (!hex) return '#000000';
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+      const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+      return luminance > 0.5 ? '#000000' : '#ffffff';
+    },
+    cartButtonStyle(cart) {
+      const color = cart.description ? this.getContrastColor(cart.description) : 'var(--bs-body-color)';
+      return { 
+        color, 
+        borderColor: color, 
+        borderWidth: '1px', 
+        borderStyle: 'solid',
+        backgroundColor: 'transparent'
+      };
+    }
   },
 };
 </script>

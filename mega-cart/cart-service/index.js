@@ -367,6 +367,100 @@ app.delete('/:id', async (req, res) => {
     }
 });
 
+// returns whether this user is allowed  to comment and if they are the owner of the cart
+async function getCommentAccess(cartId, userId) {
+    const cartRes = await query('SELECT user_id FROM carts WHERE id = $1', [cartId]);
+    if (cartRes.rows.length === 0) return { allowed: false, isOwner: false, notFound: true };
 
+    const isOwner = cartRes.rows[0].user_id === userId;
+    if (isOwner) return { allowed: true, isOwner: true };
+
+    const sharedRes = await query(
+        "SELECT 1 FROM shared_carts WHERE cart_id = $1 AND user_id = $2 AND status = 'accepted'",
+        [cartId, userId]
+    );
+    const allowed = sharedRes.rows.length > 0;
+    return { allowed, isOwner: false };
+}
+
+// lists all the comments on the cart
+app.get('/:id/comments', async (req, res) => {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    try {
+        const access = await getCommentAccess(id, userId);
+        if (access.notFound) return res.status(404).json({ error: "Cart not found" });
+        if (!access.allowed) return res.status(403).json({ error: "Forbidden: You do not have access to this cart's comments" });
+
+        const result = await query(
+            'SELECT id, user_id, content, created_at FROM cart_comments WHERE cart_id = $1 ORDER BY created_at ASC',
+            [id]
+        );
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to fetch comments" });
+    }
+});
+
+// adds the comment to the cart
+app.post('/:id/comments', async (req, res) => {
+    const { id } = req.params;
+    const userId = req.user.id;
+    const { content } = req.body;
+
+    if (!content || content.trim().length === 0) {
+        return res.status(400).json({ error: "Comment content cannot be empty" });
+    }
+
+    try {
+        const access = await getCommentAccess(id, userId);
+        if (access.notFound) return res.status(404).json({ error: "Cart not found" });
+        if (!access.allowed) return res.status(403).json({ error: "Forbidden: Only the cart owner or accepted collaborators can comment" });
+
+        const result = await query(
+            'INSERT INTO cart_comments (cart_id, user_id, content) VALUES ($1, $2, $3) RETURNING id, user_id, content, created_at',
+            [id, userId, content.trim()]
+        );
+        res.status(201).json(result.rows[0]);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to post comment" });
+    }
+});
+
+// delete a comment
+// the only people allowed to delete comments are the ones who wrote the comment or own the cart
+app.delete('/:id/comments/:commentId', async (req, res) => {
+    const { id, commentId } = req.params;
+    const userId = req.user.id;
+
+    try {
+        const access = await getCommentAccess(id, userId);
+        if (access.notFound) return res.status(404).json({ error: "Cart not found" });
+        if (!access.allowed) return res.status(403).json({ error: "Forbidden: You do not have access to this cart" });
+
+        const commentRes = await query(
+            'SELECT user_id FROM cart_comments WHERE id = $1 AND cart_id = $2',
+            [commentId, id]
+        );
+        if (commentRes.rows.length === 0) {
+            return res.status(404).json({ error: "Comment not found" });
+        }
+
+        const commentAuthorId = commentRes.rows[0].user_id;
+        const canDelete = access.isOwner || commentAuthorId === userId;
+        if (!canDelete) {
+            return res.status(403).json({ error: "Forbidden: You can only delete your own comments" });
+        }
+
+        await query('DELETE FROM cart_comments WHERE id = $1', [commentId]);
+        res.json({ message: "Comment deleted", commentId: parseInt(commentId) });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to delete comment" });
+    }
+});
 
 app.listen(3007, () => console.log('Cart Service running on 3007'))

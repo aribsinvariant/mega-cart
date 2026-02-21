@@ -32,3 +32,11 @@ CREATE TABLE IF NOT EXISTS shared_carts (
     can_edit BOOLEAN DEFAULT FALSE,
     PRIMARY KEY (cart_id, user_id)
 );
+
+CREATE TABLE IF NOT EXISTS cart_comments (
+    id SERIAL PRIMARY KEY,
+    cart_id INTEGER NOT NULL REFERENCES carts(id) ON DELETE CASCADE,
+    user_id INT NOT NULL,
+    content VARCHAR(2048) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

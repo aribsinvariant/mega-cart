@@ -1,0 +1,75 @@
+{
+    "cart_details": {
+        "back_to_carts":"← Retour aux paniers", 
+        "add_item":"+ Ajouter un article", 
+        "this_cart_is_empty":"Ce panier est vide.", 
+        "item_name":"Nom de l'article", 
+        "cancel":"Annuler", 
+        "eg_milk":"ex. Lait"
+    },
+    "cart": {
+        "carts":"Paniers",
+        "add_new_cart":"+ Nouveau panier",
+        "no_carts_yet_create_one":"Aucun panier pour l’instant. Créez-en un !",
+        "add_tags":"Ajouter des étiquettes",
+        "share":"Partager",
+        "edit_cart":"Modifier le panier", 
+        "cart_name":"Nom du panier",
+        "cart_colour":"Couleur du panier :", 
+        "cancel":"Annuler", 
+        "update":"Mettre à jour", 
+        "add":"Ajouter",
+        "create_new_cart":"Créer un nouveau panier",
+        "create_new_tag":"Créer une nouvelle étiquette",
+        "tag_name":"Nom de l’étiquette",
+        "email_address":"Adresse e-mail", 
+        "share_a_copy_with_link_instead":"Partager une copie via un lien", 
+        "view_only":"Lecture seule", 
+        "eg_groceries":"ex. Courses", 
+        "eg_email":"ex. user{'@'}example.com"
+    }, 
+    "home": {
+        "welcome":"Bienvenue sur Mega Cart, la solution unique pour tous vos besoins d’achat."
+    }, 
+    "login": {
+        "log_in":"Connexion", 
+        "email":"E-mail", 
+        "password":"Mot de passe", 
+        "dont_have_an_account":"Vous n’avez pas de compte ?",
+        "sign_up":"S’inscrire", 
+        "forgot_your_password":"Mot de passe oublié ?",
+        "reset_password":"Réinitialiser le mot de passe"
+    }, 
+    "nav": {
+        "carts":"Paniers", 
+        "log_in":"Connexion", 
+        "sign_up":"S’inscrire", 
+        "settings":"Paramètres",
+        "log_out":"Déconnexion", 
+        "toggle_dark_mode":"Activer le mode sombre"
+    },
+    "recover": {
+        "forgot_password":"Mot de passe oublié", 
+        "email":"E-mail", 
+        "send_recovery_email":"Envoyer l’e-mail de récupération", 
+        "back_to_login":"Retour à la connexion"
+    }, 
+    "reset": {
+        "password_reset":"Réinitialisation du mot de passe", 
+        "token":"Jeton", 
+        "new_password":"Nouveau mot de passe", 
+        "verify_new_password":"Confirmer le nouveau mot de passe", 
+        "log_in":"Connexion", 
+        "didnt_receive_a_reset_email":"Vous n’avez pas reçu l’e-mail ?", 
+        "back_to_password_recovery":"Retour à la récupération"
+    }, 
+    "signup": {
+        "sign_up":"S’inscrire",
+        "email":"E-mail", 
+        "full_name":"Nom complet", 
+        "password_at_least_6_char":"Mot de passe (au moins 6 caractères)", 
+        "create_account":"Créer un compte", 
+        "already_have_an_account":"Vous avez déjà un compte ?", 
+        "log_in":"Connexion"
+    }
+}

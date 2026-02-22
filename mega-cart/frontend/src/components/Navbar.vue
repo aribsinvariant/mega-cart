@@ -16,7 +16,7 @@
       <ul class="navbar-nav align-items-center me-auto">
         <!-- can add the same for shared carts -->
         <li v-if="isLoggedIn" class="nav-item p-2">
-          <router-link class="nav-link" to="/carts">Carts</router-link>
+          <router-link class="nav-link" to="/carts">{{ $t("nav.carts") }}</router-link>
         </li>
       </ul>
 
@@ -24,27 +24,27 @@
         <!-- doesnt show if logged in -->
         <template v-if="!isLoggedIn">
           <li class="nav-item p-2">
-            <router-link class="nav-link" to="/login">Log in</router-link>
+            <router-link class="nav-link" to="/login">{{ $t("nav.log_in") }}</router-link>
           </li>
           <li class="nav-item p-2">
-            <router-link class="nav-link" to="/signup">Sign up</router-link>
+            <router-link class="nav-link" to="/signup">{{ $t("nav.sign_up") }}</router-link>
           </li>
         </template>
 
 
         <li class = "nav-item dropdown">
           <button class="btn btn-outline-light btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
-            Settings
+            {{ $t("nav.settings") }}
           </button>
             <ul class="dropdown-menu dropdown-menu-end">
               <li v-if="isLoggedIn">
                 <button class="dropdown-item" @click="logout">
-                  Log out
+                  {{ $t("nav.log_out") }}
                 </button>
               </li>
               <li>
                 <button class="dropdown-item" @click="toggleDarkMode">
-                  Toggle Dark Mode
+                  {{ $t("nav.toggle_dark_mode") }}
                 </button>
               </li>
             </ul>

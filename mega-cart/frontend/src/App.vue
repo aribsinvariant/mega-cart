@@ -1,5 +1,6 @@
 <template>
   <Navbar 
+    :is-dark="isDarkMode"
     @theme="toggleDarkMode"
   />
   <router-view
@@ -57,6 +58,7 @@ export default {
       selectedCartId: null,
       carts: [],
       currentUser: null,
+      isDarkMode: localStorage.getItem("darkMode") === "true",
     };
   },
 
@@ -67,6 +69,9 @@ export default {
   },
 
   async mounted() {
+    const savedDark = localStorage.getItem("darkMode");
+    this.isDarkMode = savedDark === "true";
+    this.toggleDarkMode(this.isDarkMode);
     // If /carts requires auth, this might fail until logged in — that’s fine.
     await this.loadCarts();
   },
@@ -198,6 +203,8 @@ export default {
       this.$router.push({ name: "carts" });
     },
     toggleDarkMode(isDark) {
+      this.isDarkMode = !!isDark;
+      localStorage.setItem("darkMode", this.isDarkMode);
       if (isDark) {
         document.body.classList.add('dark-mode');
       } else {

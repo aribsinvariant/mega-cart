@@ -31,7 +31,23 @@
           </li>
         </template>
 
+        <li class="nav-item dropdown me-2">
+          <button
+            class="btn btn-outline-light btn-sm dropdown-toggle"
+            type="button"
+            data-bs-toggle="dropdown"
+          >
+            {{ $t("nav.language") }}
+          </button>
 
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li v-for="l in languages" :key="l.code">
+              <button class="dropdown-item" @click="setLanguage(l.code)">
+                {{ l.label }}
+              </button>
+            </li>
+          </ul>
+        </li>
         <li class = "nav-item dropdown">
           <button class="btn btn-outline-light btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
             {{ $t("nav.settings") }}
@@ -47,6 +63,11 @@
                   {{ $t("nav.toggle_dark_mode") }}
                 </button>
               </li>
+              <li>
+                <router-link class="dropdown-item" :to="{ name: 'settings' }">
+                  {{ $t("nav.language") }}
+                </router-link>
+              </li>
             </ul>
         </li>
       </ul>
@@ -59,9 +80,28 @@ import { isLoggedIn, auth } from "../logged/auth";
 
 export default {
   name: "Navbar",
+  props: {
+    isDark: {
+      type: Boolean,
+      required: true,
+    },
+  },
+  watch: {
+    isDark(newVal) {
+      this.toggleTheme = newVal;
+    },
+  },
   data() {
     return {
-      toggleTheme: false
+      toggleTheme: this.isDark,
+      languages: [
+        { code: "en", label: "English" },
+        { code: "ar", label: "العربية" },
+        { code: "es", label: "Español" },
+        { code: "fr", label: "Français" },
+        { code: "hi", label: "हिन्दी" },
+        { code: "zh", label: "中文" },
+      ],
     };
   },
   computed: {
@@ -77,6 +117,10 @@ export default {
     toggleDarkMode() {
       this.toggleTheme = !this.toggleTheme;
       this.$emit("theme", this.toggleTheme);
+    },
+    setLanguage(lang) {
+      this.$i18n.locale = lang;
+      localStorage.setItem("lang", lang);
     },
   },
 };

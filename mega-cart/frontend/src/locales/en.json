@@ -46,7 +46,8 @@
         "sign_up":"Sign up", 
         "settings":"Settings",
         "log_out":"Log out", 
-        "toggle_dark_mode":"Toggle Dark Mode"
+        "toggle_dark_mode":"Toggle Dark Mode",
+        "language":"Language"
     },
     "recover": {
         "forgot_password":"Forgot Password", 

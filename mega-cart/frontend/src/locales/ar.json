@@ -46,7 +46,8 @@
         "sign_up":"إنشاء حساب", 
         "settings":"الإعدادات",
         "log_out":"تسجيل الخروج", 
-        "toggle_dark_mode":"تبديل الوضع الداكن"
+        "toggle_dark_mode":"تبديل الوضع الداكن",
+        "language":"لغة"
     },
     "recover": {
         "forgot_password":"نسيت كلمة المرور", 

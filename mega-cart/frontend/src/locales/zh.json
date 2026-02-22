@@ -46,7 +46,8 @@
         "sign_up":"注册", 
         "settings":"设置",
         "log_out":"退出登录", 
-        "toggle_dark_mode":"切换深色模式"
+        "toggle_dark_mode":"切换深色模式",
+        "language":"语言"
     },
     "recover": {
         "forgot_password":"忘记密码", 

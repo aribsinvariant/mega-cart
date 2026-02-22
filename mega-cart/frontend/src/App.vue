@@ -260,10 +260,18 @@ export default {
     },
     async duplicateCart(cart){
       try {
+        const fullCart = await api.get(`/carts/${cart.id}`);
+        const items = fullCart.data.items.map(({ name, description, price, quantity }) => ({
+          name,
+          description,
+          price,
+          quantity,
+        }));
+
         const res = await api.post("/carts", {
           name: cart.name,
           description: cart.description,
-          items: cart.items,
+          items,
           tags: cart.tags,
         });
 

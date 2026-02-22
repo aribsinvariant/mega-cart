@@ -6,7 +6,6 @@
         "item_name":"Item name", 
         "cancel":"Cancel", 
         "eg_milk":"e.g. Milk"
-
     },
     "cart": {
         "carts":"Carts",
@@ -27,7 +26,7 @@
         "share_a_copy_with_link_instead":"Share a copy with link instead", 
         "view_only":"View-only", 
         "eg_groceries":"e.g. Groceries", 
-        "eg_email":"e.g. user@example.com"
+        "eg_email":"e.g. user{'@'}example.com"
     }, 
     "home": {
         "welcome":"Welcome to Mega Cart, the one-website solution to all your shopping problems."

@@ -1,64 +1,75 @@
 {
-  "cart": {
-    "add_new_cart": "+ Nuevo carrito",
-    "no_carts_yet_create_one": "Aún no hay carritos. ¡Crea uno!",
-    "add_tags": "Agregar etiquetas",
-    "share": "Compartir",
-    "edit_cart": "Editar carrito",
-    "cart_name": "Nombre del carrito",
-    "cart_colour": "Color del carrito:",
-    "cancel": "Cancelar",
-    "update": "Actualizar",
-    "add": "Agregar",
-    "create_new_cart": "Crear nuevo carrito",
-    "create_new_tag": "Crear nueva etiqueta",
-    "tag_name": "Nombre de la etiqueta",
-    "email_address": "Correo electrónico",
-    "share_a_copy_with_link_instead": "Compartir una copia con un enlace en su lugar",
-    "view_only": "Solo lectura"
-  },
-  "home": {
-    "welcome": "Bienvenido a Mega Cart, la solución integral para todos tus problemas de compras."
-  },
-  "login": {
-    "log_in": "Iniciar sesión",
-    "email": "Correo electrónico",
-    "password": "Contraseña",
-    "dont_have_an_account": "¿No tienes una cuenta?",
-    "sign_up": "Registrarse",
-    "forgot_your_password": "¿Olvidaste tu contraseña?",
-    "reset_password": "Restablecer contraseña"
-  },
-  "nav": {
-    "carts": "Carritos",
-    "log_in": "Iniciar sesión",
-    "sign_up": "Registrarse",
-    "settings": "Configuración",
-    "log_out": "Cerrar sesión",
-    "toggle_dark_mode": "Alternar modo oscuro"
+    "cart_details": {
+        "back_to_carts":"← Volver a los carritos", 
+        "add_item":"+ Añadir artículo", 
+        "this_cart_is_empty":"Este carrito está vacío.", 
+        "item_name":"Nombre del artículo", 
+        "cancel":"Cancelar", 
+        "eg_milk":"p. ej. Leche"
     },
-  "recover": {
-    "forgot_password": "Olvidé mi contraseña",
-    "email": "Correo electrónico",
-    "send_recovery_email": "Enviar correo de recuperación",
-    "back_to_login": "Volver al inicio de sesión"
-  },
-  "reset": {
-    "password_reset": "Restablecer contraseña",
-    "token": "Token",
-    "new_password": "Nueva contraseña",
-    "verify_new_password": "Confirmar nueva contraseña",
-    "log_in": "Iniciar sesión",
-    "didnt_receive_a_reset_email": "¿No recibiste el correo de restablecimiento?",
-    "back_to_password_recovery": "Volver a la recuperación de contraseña"
-  },
-  "signup": {
-    "sign_up": "Registrarse",
-    "email": "Correo electrónico",
-    "full_name": "Nombre completo",
-    "password_at_least_6_char": "Contraseña (al menos 6 caracteres)",
-    "create_account": "Crear cuenta",
-    "already_have_an_account": "¿Ya tienes una cuenta?",
-    "log_in": "Iniciar sesión"
-  }
+    "cart": {
+        "carts":"Carritos",
+        "add_new_cart":"+ Nuevo carrito",
+        "no_carts_yet_create_one":"Aún no hay carritos. ¡Crea uno!",
+        "add_tags":"Añadir etiquetas",
+        "share":"Compartir",
+        "edit_cart":"Editar carrito", 
+        "cart_name":"Nombre del carrito",
+        "cart_colour":"Color del carrito:", 
+        "cancel":"Cancelar", 
+        "update":"Actualizar", 
+        "add":"Añadir",
+        "create_new_cart":"Crear nuevo carrito",
+        "create_new_tag":"Crear nueva etiqueta",
+        "tag_name":"Nombre de la etiqueta",
+        "email_address":"Dirección de correo electrónico", 
+        "share_a_copy_with_link_instead":"Compartir una copia mediante enlace", 
+        "view_only":"Solo lectura", 
+        "eg_groceries":"p. ej. Comestibles", 
+        "eg_email":"p. ej. user{'@'}example.com"
+    }, 
+    "home": {
+        "welcome":"Bienvenido a Mega Cart, la solución en un solo sitio web para todos tus problemas de compras."
+    }, 
+    "login": {
+        "log_in":"Iniciar sesión", 
+        "email":"Correo electrónico", 
+        "password":"Contraseña", 
+        "dont_have_an_account":"¿No tienes una cuenta?",
+        "sign_up":"Registrarse", 
+        "forgot_your_password":"¿Olvidaste tu contraseña?",
+        "reset_password":"Restablecer contraseña"
+    }, 
+    "nav": {
+        "carts":"Carritos", 
+        "log_in":"Iniciar sesión", 
+        "sign_up":"Registrarse", 
+        "settings":"Configuración",
+        "log_out":"Cerrar sesión", 
+        "toggle_dark_mode":"Cambiar modo oscuro"
+    },
+    "recover": {
+        "forgot_password":"Olvidé mi contraseña", 
+        "email":"Correo electrónico", 
+        "send_recovery_email":"Enviar correo de recuperación", 
+        "back_to_login":"Volver al inicio de sesión"
+    }, 
+    "reset": {
+        "password_reset":"Restablecer contraseña", 
+        "token":"Token", 
+        "new_password":"Nueva contraseña", 
+        "verify_new_password":"Confirmar nueva contraseña", 
+        "log_in":"Iniciar sesión", 
+        "didnt_receive_a_reset_email":"¿No recibiste el correo de restablecimiento?", 
+        "back_to_password_recovery":"Volver a recuperación de contraseña"
+    }, 
+    "signup": {
+        "sign_up":"Registrarse",
+        "email":"Correo electrónico", 
+        "full_name":"Nombre completo", 
+        "password_at_least_6_char":"Contraseña (al menos 6 caracteres)", 
+        "create_account":"Crear cuenta", 
+        "already_have_an_account":"¿Ya tienes una cuenta?", 
+        "log_in":"Iniciar sesión"
+    }
 }

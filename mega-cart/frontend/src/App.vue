@@ -12,6 +12,7 @@
     @add-tag="addTagToCart"
     @edit-cart="editCart"
     @share-cart="shareCart"
+    @duplicate-cart="duplicateCart"
   />
 </template>
 
@@ -111,7 +112,7 @@ export default {
       try {
         const res = await api.post("/carts", {
           name: trimmed,
-          description: "no description",
+          description: null,
           items: [],
         });
 
@@ -255,6 +256,30 @@ export default {
           `Failed to share cart (${err?.response?.status || "no status"})`;
         console.error("Share cart failed:", err?.response?.status, err?.response?.data);
         alert(msg);
+      }
+    },
+    async duplicateCart(cart){
+      try {
+        const res = await api.post("/carts", {
+          name: cart.name,
+          description: cart.description,
+          items: cart.items,
+          tags: cart.tags,
+        });
+
+        this.carts.unshift({
+          id: res.data.cartId,
+          name: cart.name,
+          description: cart.description,
+          items: cart.items,
+          tags: cart.tags
+        });
+
+        // go to carts page after creating
+        this.$router.push({ name: "carts" });
+      } catch (err) {
+        console.error("Create cart failed:", err?.response?.status, err?.response?.data);
+        alert(`Failed to create cart (${err?.response?.status || "no status"})`);
       }
     }
   }

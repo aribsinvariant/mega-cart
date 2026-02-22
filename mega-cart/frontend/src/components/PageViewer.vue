@@ -11,6 +11,7 @@
     @add-item="$emit('add-item', $event)"
     @add-tag="$emit('add-tag', $event)"
     @edit-cart="$emit('edit-cart', $event)"
+    @duplicate-cart="$emit('duplicate-cart', $event)"
   />
 </template>
 
@@ -24,6 +25,6 @@ import CartDetails from "./CartDetails.vue";
 export default {
   props: ["page", "selectedCart", "carts"],
   components: { HomePage, SignUpPage, LogInPage, CartPage, CartDetails },
-  emits: ["signup-success", "login-success", "cart-selected", "back", "create-cart", "add-item", "add-tag", "edit-cart"]
+  emits: ["signup-success", "login-success", "cart-selected", "back", "create-cart", "add-item", "add-tag", "edit-cart", "duplicate-cart"]
 };
 </script>

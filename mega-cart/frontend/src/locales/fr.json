@@ -47,7 +47,9 @@
         "settings":"Paramètres",
         "log_out":"Déconnexion", 
         "toggle_dark_mode":"Activer le mode sombre",
-        "language":"Langue"
+        "language":"Langue",
+        "inbox":"Boîte de réception",
+        "shared_carts":"Paniers partagés"
     },
     "recover": {
         "forgot_password":"Mot de passe oublié", 
@@ -72,5 +74,29 @@
         "create_account":"Créer un compte", 
         "already_have_an_account":"Vous avez déjà un compte ?", 
         "log_in":"Connexion"
+    },
+    "inbox":{
+        "shared_cart_inbox":"Boîte de réception des paniers partagés",
+        "no_invites":"Aucune invitation.",
+        "accept":"Accepter",
+        "decline":"Refuser",
+        "permission":"Permissions",
+        "editable":"Modifiable",
+        "view_only":"Lecture seule"
+    },
+    "shared_cart": {
+        "shared_carts":"Paniers partagés",
+        "all_shared":"Tous les partagés",
+        "editable_only":"Modifiables uniquement",
+        "non_editable_only":"Lecture seule uniquement",
+        "no_shared_carts":"Aucun panier partagé pour l’instant.",
+        "add_tags":"Ajouter des étiquettes",
+        "editable":"Modifiable",
+        "view_only":"Lecture seule",
+        "add":"Ajouter",
+        "cancel":"Annuler",
+        "create_new_tag":"Créer une nouvelle étiquette",
+        "tag_name":"Nom de l’étiquette",
+        "eg_groceries":"ex. Courses"
     }
 }

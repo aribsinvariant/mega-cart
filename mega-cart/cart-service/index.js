@@ -43,6 +43,36 @@ app.get('/shared/:token', async (req, res) => {
 app.use(authMiddleware);
 let channel;
 
+app.get('/shared', async (req, res) => {
+    const userId = req.user.id;
+    const {editable} = req.query;
+
+    try {
+        let text = `
+        SELECT c.id, c.name, c.description, c.created_at,
+                sc.can_edit,
+                c.user_id AS owner_id
+        FROM shared_carts sc
+        JOIN carts c ON c.id = sc.cart_id
+        WHERE sc.user_id = $1 AND sc.status = 'accepted'
+        `;
+        const params = [userId];
+
+        if (editable === "true") {
+        text += ` AND sc.can_edit = true`;
+        } else if (editable === "false") {
+        text += ` AND sc.can_edit = false`;
+        }
+
+        text += ` ORDER BY c.created_at DESC`;
+
+        const result = await query(text, params);
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Get Shared Carts Failed" });
+    }
+    });
 
 
 // rabbitmq not used right now, but may use it for deleting carts when users are deleted
@@ -217,7 +247,7 @@ app.get('/', async (req, res) => {
                 FROM carts c
                 JOIN labeled_carts lc ON c.id = lc.cart_id
                 LEFT JOIN shared_carts sc ON c.id = sc.cart_id AND sc.user_id = $1 AND sc.status = 'accepted'
-                WHERE (c.user_id = $1 OR (sc.user_id = $1 AND sc.status = 'accepted')) AND lc.label_name = ANY($2)
+                WHERE (c.user_id = $1) AND lc.label_name = ANY($2)
                 ORDER BY c.created_at DESC
             `;
             params = [userId, tags];
@@ -226,7 +256,7 @@ app.get('/', async (req, res) => {
                 SELECT DISTINCT c.id, c.name, c.description, c.created_at, sc.can_edit 
                 FROM carts c
                 LEFT JOIN shared_carts sc ON c.id = sc.cart_id AND sc.user_id = $1 AND sc.status = 'accepted'
-                WHERE c.user_id = $1 OR (sc.user_id = $1 AND sc.status = 'accepted')
+                WHERE c.user_id = $1
                 ORDER BY c.created_at DESC
             `;
             params = [userId];
@@ -397,7 +427,7 @@ app.delete('/:id', async (req, res) => {
 });
 
 // create cart share link
-app.post('/:id/share', async (req, res) => {
+app.post('/:id/share-link', async (req, res) => {
     const { id } = req.params;
     const userId = req.user.id;
 

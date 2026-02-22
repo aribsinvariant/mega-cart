@@ -47,7 +47,9 @@
         "settings":"Configuración",
         "log_out":"Cerrar sesión", 
         "toggle_dark_mode":"Cambiar modo oscuro",
-        "language":"Idioma"
+        "language":"Idioma",
+        "inbox":"Bandeja de entrada",
+        "shared_carts":"Carritos compartidos"
     },
     "recover": {
         "forgot_password":"Olvidé mi contraseña", 
@@ -72,5 +74,29 @@
         "create_account":"Crear cuenta", 
         "already_have_an_account":"¿Ya tienes una cuenta?", 
         "log_in":"Iniciar sesión"
-    }
+    },
+    "inbox":{
+        "shared_cart_inbox":"Bandeja de entrada de carritos compartidos",
+        "no_invites":"No tienes invitaciones para compartir carritos.",
+        "accept":"Aceptar",
+        "decline":"Rechazar",
+        "permission":"Permisos",
+        "editable":"Editable",
+        "view_only":"Solo lectura"
+    },
+    "shared_cart": {
+        "shared_carts":"Carritos compartidos",
+        "all_shared":"Todos los compartidos",
+        "editable_only":"Solo editables",
+        "non_editable_only":"Solo de lectura",
+        "no_shared_carts":"Aún no hay carritos compartidos.",
+        "add_tags":"Añadir etiquetas",
+        "editable":"Editable",
+        "view_only":"Solo lectura",
+        "add":"Añadir",
+        "cancel":"Cancelar",
+        "create_new_tag":"Crear nueva etiqueta",
+        "tag_name":"Nombre de la etiqueta",
+        "eg_groceries":"p. ej. Comestibles"
+     }
 }

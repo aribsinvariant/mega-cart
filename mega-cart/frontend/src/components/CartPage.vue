@@ -209,9 +209,10 @@
             </div>
             
             <button
-            type="button"
-            class="btn btn-link text-muted p-0 me-auto"
-            @click="shareWithLink"
+              type="button"
+              class="btn btn-link p-0 me-auto ms-2"
+              @click="shareWithLink"
+              style="color: rgba(120,165,255,1)"
           >
             {{ $t("cart.share_a_copy_with_link_instead") }}
           </button>

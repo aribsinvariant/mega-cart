@@ -47,7 +47,9 @@
         "settings":"Settings",
         "log_out":"Log out", 
         "toggle_dark_mode":"Toggle Dark Mode",
-        "language":"Language"
+        "language":"Language",
+        "inbox":"Inbox",
+        "shared_carts":"Shared Carts"
     },
     "recover": {
         "forgot_password":"Forgot Password", 
@@ -72,5 +74,29 @@
         "create_account":"Create account", 
         "already_have_an_account":"Already have an account?", 
         "log_in":"Log In"
+    },
+    "inbox":{
+        "shared_cart_inbox":"Shared Cart Inbox",
+        "no_invites":"No invites.",
+        "accept":"Accept",
+        "decline":"Decline",
+        "permission":"Permission",
+        "editable":"Editable",
+        "view_only":"View-only"
+    },
+    "shared_cart": {
+        "shared_carts":"Shared Carts",
+        "all_shared":"All shared",
+        "editable_only":"Editable only",
+        "non_editable_only":"Non-editable only",
+        "no_shared_carts":"No shared carts yet.",
+        "add_tags":"Add tags",
+        "editable":"Editable",
+        "view_only":"View-only",
+        "add":"Add",
+        "cancel":"Cancel",
+        "create_new_tag":"Create new tag",
+        "tag_name":"Tag name",
+        "eg_groceries":"e.g. groceries"
     }
 }

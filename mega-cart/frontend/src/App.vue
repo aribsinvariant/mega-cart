@@ -14,6 +14,7 @@
     @edit-cart="editCart"
     @share-cart="shareCart"
     @duplicate-cart="duplicateCart"
+    @share-cart-link="shareWithLink"
   />
 </template>
 
@@ -208,8 +209,10 @@ export default {
       localStorage.setItem("darkMode", this.isDarkMode);
       if (isDark) {
         document.body.classList.add('dark-mode');
+        document.documentElement.setAttribute("data-bs-theme", "dark");
       } else {
         document.body.classList.remove('dark-mode');
+        document.documentElement.setAttribute("data-bs-theme", "light");
       }
     },
     async editCart({ cart, newName, newColor }) {
@@ -252,7 +255,7 @@ export default {
         // 2) share cart (CART service)
         await api.post(`/carts/${cart.id}/share`, {
           userId,
-          //viewOnly: !!viewOnly,
+          canEdit: !viewOnly,
         });
 
         alert("Cart shared successfully");
@@ -295,6 +298,18 @@ export default {
       } catch (err) {
         console.error("Create cart failed:", err?.response?.status, err?.response?.data);
         alert(`Failed to create cart (${err?.response?.status || "no status"})`);
+      }
+    },
+    async shareWithLink(cart) {
+      try {
+        const res = await api.post(`/carts/${cart.id}/share-link`);
+        const token = res.data.token;
+        const link = `${window.location.origin}/carts/shared/${token}`;
+        await navigator.clipboard.writeText(link);
+        alert("Link copied to clipboard!");
+      } catch (err) {
+        console.error("Share with link failed:", err?.response?.status, err?.response?.data);
+        alert(`Failed to create shareable link (${err?.response?.status || "no status"})`);
       }
     }
   }

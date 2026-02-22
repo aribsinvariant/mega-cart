@@ -1,11 +1,11 @@
 <template>
   <div class="container py-4">
-    <button class="btn btn-link mb-3" @click="$router.push({ name: 'carts' })">
+    <button class="btn btn-link mb-3" @click="goBack">
       {{ $t("cart_details.back_to_carts") }}
     </button>
 
     <h1 v-if="cart">{{ cart.name }}</h1>
-    <p align="right" class="mb-0">
+    <p align="right" class="mb-0" v-if="cart?.can_edit">
         <button class="btn btn-primary" type="button" @click="openModal">
             {{ $t("cart_details.add_item") }}
         </button>
@@ -20,7 +20,7 @@
         <div class="d-flex justify-content-between bd-highlight mb-3">
           <div class="p-2 bd-highlight">{{ item }}</div>
           <div class="p-2 bd-highlight">
-            <button class="btn btn-close ms-auto" @click="removeItem(item)"></button>
+            <button class="btn btn-close ms-auto" v-if="cart?.can_edit" @click="removeItem(item)"></button>
           </div>
         </div>
       </li>
@@ -91,6 +91,7 @@ export default {
   },
   methods: {
     openModal() {
+      if (!this.cart?.can_edit) return;
       this.showModal = true;
       this.newItemName = "";
 
@@ -102,6 +103,7 @@ export default {
       this.showModal = false;
     },
     async addItems() {
+      if (!this.cart?.can_edit) return;
   const itemName = (this.newItemName || "").trim();
   if (!itemName || !this.cart) return;
 
@@ -124,9 +126,27 @@ export default {
   await this.getCart();
   this.closeModal();
 },
+    goBack() {
+      const from = this.$route.query.from || "carts";
+      const filter = this.$route.query.filter || "all";
+      if (from === "shared") {
+        this.$router.push({ name: "sharedCartView", query: { filter } });
+      } else {
+        this.$router.push({ name: "carts" });
+      }
+    },
 
     removeItem(item){
-      return;
+      if (!this.cart?.can_edit) return;
+      const existing = Array.isArray(this.cart.items) ? this.cart.items : [];
+      const filtered = existing.filter(i => i !== item);
+      api.put(`/carts/${this.id}`, {
+        name: this.cart.name,
+        description: this.cart.description ?? null,
+        items: filtered.map(i => typeof i === "string" ? { name: i, description: null, price: 0, quantity: 1 } : i),
+      }).then(() => {
+        this.getCart();
+      });
     },
     async getCart() {
       const res = await api.get(`/carts/${this.id}`);

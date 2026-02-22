@@ -47,7 +47,9 @@
         "settings":"الإعدادات",
         "log_out":"تسجيل الخروج", 
         "toggle_dark_mode":"تبديل الوضع الداكن",
-        "language":"لغة"
+        "language":"لغة",
+        "inbox":"صندوق الوارد",
+        "shared_carts":"السلات المشتركة"
     },
     "recover": {
         "forgot_password":"نسيت كلمة المرور", 
@@ -72,5 +74,30 @@
         "create_account":"إنشاء حساب", 
         "already_have_an_account":"لديك حساب بالفعل؟", 
         "log_in":"تسجيل الدخول"
+    },
+    "inbox":{
+        "shared_cart_inbox":"صندوق الوارد للسلات المشتركة",
+        "no_invites":"لا توجد دعوات.",
+        "accept":"قبول",
+        "decline":"رفض",
+        "permission":"الصلاحيات",
+        "editable":"قابلة للتعديل",
+        "view_only":"عرض فقط"
+
+    },
+    "shared_cart": {
+        "shared_carts":"السلات المشتركة",
+        "all_shared":"جميع المشتركة",
+        "editable_only":"قابلة للتعديل فقط",
+        "non_editable_only":"غير قابلة للتعديل فقط",
+        "no_shared_carts":"لا توجد سلات مشتركة بعد.",
+        "add_tags":"إضافة علامات",
+        "editable":"قابلة للتعديل",
+        "view_only":"عرض فقط",
+        "add":"إضافة",
+        "cancel":"إلغاء",
+        "create_new_tag":"إنشاء علامة جديدة",
+        "tag_name":"اسم العلامة",
+        "eg_groceries":"مثال: بقالة"
     }
 }

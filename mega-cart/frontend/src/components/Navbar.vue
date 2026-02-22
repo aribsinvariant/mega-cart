@@ -18,6 +18,12 @@
         <li v-if="isLoggedIn" class="nav-item p-2">
           <router-link class="nav-link" to="/carts">{{ $t("nav.carts") }}</router-link>
         </li>
+        <li class="nav-item p-2">
+            <router-link class="nav-link" to="/carts/shared">{{ $t("nav.shared_carts") }}</router-link>
+        </li>
+        <li class="nav-item p-2">
+            <router-link class="nav-link" to="/carts/shared/inbox">{{ $t("nav.inbox") }}</router-link>
+        </li>
       </ul>
 
       <ul class="navbar-nav d-flex align-items-center ms-auto">
@@ -62,11 +68,6 @@
                 <button class="dropdown-item" @click="toggleDarkMode">
                   {{ $t("nav.toggle_dark_mode") }}
                 </button>
-              </li>
-              <li>
-                <router-link class="dropdown-item" :to="{ name: 'settings' }">
-                  {{ $t("nav.language") }}
-                </router-link>
               </li>
             </ul>
         </li>

@@ -47,7 +47,9 @@
         "settings":"设置",
         "log_out":"退出登录", 
         "toggle_dark_mode":"切换深色模式",
-        "language":"语言"
+        "language":"语言",
+        "inbox":"收件箱",
+        "shared_carts":"共享购物车"
     },
     "recover": {
         "forgot_password":"忘记密码", 
@@ -72,5 +74,29 @@
         "create_account":"创建账号", 
         "already_have_an_account":"已经有账号？", 
         "log_in":"登录"
+    },
+    "inbox":{
+        "shared_cart_inbox":"共享购物车收件箱",
+        "no_invites":"没有邀请。",
+        "accept":"接受",
+        "decline":"拒绝",
+        "permission":"权限",
+        "editable":"可编辑",
+        "view_only":"仅查看"
+    },
+    "shared_cart": {
+        "shared_carts":"共享购物车",
+        "all_shared":"所有共享",
+        "editable_only":"仅可编辑",
+        "non_editable_only":"仅查看",
+        "no_shared_carts":"还没有共享购物车。",
+        "add_tags":"添加标签",
+        "editable":"可编辑",
+        "view_only":"仅查看",
+        "add":"添加",
+        "cancel":"取消",
+        "create_new_tag":"创建新标签",
+        "tag_name":"标签名称",
+        "eg_groceries":"例如：日用品"
     }
 }

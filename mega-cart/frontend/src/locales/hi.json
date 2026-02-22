@@ -47,7 +47,9 @@
         "settings":"सेटिंग्स",
         "log_out":"लॉग आउट", 
         "toggle_dark_mode":"डार्क मोड बदलें",
-        "language":"भाषा"
+        "language":"भाषा",
+        "inbox":"इनबॉक्स",
+        "shared_carts":"साझा कार्ट"
     },
     "recover": {
         "forgot_password":"पासवर्ड भूल गए", 
@@ -72,5 +74,30 @@
         "create_account":"खाता बनाएं", 
         "already_have_an_account":"क्या आपके पास पहले से खाता है?", 
         "log_in":"लॉग इन"
+    },
+    "inbox":{
+        "shared_cart_inbox":"साझा कार्ट इनबॉक्स",
+        "no_invites":"कोई आमंत्रण नहीं है।",
+        "accept":"स्वीकार करें",
+        "decline":"अस्वीकार करें",
+        "permission":"अनुमति",
+        "editable":"संपादन योग्य",
+        "view_only":"केवल देखने योग्य"
+
+    },
+    "shared_cart": {
+        "shared_carts":"साझा कार्ट",
+        "all_shared":"सभी साझा",
+        "editable_only":"केवल संपादन योग्य",
+        "non_editable_only":"केवल देखने योग्य",
+        "no_shared_carts":"अभी तक कोई साझा कार्ट नहीं।",
+        "add_tags":"टैग जोड़ें",
+        "editable":"संपादन योग्य",
+        "view_only":"केवल देखने योग्य",
+        "add":"जोड़ें",
+        "cancel":"रद्द करें",
+        "create_new_tag":"नया टैग बनाएं",
+        "tag_name":"टैग का नाम",
+        "eg_groceries":"उदा. किराना"
     }
 }

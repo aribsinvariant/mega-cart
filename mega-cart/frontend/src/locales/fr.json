@@ -46,7 +46,8 @@
         "sign_up":"S’inscrire", 
         "settings":"Paramètres",
         "log_out":"Déconnexion", 
-        "toggle_dark_mode":"Activer le mode sombre"
+        "toggle_dark_mode":"Activer le mode sombre",
+        "language":"Langue"
     },
     "recover": {
         "forgot_password":"Mot de passe oublié", 

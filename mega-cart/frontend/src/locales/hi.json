@@ -46,7 +46,8 @@
         "sign_up":"साइन अप", 
         "settings":"सेटिंग्स",
         "log_out":"लॉग आउट", 
-        "toggle_dark_mode":"डार्क मोड बदलें"
+        "toggle_dark_mode":"डार्क मोड बदलें",
+        "language":"भाषा"
     },
     "recover": {
         "forgot_password":"पासवर्ड भूल गए", 

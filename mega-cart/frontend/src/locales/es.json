@@ -46,7 +46,8 @@
         "sign_up":"Registrarse", 
         "settings":"Configuración",
         "log_out":"Cerrar sesión", 
-        "toggle_dark_mode":"Cambiar modo oscuro"
+        "toggle_dark_mode":"Cambiar modo oscuro",
+        "language":"Idioma"
     },
     "recover": {
         "forgot_password":"Olvidé mi contraseña", 

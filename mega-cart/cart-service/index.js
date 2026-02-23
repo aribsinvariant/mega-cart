@@ -394,7 +394,7 @@ app.get('/:id/comments', async (req, res) => {
         if (!access.allowed) return res.status(403).json({ error: "Forbidden: You do not have access to this cart's comments" });
 
         const result = await query(
-            'SELECT id, user_id, content, created_at FROM cart_comments WHERE cart_id = $1 ORDER BY created_at ASC',
+            'SELECT id, user_id, username, content, created_at FROM cart_comments WHERE cart_id = $1 ORDER BY created_at ASC',
             [id]
         );
         res.json(result.rows);
@@ -420,8 +420,8 @@ app.post('/:id/comments', async (req, res) => {
         if (!access.allowed) return res.status(403).json({ error: "Forbidden: Only the cart owner or accepted collaborators can comment" });
 
         const result = await query(
-            'INSERT INTO cart_comments (cart_id, user_id, content) VALUES ($1, $2, $3) RETURNING id, user_id, content, created_at',
-            [id, userId, content.trim()]
+            'INSERT INTO cart_comments (cart_id, user_id, username, content) VALUES ($1, $2, $3, $4) RETURNING id, user_id, username, content, created_at',
+            [id, userId, req.user.username, content.trim()]
         );
         res.status(201).json(result.rows[0]);
     } catch (err) {

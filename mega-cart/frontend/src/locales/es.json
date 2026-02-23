@@ -46,7 +46,8 @@
         "sign_up":"Registrarse", 
         "settings":"Configuración",
         "log_out":"Cerrar sesión", 
-        "toggle_dark_mode":"Cambiar modo oscuro",
+        "toggle_dark_mode": "Modo oscuro",
+        "toggle_light_mode": "Modo claro",
         "language":"Idioma",
         "inbox":"Bandeja de entrada",
         "shared_carts":"Carritos compartidos"

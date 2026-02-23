@@ -47,6 +47,7 @@
         "settings":"Settings",
         "log_out":"Log out", 
         "toggle_dark_mode":"Toggle Dark Mode",
+        "toggle_light_mode":"Toggle Light Mode",
         "language":"Language",
         "inbox":"Inbox",
         "shared_carts":"Shared Carts"

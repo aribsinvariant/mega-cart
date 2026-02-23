@@ -46,7 +46,8 @@
         "sign_up":"साइन अप", 
         "settings":"सेटिंग्स",
         "log_out":"लॉग आउट", 
-        "toggle_dark_mode":"डार्क मोड बदलें",
+        "toggle_dark_mode": "डार्क मोड पर स्विच करें",
+        "toggle_light_mode": "लाइट मोड पर स्विच करें",
         "language":"भाषा",
         "inbox":"इनबॉक्स",
         "shared_carts":"साझा कार्ट"

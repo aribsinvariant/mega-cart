@@ -46,7 +46,8 @@
         "sign_up":"إنشاء حساب", 
         "settings":"الإعدادات",
         "log_out":"تسجيل الخروج", 
-        "toggle_dark_mode":"تبديل الوضع الداكن",
+        "toggle_dark_mode": "الوضع الداكن",
+        "toggle_light_mode": "الوضع الفاتح",
         "language":"لغة",
         "inbox":"صندوق الوارد",
         "shared_carts":"السلات المشتركة"

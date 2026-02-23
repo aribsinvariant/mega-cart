@@ -66,7 +66,7 @@
               </li>
               <li>
                 <button class="dropdown-item" @click="toggleDarkMode">
-                  {{ $t("nav.toggle_dark_mode") }}
+                  {{ themeLabel }}
                 </button>
               </li>
             </ul>
@@ -87,14 +87,8 @@ export default {
       required: true,
     },
   },
-  watch: {
-    isDark(newVal) {
-      this.toggleTheme = newVal;
-    },
-  },
   data() {
     return {
-      toggleTheme: this.isDark,
       languages: [
         { code: "en", label: "English" },
         { code: "ar", label: "العربية" },
@@ -109,6 +103,13 @@ export default {
     isLoggedIn() {
       return isLoggedIn.value;
     },
+    themeLabel() {
+      if (this.isDark) {
+        return this.$t("nav.toggle_light_mode");
+      } else {
+        return this.$t("nav.toggle_dark_mode");
+      }
+    }
   },
   methods: {
     logout() {
@@ -116,8 +117,7 @@ export default {
       this.$router.push({ name: "login" });
     },
     toggleDarkMode() {
-      this.toggleTheme = !this.toggleTheme;
-      this.$emit("theme", this.toggleTheme);
+      this.$emit("theme", !this.isDark);
     },
     setLanguage(lang) {
       this.$i18n.locale = lang;

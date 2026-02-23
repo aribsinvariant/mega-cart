@@ -54,10 +54,10 @@
 
       <transition-group name="comment-fade" tag="div" class="comments-list">
         <div v-for="comment in comments" :key="comment.id" class="comment">
-          <div class="comment__avatar">{{ comment.authorInitial }}</div>
+          <div class="comment__avatar">{{ comment.username?.[0]?.toUpperCase() }}</div>
           <div class="comment__body">
             <div class="comment__meta">
-              <span class="comment__author">{{ comment.author }}</span>
+              <span class="comment__author">{{ comment.username }}</span>
               <span class="comment__time">{{ formatTimeAgo(comment.created_at) }}</span>
             </div>
             <p class="comment__text">{{ comment.content }}</p>

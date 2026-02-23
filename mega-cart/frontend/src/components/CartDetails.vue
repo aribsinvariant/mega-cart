@@ -67,28 +67,61 @@
         </div>
       </div>
     </div>
+    <CommentSection
+      :comments="cartComments"
+      :current-user="currentUser"
+      :loading="commentsLoading"
+      :posting="commentsPosting"
+      :error="commentsError"
+      @post-comment="postComment"
+    />
   </div>
 </template>
 
 <script>
 import { api } from "../api";
+import CommentSection from './CommentSection.vue'
 
 export default {
   name: "CartDetailsPage",
+  components: { CommentSection },
   props: {
     id: {
       type: String,
       required: true,
-    },
+    }
   },
+  
   data() {
     return {
       cart: null,
       loading: true,
       showModal: false,
       newItemName: "",
+      cartComments: [],
+      commentsLoading: false,
+      commentsPosting: false,
+      commentsError: null,
+      isDarkMode: document.body.classList.contains('dark')
     };
   },
+
+  mounted() {
+    this.getCart();
+    this.fetchComments()
+    this.observer = new MutationObserver(() => {
+    this.isDarkMode = document.body.classList.contains('dark-mode')
+    })
+    this.observer.observe(document.body, { attributes: true, attributeFilter: ['class'] })
+
+    console.log('isDarkMode on mount:', document.body.classList.contains('dark-mode'))
+    console.log('body classes:', document.body.className)
+  },
+
+  beforeUnmount() {
+    this.observer.disconnect()
+  },
+
   methods: {
     openModal() {
       this.showModal = true;
@@ -102,29 +135,28 @@ export default {
       this.showModal = false;
     },
     async addItems() {
-  const itemName = (this.newItemName || "").trim();
-  if (!itemName || !this.cart) return;
+      const itemName = (this.newItemName || "").trim();
+      if (!itemName || !this.cart) return;
 
-  const full = (await api.get(`/carts/${this.id}`)).data;
-  const existing = Array.isArray(full.items) ? full.items : [];
+      const full = (await api.get(`/carts/${this.id}`)).data;
+      const existing = Array.isArray(full.items) ? full.items : [];
 
-  await api.put(`/carts/${this.id}`, {
-    name: full.name,
-    description: full.description ?? null,
-    items: [
-      ...existing.map(i =>
-        typeof i === "string"
-          ? { name: i, description: null, price: 0, quantity: 1 }
-          : { name: i.name, description: i.description ?? null, price: i.price ?? 0, quantity: i.quantity ?? 1 }
-      ),
-      { name: itemName, description: null, price: 0, quantity: 1 },
-    ],
-  });
+      await api.put(`/carts/${this.id}`, {
+        name: full.name,
+        description: full.description ?? null,
+        items: [
+          ...existing.map(i =>
+            typeof i === "string"
+              ? { name: i, description: null, price: 0, quantity: 1 }
+              : { name: i.name, description: i.description ?? null, price: i.price ?? 0, quantity: i.quantity ?? 1 }
+          ),
+          { name: itemName, description: null, price: 0, quantity: 1 },
+        ],
+      });
 
-  await this.getCart();
-  this.closeModal();
-},
-
+      await this.getCart();
+      this.closeModal();
+    },
     removeItem(item){
       return;
     },
@@ -133,9 +165,29 @@ export default {
       this.cart = { ...res.data, items: res.data.items || [] };
       this.loading = false;
     },
-  },
-  mounted() {
-    this.getCart();
+    async fetchComments() {
+      this.commentsLoading = true
+      try {
+        const response = await api.get(`/carts/${this.id}/comments`)
+        this.cartComments = response.data  // ← extract .data
+      } catch (err) {
+        this.commentsError = err.message
+      } finally {
+        this.commentsLoading = false
+      }
+    },
+
+    async postComment(content) {
+      this.commentsPosting = true
+      try {
+        const response = await api.post(`/carts/${this.id}/comments`, { content })
+        this.cartComments.unshift(response.data)  // ← extract .data
+      } catch (err) {
+        this.commentsError = err.message
+      } finally {
+        this.commentsPosting = false
+      }
+    }
   },
   watch: {
     id() {

@@ -39,6 +39,24 @@
   .dark-mode .modal {
     background: rgba(255, 255, 255, 0.1) !important;
   }
+  .dark-mode .comment__text { 
+    color: #ffffff !important; 
+  }
+  .dark-mode .comment__author { 
+    color: #ffffff !important; 
+  }
+  .dark-mode .comment__time { 
+    color: #9ca3af !important; 
+  }
+  .dark-mode .comment-section__title { 
+    color: #ffffff !important; 
+  }
+  .dark-mode .comment-form__input { 
+    color: #ffffff !important; 
+  }
+  .dark-mode .comment-section__count { 
+    color: #9ca3af !important; 
+  }
   .modal {
     background: rgba(0, 0, 0, 0.5);
   }
@@ -111,7 +129,7 @@ export default {
       try {
         const res = await api.post("/carts", {
           name: trimmed,
-          description: "no description",
+          description: null,
           items: [],
         });
 

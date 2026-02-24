@@ -1,15 +1,15 @@
 <template>
   <div class="container py-4">
     <div class="d-flex align-items-center justify-content-between">
-      <h1 class="mb-0">Carts</h1>
+      <h1 class="mb-0">{{ $t("cart.carts") }}</h1>
       <button class="btn btn-primary" type="button" @click="openModal">
-        + New Cart
+        {{ $t("cart.add_new_cart") }}
       </button>
     </div>
 
     <div class="mt-4">
       <p v-if="carts.length === 0" class="text-muted">
-        No carts yet. Create one!
+        {{ $t("cart.no_carts_yet_create_one") }}
       </p>
 
       <ul v-else class="list-group">
@@ -24,6 +24,7 @@
                 {{ cart.name }}
             </button>
             <button class="edit-btn" title="Edit" @click="openEditModal(cart)" :style="{ color: cart.description ? getContrastColor(cart.description) : 'var(--bs-body-color)' }">✏️</button>
+            <button class="edit-btn" title="Duplicate" @click="duplicateCart(cart)" :style="{ color: cart.description ? getContrastColor(cart.description) : 'var(--bs-body-color)' }">⧉</button>
             </div>
             <div class="d-flex gap-2">
               <button 
@@ -33,7 +34,7 @@
                 @mouseleave="e => e.target.style.backgroundColor = 'transparent'"
                 @click="openTagModal(cart)"
               >
-                Add Tags
+                {{ $t("cart.add_tags") }}
               </button>
               <button 
                 class="btn ms-auto"
@@ -42,7 +43,7 @@
                 @mouseleave="e => e.target.style.backgroundColor = 'transparent'"
                 @click="openShareModal(cart)"
               >
-                Share
+                {{ $t("cart.share") }}
               </button>
               <small :style="{ color: cart.description ? getContrastColor(cart.description) : 'var(--bs-body-color)' }">#{{ cart.id }}</small>
             </div>
@@ -61,33 +62,33 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Edit Cart</h5>
+            <h5 class="modal-title">{{ $t("cart.edit_cart") }}</h5>
             <button type="button" class="btn-close" @click="closeEditModal"></button>
           </div>
 
           <form @submit.prevent.stop="updateCart">
             <div class="modal-body">
-              <label class="form-label" for="cartName">Cart name</label>
+              <label class="form-label" for="cartName">{{ $t("cart.cart_name") }}</label>
               <input
                 id="cartName"
                 class="form-control"
                 v-model.trim="updatedCartName"
-                placeholder="e.g. Groceries"
+                :placeholder="$t('cart.eg_groceries')"
                 required
                 maxlength="255"
                 ref="cartNameInput"
               />
               <div class="d-flex align-items-center gap-2">
-                <label for="colorPicker" class="mb-0">Cart Colour:</label>
+                <label for="colorPicker" class="mb-0">{{ $t("cart.cart_colour") }}:</label>
                 <input type="color" id="colorPicker" v-model="selectedColor"/>
               </div>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-outline-secondary" @click="closeEditModal">
-                Cancel
+                {{ $t("cart.cancel") }}
               </button>
               <button class="btn btn-primary" type="submit" :disabled="updatedCartName.length === 0" @click="editCart(selectedCart)">
-                Update
+                {{ $t("cart.update") }}
               </button>
             </div>
           </form>
@@ -106,18 +107,18 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Create New Cart</h5>
+            <h5 class="modal-title">{{ $t("cart.create_new_cart") }}</h5>
             <button type="button" class="btn-close" @click="closeModal"></button>
           </div>
 
           <form @submit.prevent.stop="createCart">
             <div class="modal-body">
-              <label class="form-label" for="cartName">Cart name</label>
+              <label class="form-label" for="cartName">{{ $t("cart.cart_name") }}</label>
               <input
                 id="cartName"
                 class="form-control"
                 v-model.trim="newCartName"
-                placeholder="e.g. Groceries"
+                :placeholder="$t('cart.eg_groceries')"
                 required
                 maxlength="255"
                 ref="cartNameInput"
@@ -126,10 +127,10 @@
 
             <div class="modal-footer">
               <button type="button" class="btn btn-outline-secondary" @click="closeModal">
-                Cancel
+                {{ $t("cart.cancel") }}
               </button>
               <button class="btn btn-primary" type="submit" :disabled="newCartName.length === 0">
-                Create
+                {{ $t("cart.add") }}
               </button>
             </div>
           </form>
@@ -148,18 +149,18 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Create New Tag</h5>
+            <h5 class="modal-title">{{ $t("cart.create_new_tag") }}</h5>
             <button type="button" class="btn-close" @click="closeTagModal"></button>
           </div>
 
           <form @submit.prevent.stop="createTag">
             <div class="modal-body">
-              <label class="form-label" for="tagName">Tag name</label>
+              <label class="form-label" for="tagName">{{ $t("cart.tag_name") }}</label>
               <input
                 id="tagName"
                 class="form-control"
                 v-model.trim="newTagName"
-                placeholder="e.g. Groceries"
+                :placeholder="$t('cart.eg_groceries')"
                 required
                 maxlength="255"
                 ref="tagNameInput"
@@ -168,10 +169,10 @@
 
             <div class="modal-footer">
               <button type="button" class="btn btn-outline-secondary" @click="closeTagModal">
-                Cancel
+                {{ $t("cart.cancel") }}
               </button>
               <button class="btn btn-primary" type="submit" :disabled="newTagName.length === 0">
-                Add
+                {{ $t("cart.add") }}
               </button>
             </div>
           </form>
@@ -189,18 +190,18 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Share</h5>
+            <h5 class="modal-title">{{ $t("cart.share") }}</h5>
             <button type="button" class="btn-close" @click="closeShareModal"></button>
           </div>
 
           <form @submit.prevent.stop="createShare">
             <div class="modal-body">
-              <label class="form-label" for="shareEmail">Email address</label>
+              <label class="form-label" for="shareEmail">{{ $t("cart.email_address") }}</label>
               <input
                 id="shareEmail"
                 class="form-control"
                 v-model.trim="shareEmail"
-                placeholder="e.g. user@example.com"
+                :placeholder="$t('cart.eg_email')"
                 required
                 maxlength="255"
                 ref="shareEmailInput"
@@ -208,23 +209,24 @@
             </div>
             
             <button
-            type="button"
-            class="btn btn-link text-muted p-0 me-auto"
-            @click="shareWithLink"
+              type="button"
+              class="btn btn-link p-0 me-auto ms-2"
+              @click="shareWithLink"
+              style="color: rgba(120,165,255,1)"
           >
-            Share a copy with link instead
+            {{ $t("cart.share_a_copy_with_link_instead") }}
           </button>
 
             <div class="modal-footer">
               <div class = "form-check form-switch me-auto">
                 <input class="form-check-input" type="checkbox" id="viewOnlySwitch" v-model="isViewOnly">
-                <label class="form-check-label" for="viewOnlySwitch">View-only</label>
+                <label class="form-check-label" for="viewOnlySwitch">{{ $t("cart.view_only") }}</label>
               </div>
               <button type="button" class="btn btn-outline-secondary" @click="closeShareModal">
-                Cancel
+                {{ $t("cart.cancel") }}
               </button>
               <button class="btn btn-primary" type="submit" :disabled="shareEmail.length === 0">
-                Share
+                {{ $t("cart.share") }}
               </button>
             </div>
           </form>
@@ -392,6 +394,9 @@ export default {
         borderStyle: 'solid',
         backgroundColor: 'transparent'
       };
+    },
+    duplicateCart(cart){
+      this.$emit("duplicate-cart", cart);
     }
   },
 };

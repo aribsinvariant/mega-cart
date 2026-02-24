@@ -7,6 +7,9 @@ import CartPage from "../components/CartPage.vue";
 import CartDetails from "../components/CartDetails.vue";
 import RecoverPage from "@/components/RecoverPage.vue";
 import ResetPage from "@/components/ResetPage.vue";
+import SharedCartLink from "@/components/SharedCartLink.vue";
+import SharedCartInbox from "@/components/SharedCartInbox.vue";
+import SharedCartPage from "@/components/SharedCartPage.vue";
 
 const routes = [
   { path: "/", name: "home", component: HomePage },
@@ -14,6 +17,8 @@ const routes = [
   { path: "/signup", name: "signup", component: SignUpPage },
   { path: "/login/recovery", name: "passwordRecovery", component: RecoverPage },
   { path: "/login/reset", name: "passwordReset", component: ResetPage },
+  { path: "/carts/shared/:token", name: "sharedCartLink", component: SharedCartLink, props: true },
+
 
   // after logging in
   { path: "/carts", name: "carts", component: CartPage, meta: { requiresAuth: true } },
@@ -24,6 +29,8 @@ const routes = [
     meta: { requiresAuth: true },
     props: true,
   },
+  { path: "/carts/shared", name: "sharedCartView", component: SharedCartPage, meta: { requiresAuth: true }, props: true },
+  { path: "/carts/shared/inbox", name: "inbox", component: SharedCartInbox, meta: { requiresAuth: true } },
 ];
 
 const router = createRouter({

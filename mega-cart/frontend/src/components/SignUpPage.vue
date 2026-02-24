@@ -1,10 +1,10 @@
 <template>
   <div class="container py-4">
-    <h1>Sign up</h1>
+    <h1>{{ $t("signup.sign_up") }}</h1>
 
     <form class="mt-3" @submit.prevent="submit">
       <div class="mb-3">
-        <label class="form-label" for="email">Email</label>
+        <label class="form-label" for="email">{{ $t("signup.email") }}</label>
         <input
           id="email"
           class="form-control"
@@ -15,7 +15,7 @@
       </div>
 
       <div class="mb-3">
-        <label class="form-label" for="fullName">Full Name</label>
+        <label class="form-label" for="fullName">{{ $t("signup.full_name") }}</label>
         <input
           id="fullName"
           class="form-control"
@@ -26,7 +26,7 @@
       </div>
 
        <div class="mb-3">
-        <label class="form-label" for="password">Password (at least 6 characters)</label>
+        <label class="form-label" for="password">{{ $t("signup.password_at_least_6_char") }}</label>
 
         <div class="input-group">
           <input
@@ -50,14 +50,14 @@
         </div>
       </div>
 
-      <button class="btn btn-primary" type="submit" :disabled="isFormNotValid">Create account</button>
+      <button class="btn btn-primary" type="submit" :disabled="isFormNotValid">{{ $t("signup.create_account") }}</button>
     </form>
   </div>
 
   <div class="container py-4">
     <p>
-      Already have an account?
-      <router-link :to="{ name: 'login' }">Log In</router-link>
+      {{ $t("signup.already_have_an_account") }}
+      <router-link :to="{ name: 'login' }">{{ $t("signup.log_in") }}</router-link>
     </p>
   </div>
 </template>

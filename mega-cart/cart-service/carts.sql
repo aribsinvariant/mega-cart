@@ -3,7 +3,8 @@ CREATE TABLE IF NOT EXISTS carts (
     name VARCHAR(255),
     description VARCHAR(1024),
     user_id INT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    share_token VARCHAR(255)
 );
 
 CREATE TABLE IF NOT EXISTS items (

@@ -1,0 +1,103 @@
+{
+    "cart_details": {
+        "back_to_carts":"← Back to carts", 
+        "add_item":"+ Add Item", 
+        "this_cart_is_empty":"This cart is empty.", 
+        "item_name":"Item name", 
+        "cancel":"Cancel", 
+        "eg_milk":"e.g. Milk"
+    },
+    "cart": {
+        "carts":"Carts",
+        "add_new_cart":"+ New Cart",
+        "no_carts_yet_create_one":"No carts yet. Create one!",
+        "add_tags":"Add Tags",
+        "share":"Share",
+        "edit_cart":"Edit Cart", 
+        "cart_name":"Cart name",
+        "cart_colour":"Cart Colour:", 
+        "cancel":"Cancel", 
+        "update":"Update", 
+        "add":"Add",
+        "create_new_cart":"Create New Cart",
+        "create_new_tag":"Create New Tag",
+        "tag_name":"Tag name",
+        "email_address":"Email address", 
+        "share_a_copy_with_link_instead":"Share a copy with link instead", 
+        "view_only":"View-only", 
+        "eg_groceries":"e.g. Groceries", 
+        "eg_email":"e.g. user{'@'}example.com"
+    }, 
+    "home": {
+        "welcome":"Welcome to Mega Cart, the one-website solution to all your shopping problems."
+    }, 
+    "login": {
+        "log_in":"Log In", 
+        "email":"Email", 
+        "password":"Password", 
+        "dont_have_an_account":"Don't have an account?",
+        "sign_up":"Sign Up", 
+        "forgot_your_password":"Forgot your password?",
+        "reset_password":"Reset Password"
+    }, 
+    "nav": {
+        "carts":"Carts", 
+        "log_in":"Log in", 
+        "sign_up":"Sign up", 
+        "settings":"Settings",
+        "log_out":"Log out", 
+        "toggle_dark_mode":"Toggle Dark Mode",
+        "toggle_light_mode":"Toggle Light Mode",
+        "language":"Language",
+        "inbox":"Inbox",
+        "shared_carts":"Shared Carts"
+    },
+    "recover": {
+        "forgot_password":"Forgot Password", 
+        "email":"Email", 
+        "send_recovery_email":"Send Recovery Email", 
+        "back_to_login":"Back to login"
+    }, 
+    "reset": {
+        "password_reset":"Password Reset", 
+        "token":"Token", 
+        "new_password":"New Password", 
+        "verify_new_password":"Verify New Password", 
+        "log_in":"Log In", 
+        "didnt_receive_a_reset_email":"Didn't receive a reset email?", 
+        "back_to_password_recovery":"Back to Password Recovery"
+    }, 
+    "signup": {
+        "sign_up":"Sign up",
+        "email":"Email", 
+        "full_name":"Full Name", 
+        "password_at_least_6_char":"Password (at least 6 characters)", 
+        "create_account":"Create account", 
+        "already_have_an_account":"Already have an account?", 
+        "log_in":"Log In"
+    },
+    "inbox":{
+        "shared_cart_inbox":"Shared Cart Inbox",
+        "no_invites":"No invites.",
+        "accept":"Accept",
+        "decline":"Decline",
+        "permission":"Permission",
+        "editable":"Editable",
+        "view_only":"View-only"
+    },
+    "shared_cart": {
+        "shared_carts":"Shared Carts",
+        "all_shared":"All shared",
+        "editable_only":"Editable only",
+        "non_editable_only":"Non-editable only",
+        "no_shared_carts":"No shared carts yet.",
+        "add_tags":"Add tags",
+        "editable":"Editable",
+        "view_only":"View-only",
+        "add":"Add",
+        "cancel":"Cancel",
+        "create_new_tag":"Create new tag",
+        "tag_name":"Tag name",
+        "eg_groceries":"e.g. groceries"
+    }
+}

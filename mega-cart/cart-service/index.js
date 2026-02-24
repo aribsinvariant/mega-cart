@@ -1,9 +1,11 @@
-const axios = require('axios');
 const express = require('express');
-const amqp = require('amqplib');
-const db = require('./db');
 const { query } = require('./db');
+const crypto = require('crypto');
+const amqp = require('amqplib');
+const axios = require('axios');
+const db = require('./db');
 const app = express();
+
 app.use(express.json());
 
 const authMiddleware = require('./authMiddleware');
@@ -11,9 +13,66 @@ app.use((req, res, next) => {
     console.log("CART-SERVICE HIT:", req.method, req.originalUrl);
     next();
 });
+
+// Show shared cart [no login necessary]
+app.get('/shared/:token', async (req, res) => {
+    const { token } = req.params;
+
+    const text = `
+        SELECT 
+            c.*, 
+            COALESCE((SELECT json_agg(i.*) FROM items i WHERE i.cart_id = c.id), '[]') as items,
+            COALESCE((SELECT json_agg(lc.label_name) FROM labeled_carts lc WHERE lc.cart_id = c.id), '[]') as labels
+        FROM carts c
+        WHERE c.share_token = $1
+    `;
+    try {
+        const result = await db.query(text, [token]);
+
+        if (result.rows.length == 0){
+            return res.status(404).json({ error: 'Cart not found' });   
+        }
+
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Get Shared Cart Failed" });          
+    }
+});
+
 app.use(authMiddleware);
 let channel;
 
+app.get('/shared', async (req, res) => {
+    const userId = req.user.id;
+    const {editable} = req.query;
+
+    try {
+        let text = `
+        SELECT c.id, c.name, c.description, c.created_at,
+                sc.can_edit,
+                c.user_id AS owner_id
+        FROM shared_carts sc
+        JOIN carts c ON c.id = sc.cart_id
+        WHERE sc.user_id = $1 AND sc.status = 'accepted'
+        `;
+        const params = [userId];
+
+        if (editable === "true") {
+        text += ` AND sc.can_edit = true`;
+        } else if (editable === "false") {
+        text += ` AND sc.can_edit = false`;
+        }
+
+        text += ` ORDER BY c.created_at DESC`;
+
+        const result = await query(text, params);
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Get Shared Carts Failed" });
+    }
+    });
 
 
 // rabbitmq not used right now, but may use it for deleting carts when users are deleted
@@ -188,7 +247,7 @@ app.get('/', async (req, res) => {
                 FROM carts c
                 JOIN labeled_carts lc ON c.id = lc.cart_id
                 LEFT JOIN shared_carts sc ON c.id = sc.cart_id AND sc.user_id = $1 AND sc.status = 'accepted'
-                WHERE (c.user_id = $1 OR (sc.user_id = $1 AND sc.status = 'accepted')) AND lc.label_name = ANY($2)
+                WHERE (c.user_id = $1) AND lc.label_name = ANY($2)
                 ORDER BY c.created_at DESC
             `;
             params = [userId, tags];
@@ -197,7 +256,7 @@ app.get('/', async (req, res) => {
                 SELECT DISTINCT c.id, c.name, c.description, c.created_at, sc.can_edit 
                 FROM carts c
                 LEFT JOIN shared_carts sc ON c.id = sc.cart_id AND sc.user_id = $1 AND sc.status = 'accepted'
-                WHERE c.user_id = $1 OR (sc.user_id = $1 AND sc.status = 'accepted')
+                WHERE c.user_id = $1
                 ORDER BY c.created_at DESC
             `;
             params = [userId];
@@ -460,6 +519,36 @@ app.delete('/:id/comments/:commentId', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Failed to delete comment" });
+// create cart share link
+app.post('/:id/share-link', async (req, res) => {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    try {
+        // Check if cart id doesn't exist
+        const cartSelect = await db.query('SELECT * FROM carts WHERE id = $1', [id]);
+        if (cartSelect.rows.length == 0) {
+            return res.status(404).json({ error: 'Cart not found' });
+        }
+
+        // Check if cart belongs to logged in user
+        if (cartSelect.rows[0].user_id != userId) {
+            return res.status(401).json({ error: 'Cart not found' });
+        }
+
+        // Generate random token
+        const shareToken = crypto.randomBytes(32).toString('hex');
+
+        // Add token to cart db entry
+        await db.query(
+            'UPDATE carts SET share_token = $1 WHERE id = $2',
+            [shareToken, id]           
+        );
+
+        res.status(200).json({message: "Cart link created", token: shareToken });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Share Failed" });    
     }
 });
 

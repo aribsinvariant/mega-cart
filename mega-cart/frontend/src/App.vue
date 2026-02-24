@@ -1,5 +1,6 @@
 <template>
   <Navbar 
+    :is-dark="isDarkMode"
     @theme="toggleDarkMode"
   />
   <router-view
@@ -12,6 +13,8 @@
     @add-tag="addTagToCart"
     @edit-cart="editCart"
     @share-cart="shareCart"
+    @duplicate-cart="duplicateCart"
+    @share-cart-link="shareWithLink"
   />
 </template>
 
@@ -75,6 +78,7 @@ export default {
       selectedCartId: null,
       carts: [],
       currentUser: null,
+      isDarkMode: localStorage.getItem("darkMode") === "true",
     };
   },
 
@@ -85,6 +89,9 @@ export default {
   },
 
   async mounted() {
+    const savedDark = localStorage.getItem("darkMode");
+    this.isDarkMode = savedDark === "true";
+    this.toggleDarkMode(this.isDarkMode);
     // If /carts requires auth, this might fail until logged in — that’s fine.
     await this.loadCarts();
   },
@@ -216,10 +223,14 @@ export default {
       this.$router.push({ name: "carts" });
     },
     toggleDarkMode(isDark) {
+      this.isDarkMode = !!isDark;
+      localStorage.setItem("darkMode", this.isDarkMode);
       if (isDark) {
         document.body.classList.add('dark-mode');
+        document.documentElement.setAttribute("data-bs-theme", "dark");
       } else {
         document.body.classList.remove('dark-mode');
+        document.documentElement.setAttribute("data-bs-theme", "light");
       }
     },
     async editCart({ cart, newName, newColor }) {
@@ -262,7 +273,7 @@ export default {
         // 2) share cart (CART service)
         await api.post(`/carts/${cart.id}/share`, {
           userId,
-          //viewOnly: !!viewOnly,
+          canEdit: !viewOnly,
         });
 
         alert("Cart shared successfully");
@@ -273,6 +284,50 @@ export default {
           `Failed to share cart (${err?.response?.status || "no status"})`;
         console.error("Share cart failed:", err?.response?.status, err?.response?.data);
         alert(msg);
+      }
+    },
+    async duplicateCart(cart){
+      try {
+        const fullCart = await api.get(`/carts/${cart.id}`);
+        const items = fullCart.data.items.map(({ name, description, price, quantity }) => ({
+          name,
+          description,
+          price,
+          quantity,
+        }));
+
+        const res = await api.post("/carts", {
+          name: cart.name,
+          description: cart.description,
+          items,
+          tags: cart.tags,
+        });
+
+        this.carts.unshift({
+          id: res.data.cartId,
+          name: cart.name,
+          description: cart.description,
+          items: cart.items,
+          tags: cart.tags
+        });
+
+        // go to carts page after creating
+        this.$router.push({ name: "carts" });
+      } catch (err) {
+        console.error("Create cart failed:", err?.response?.status, err?.response?.data);
+        alert(`Failed to create cart (${err?.response?.status || "no status"})`);
+      }
+    },
+    async shareWithLink(cart) {
+      try {
+        const res = await api.post(`/carts/${cart.id}/share-link`);
+        const token = res.data.token;
+        const link = `${window.location.origin}/carts/shared/${token}`;
+        await navigator.clipboard.writeText(link);
+        alert("Link copied to clipboard!");
+      } catch (err) {
+        console.error("Share with link failed:", err?.response?.status, err?.response?.data);
+        alert(`Failed to create shareable link (${err?.response?.status || "no status"})`);
       }
     }
   }

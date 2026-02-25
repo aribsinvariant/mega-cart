@@ -1,7 +1,7 @@
 <template>
   <div class="comment-section">
     <h2 class="comment-section__title">
-      Comments
+      {{ $t("comment_section.comments") }}
       <span class="comment-section__count">{{ comments.length }}</span>
     </h2>
 
@@ -18,7 +18,7 @@
         <textarea
           v-model="newComment"
           class="comment-form__input"
-          placeholder="Add a comment..."
+          :placeholder="$t('comment_section.add_a_comment')"
           rows="1"
           @input="autoResize"
           ref="textarea"
@@ -29,7 +29,7 @@
             :disabled="!newComment.trim() || posting"
             @click="submitComment"
           >
-            {{ posting ? 'Posting…' : 'Post' }}
+            {{ posting ? this.$t('comment_section.posting') : this.$t('comment_section.post') }}
           </button>
         </div>
       </div>
@@ -49,7 +49,7 @@
     <!-- Comments Feed -->
     <div v-else>
       <div v-if="comments.length === 0" class="comments-empty">
-        No comments yet. Be the first!
+        {{ $t("comment_section.no_comments_yet") }}
       </div>
 
       <transition-group name="comment-fade" tag="div" class="comments-list">
@@ -101,10 +101,10 @@ export default {
   methods: {
     formatTimeAgo(dateStr) {
       const diff = Math.floor((Date.now() - new Date(dateStr)) / 1000)
-      if (diff < 60) return 'Just now'
-      if (diff < 3600) return `${Math.floor(diff / 60)}m ago`
-      if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`
-      return `${Math.floor(diff / 86400)}d ago`
+      if (diff < 60) return this.$t('comment_section.just_now')
+      if (diff < 3600) return this.$t("comment_section.m_ago", { count: Math.floor(diff / 60) })
+      if (diff < 86400) return this.$t("comment_section.h_ago", { count: Math.floor(diff / 3600) })
+      return this.$t("comment_section.d_ago", { count: Math.floor(diff / 86400) })
     },
 
     autoResize(e) {

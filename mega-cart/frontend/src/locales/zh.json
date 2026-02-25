@@ -99,5 +99,16 @@
         "create_new_tag":"创建新标签",
         "tag_name":"标签名称",
         "eg_groceries":"例如：日用品"
+    }, 
+    "comment_section": {
+        "comments": "评论",
+        "add_a_comment": "添加评论...",
+        "posting": "正在发布...",
+        "post": "发布",
+        "no_comments_yet": "还没有评论。成为第一个吧！",
+        "just_now": "刚刚",
+        "m_ago": "{count} 分钟前",
+        "h_ago": "{count} 小时前",
+        "d_ago": "{count} 天前"
     }
 }

@@ -519,6 +519,8 @@ app.delete('/:id/comments/:commentId', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Failed to delete comment" });
+    }
+});
 // create cart share link
 app.post('/:id/share-link', async (req, res) => {
     const { id } = req.params;

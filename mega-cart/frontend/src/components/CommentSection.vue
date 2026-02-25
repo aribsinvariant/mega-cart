@@ -53,7 +53,7 @@
       </div>
 
       <transition-group name="comment-fade" tag="div" class="comments-list">
-        <div v-for="comment in comments" :key="comment.id" class="comment">
+        <div v-for="comment in sortedComments" :key="comment.id" class="comment">
           <div class="comment__avatar">{{ comment.username?.[0]?.toUpperCase() }}</div>
           <div class="comment__body">
             <div class="comment__meta">
@@ -95,6 +95,10 @@ export default {
   computed: {
     userInitial() {
       return this.currentUser?.username?.[0]?.toUpperCase() ?? '?'
+    }, 
+    sortedComments() {
+      return [...this.comments].sort(
+        (a, b) => Date.parse(b.created_at) - Date.parse(a.created_at))
     }
   },
 

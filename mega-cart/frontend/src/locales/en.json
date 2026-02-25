@@ -99,5 +99,16 @@
         "create_new_tag":"Create new tag",
         "tag_name":"Tag name",
         "eg_groceries":"e.g. groceries"
+    }, 
+    "comment_section": {
+        "comments": "Comments",
+        "add_a_comment": "Add a comment...", 
+        "posting": "Posting...", 
+        "post": "Post", 
+        "no_comments_yet":"No comments yet. Be the first!",
+        "just_now": "Just now", 
+        "m_ago": "{count}m ago", 
+        "h_ago": "{count}h ago", 
+        "d_ago": "{count}d ago"
     }
 }

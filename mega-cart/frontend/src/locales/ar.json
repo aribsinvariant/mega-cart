@@ -100,5 +100,16 @@
         "create_new_tag":"إنشاء علامة جديدة",
         "tag_name":"اسم العلامة",
         "eg_groceries":"مثال: بقالة"
+    }, 
+    "comment_section": {
+        "comments": "التعليقات",
+        "add_a_comment": "أضف تعليقًا...",
+        "posting": "جارٍ النشر...",
+        "post": "نشر",
+        "no_comments_yet": "لا توجد تعليقات بعد. كن أول من يعلق!",
+        "just_now": "الآن",
+        "m_ago": "منذ {count} دقيقة",
+        "h_ago": "منذ {count} ساعة",
+        "d_ago": "منذ {count} يوم"
     }
 }

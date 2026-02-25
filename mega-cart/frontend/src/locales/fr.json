@@ -99,5 +99,16 @@
         "create_new_tag":"Créer une nouvelle étiquette",
         "tag_name":"Nom de l’étiquette",
         "eg_groceries":"ex. Courses"
+    }, 
+    "comment_section": {
+        "comments": "Commentaires",
+        "add_a_comment": "Ajouter un commentaire...",
+        "posting": "Publication...",
+        "post": "Publier",
+        "no_comments_yet": "Aucun commentaire pour le moment. Soyez le premier !",
+        "just_now": "À l’instant",
+        "m_ago": "Il y a {count} min",
+        "h_ago": "Il y a {count} h",
+        "d_ago": "Il y a {count} jours"
     }
 }

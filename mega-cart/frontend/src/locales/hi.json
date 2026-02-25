@@ -100,5 +100,16 @@
         "create_new_tag":"नया टैग बनाएं",
         "tag_name":"टैग का नाम",
         "eg_groceries":"उदा. किराना"
+    }, 
+    "comment_section": {
+        "comments": "टिप्पणियाँ",
+        "add_a_comment": "एक टिप्पणी जोड़ें...",
+        "posting": "पोस्ट किया जा रहा है...",
+        "post": "पोस्ट करें",
+        "no_comments_yet": "अभी तक कोई टिप्पणी नहीं। सबसे पहले बनें!",
+        "just_now": "अभी",
+        "m_ago": "{count} मिनट पहले",
+        "h_ago": "{count} घंटे पहले",
+        "d_ago": "{count} दिन पहले"
     }
 }

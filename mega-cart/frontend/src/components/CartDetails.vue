@@ -18,7 +18,7 @@
     <ul v-if="cart && cart.items.length > 0" class="list-group mt-3">
       <li v-for="(item, i) in cart.items" :key="i" class="list-group-item">
         <div class="d-flex justify-content-between bd-highlight mb-3">
-          <div class="p-2 bd-highlight">{{ item }}</div>
+          <div class="p-2 bd-highlight">{{ item.name }}</div>
           <div class="p-2 bd-highlight">
             <button class="btn btn-close ms-auto" v-if="cart?.can_edit" @click="removeItem(item)"></button>
           </div>

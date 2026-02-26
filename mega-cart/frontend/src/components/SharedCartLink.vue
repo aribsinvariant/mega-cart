@@ -6,7 +6,7 @@
     <div v-else>
       <ul class="list-group mt-3">
         <li v-for="(item, i) in cart.items" :key="i" class="list-group-item">
-          {{ item }}
+          {{ item.name }}
         </li>
       </ul>
     </div>

@@ -243,20 +243,26 @@ app.get('/', async (req, res) => {
             const tags = Array.isArray(label) ? label : [label];
 
             text = `
-                SELECT DISTINCT c.id, c.name, c.description, c.created_at, sc.can_edit 
+                SELECT c.id, c.name, c.description, c.created_at, sc.can_edit,
+                    COALESCE(array_agg(lc.label_name) FILTER (WHERE lc.label_name IS NOT NULL), '{}') AS labels
                 FROM carts c
                 JOIN labeled_carts lc ON c.id = lc.cart_id
                 LEFT JOIN shared_carts sc ON c.id = sc.cart_id AND sc.user_id = $1 AND sc.status = 'accepted'
-                WHERE (c.user_id = $1) AND lc.label_name = ANY($2)
+                WHERE c.user_id = $1 AND lc.label_name = ANY($2)
+                GROUP BY c.id, c.name, c.description, c.created_at, sc.can_edit
                 ORDER BY c.created_at DESC
             `;
             params = [userId, tags];
+            
         } else {
             text = `
-                SELECT DISTINCT c.id, c.name, c.description, c.created_at, sc.can_edit 
+                SELECT c.id, c.name, c.description, c.created_at, sc.can_edit,
+                    COALESCE(array_agg(lc.label_name) FILTER (WHERE lc.label_name IS NOT NULL), '{}') AS labels
                 FROM carts c
                 LEFT JOIN shared_carts sc ON c.id = sc.cart_id AND sc.user_id = $1 AND sc.status = 'accepted'
+                LEFT JOIN labeled_carts lc ON c.id = lc.cart_id
                 WHERE c.user_id = $1
+                GROUP BY c.id, c.name, c.description, c.created_at, sc.can_edit
                 ORDER BY c.created_at DESC
             `;
             params = [userId];

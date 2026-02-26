@@ -152,10 +152,20 @@
             <h5 class="modal-title">{{ $t("cart.create_new_tag") }}</h5>
             <button type="button" class="btn-close" @click="closeTagModal"></button>
           </div>
+          
 
           <form @submit.prevent.stop="createTag">
             <div class="modal-body">
               <label class="form-label" for="tagName">{{ $t("cart.tag_name") }}</label>
+              <ul class="list-group mb-2">
+                <li
+                  v-for="tag in (selectedCart ? selectedCart.labels : [])"
+                  :key="tag"
+                  class="list-group-item"
+                >
+                  <label>{{ tag }}</label>
+                </li>
+              </ul>
               <input
                 id="tagName"
                 class="form-control"
@@ -278,7 +288,7 @@ export default {
       showTagModal: false,
       showEditModal: false,
       showShareModal: false,
-      selectedCart: null,
+      selectedCartId: null,
       selectedColor: "",
       newCartName: "",
       newTagName: "",
@@ -286,6 +296,11 @@ export default {
       updatedCartName: "",
       isViewOnly: false
     };
+  },
+  computed: {
+    selectedCart() {
+      return this.carts.find((c) => c.id === this.selectedCartId) || null;
+    }
   },
   methods: {
     openModal() {
@@ -310,7 +325,7 @@ export default {
 
     openShareModal(cart) {
       this.shareEmail = "";
-      this.selectedCart = cart;
+      this.selectedCartId = cart.id;
       this.showShareModal = true;
       this.isViewOnly = false;
 
@@ -335,7 +350,7 @@ export default {
     },
     openTagModal(cart) {
       this.newTagName = "";
-      this.selectedCart = cart;
+      this.selectedCartId = cart.id;
       this.showTagModal = true;
 
       this.$nextTick(() => {
@@ -350,14 +365,13 @@ export default {
       if (!tagName) return;
 
       this.$emit("add-tag", {cart: this.selectedCart, tagName: tagName});
-
       this.closeTagModal();
     },
     openCart(cart) {
       this.$router.push({ name: "cartDetails", params: { id: cart.id } });
     },
     openEditModal(cart) {
-      this.selectedCart = cart;
+      this.selectedCartId = cart.id;
       this.updatedCartName = cart.name;
       this.selectedColor = cart.description || '#ffffff';
       this.showEditModal = true;

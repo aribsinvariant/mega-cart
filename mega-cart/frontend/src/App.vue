@@ -97,23 +97,36 @@ export default {
   },
 
   methods: {
+    parseLabels(labels) {
+      if (Array.isArray(labels)) return labels;
+      if (typeof labels === 'string') {
+        try { return JSON.parse(labels); } catch { return []; }
+      }
+      return [];
+    },
+
+    normalizeCart(c) {
+      return { ...c, items: c.items || [], labels: this.parseLabels(c.labels) };
+    },
+
     async addTagToCart({ cart, tagName }) {
       const trimmed = (tagName || "").trim();
       if (!trimmed) return;
 
       try {
         const full = (await api.get(`/carts/${cart.id}`)).data;
+        const existingLabels = this.parseLabels(full.labels);
 
         await api.put(`/carts/${cart.id}`, {
-        name: full.name,
-        description: full.description ?? null,
-        items: full.items || [],          
-        tags: [...new Set([...(full.tags || []), trimmed])],                  
+          name: full.name,
+          description: full.description ?? null,
+          items: full.items || [],
+          labels: [...new Set([...existingLabels, trimmed])],
         });
 
-        // refresh
-        const refreshed = await api.get(`/carts/${cart.id}`);
-        this.carts = this.carts.map((c) => (c.id === cart.id ? refreshed.data : c));
+        // refresh and normalize
+        const refreshed = (await api.get(`/carts/${cart.id}`)).data;
+        this.carts = this.carts.map((c) => (c.id === cart.id ? this.normalizeCart(refreshed) : c));
       } catch (err) {
         console.error("Add tag failed:", err?.response?.status, err?.response?.data);
         alert("Failed to add tag");
@@ -123,7 +136,7 @@ export default {
     async loadCarts() {
       try {
         const res = await api.get("/carts");
-        this.carts = res.data.map((c) => ({ ...c, items: c.items || [] }));
+        this.carts = res.data.map((c) => this.normalizeCart(c));
       } catch (err) {
         console.error(err);
       }
@@ -162,7 +175,7 @@ export default {
         const res = await api.get(`/carts/${cart.id}`);
         const fullCart = res.data;
 
-        this.carts = this.carts.map((c) => (c.id === fullCart.id ? fullCart : c));
+        this.carts = this.carts.map((c) => (c.id === fullCart.id ? this.normalizeCart(fullCart) : c));
 
         // ✅ route to cart details
         this.$router.push({ name: "cartDetails", params: { id: cart.id } });
@@ -201,7 +214,7 @@ export default {
       try {
         await api.put(`/carts/${cartId}`, payload);
         const refreshed = await api.get(`/carts/${cartId}`);
-        this.carts = this.carts.map((c) => (c.id === cartId ? refreshed.data : c));
+        this.carts = this.carts.map((c) => (c.id === cartId ? this.normalizeCart(refreshed.data) : c));
       } catch (err) {
         console.error("Add item failed:", err?.response?.status, err?.response?.data);
         alert("Failed to add item");
@@ -241,12 +254,12 @@ export default {
           name: newName,
           description: newColor ?? null,
           items: full.items || [],
-          tags: full.tags || [],
+          labels: full.labels || [],
         });
 
         // refresh
         const res= await api.get(`/carts/${cart.id}`);
-        this.carts = this.carts.map((c) => (c.id === cart.id ? res.data : c));
+        this.carts = this.carts.map((c) => (c.id === cart.id ? this.normalizeCart(res.data) : c));
         this.$router.push({ name: "carts" });
       } catch (err) {
         console.error("Edit cart failed:", err?.response?.status, err?.response?.data);
@@ -300,7 +313,7 @@ export default {
           name: cart.name,
           description: cart.description,
           items,
-          tags: cart.tags,
+          labels: cart.labels,
         });
 
         this.carts.unshift({
@@ -308,7 +321,7 @@ export default {
           name: cart.name,
           description: cart.description,
           items: cart.items,
-          tags: cart.tags
+          labels: this.parseLabels(cart.labels)
         });
 
         // go to carts page after creating

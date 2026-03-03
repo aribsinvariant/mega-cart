@@ -104,15 +104,18 @@ export default {
         this.showPassword2 = !this.showPassword2;
         },
     async submit() {
-        try {
+      try {
         const res = await api.post("/auth/reset-password", {
           token: this.token,
           password: this.password,
         });
-      } catch (err) {
+        this.$router.push({ name: "carts" });
+      } 
+      catch (err) {
         console.error(err);
         alert("Reset failed. Check token/password.");
-      } finally {        
+      } 
+      finally {        
         this.token = "";   
         this.password = "";
         this.password2 = "";

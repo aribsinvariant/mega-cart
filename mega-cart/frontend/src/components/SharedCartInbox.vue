@@ -26,6 +26,7 @@
 import { api } from "../api";
 export default {
     name: "SharedCartInbox",
+    emits: ["update-inbox"],
     data() {
         return {
             invites: [],
@@ -42,10 +43,12 @@ export default {
         async accept(id) {
             await api.post(`/carts/${id}/invites/accept`);
             await this.load();
+            this.$emit("update-inbox");
         },
         async decline(id) {
             await api.post(`/carts/${id}/invites/decline`);
             await this.load();
+            this.$emit("update-inbox");
         }
     }
 };

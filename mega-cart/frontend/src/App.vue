@@ -1,5 +1,6 @@
 <template>
   <Navbar 
+    ref="navbar"
     :is-dark="isDarkMode"
     @theme="toggleDarkMode"
   />
@@ -15,6 +16,7 @@
     @share-cart="shareCart"
     @duplicate-cart="duplicateCart"
     @share-cart-link="shareWithLink"
+    @update-inbox="updateInboxCount"
   />
 </template>
 
@@ -97,6 +99,11 @@ export default {
   },
 
   methods: {
+    async updateInboxCount() {
+      if (this.$refs.navbar) {
+      await this.$refs.navbar.getInboxCount();
+    }
+    },
     parseLabels(labels) {
       if (Array.isArray(labels)) return labels;
       if (typeof labels === 'string') {

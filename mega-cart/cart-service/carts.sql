@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS carts (
 CREATE TABLE IF NOT EXISTS items (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255),
-    description VARCHAR(255),
+    description VARCHAR(1024),
     price FLOAT(2),
     quantity INT,
     cart_id INTEGER REFERENCES carts(id) ON DELETE CASCADE

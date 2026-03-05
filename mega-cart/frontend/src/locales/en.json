@@ -1,11 +1,15 @@
 {
     "cart_details": {
         "back_to_carts":"← Back to carts", 
-        "add_item":"+ Add Item", 
+        "add_item":"+ Add Item",
+        "add_item_modal_title":"Add Item",
         "this_cart_is_empty":"This cart is empty.", 
         "item_name":"Item name", 
         "cancel":"Cancel", 
-        "eg_milk":"e.g. Milk"
+        "eg_milk":"e.g. Milk",
+        "link":"Link",
+        "price":"Price",
+        "quantity":"Quantity"
     },
     "cart": {
         "carts":"Carts",

@@ -2,10 +2,14 @@
     "cart_details": {
         "back_to_carts":"← Retour aux paniers", 
         "add_item":"+ Ajouter un article", 
+        "add_item_modal_title":"Ajouter un article",
         "this_cart_is_empty":"Ce panier est vide.", 
         "item_name":"Nom de l'article", 
         "cancel":"Annuler", 
-        "eg_milk":"ex. Lait"
+        "eg_milk":"ex. Lait",
+        "link":"Lien",
+        "price":"Prix",
+        "quantity":"Quantité"
     },
     "cart": {
         "carts":"Paniers",

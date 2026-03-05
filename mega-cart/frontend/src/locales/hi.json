@@ -2,10 +2,14 @@
     "cart_details": {
         "back_to_carts":"← कार्ट पर वापस जाएँ", 
         "add_item":"+ आइटम जोड़ें", 
+        "add_item_modal_title":"आइटम जोड़ें",
         "this_cart_is_empty":"यह कार्ट खाली है।", 
         "item_name":"आइटम का नाम", 
         "cancel":"रद्द करें", 
-        "eg_milk":"उदा. दूध"
+        "eg_milk":"उदा. दूध",
+        "link":"लिंक",
+        "price":"मूल्य",
+        "quantity":"मात्रा"
     },
     "cart": {
         "carts":"कार्ट",

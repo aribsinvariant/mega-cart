@@ -2,10 +2,14 @@
     "cart_details": {
         "back_to_carts":"← العودة إلى السلات", 
         "add_item":"+ إضافة عنصر", 
+        "add_item_modal_title":"إضافة عنصر جديد إلى السلة",
         "this_cart_is_empty":"هذه السلة فارغة.", 
         "item_name":"اسم العنصر", 
         "cancel":"إلغاء", 
-        "eg_milk":"مثال: حليب"
+        "eg_milk":"مثال: حليب",
+        "link":"الرابط",
+        "price":"السعر",
+        "quantity":"الكمية"
     },
     "cart": {
         "carts":"السلات",

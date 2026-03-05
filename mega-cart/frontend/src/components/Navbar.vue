@@ -21,8 +21,10 @@
         <li v-if="isLoggedIn" class="nav-item p-2">
             <router-link class="nav-link" to="/carts/shared">{{ $t("nav.shared_carts") }}</router-link>
         </li>
-        <li v-if="isLoggedIn" class="nav-item p-2">
-            <router-link class="nav-link" to="/carts/shared/inbox">{{ $t("nav.inbox") }}</router-link>
+        <li class="nav-item p-2">
+            <router-link class="nav-link" to="/carts/shared/inbox">{{ $t("nav.inbox") }}
+              <span v-if="inboxCount > 0">({{ inboxCount }})</span>
+            </router-link>
         </li>
       </ul>
 
@@ -78,6 +80,7 @@
 
 <script>
 import { isLoggedIn, auth } from "../logged/auth";
+import { api } from "../api";
 
 export default {
   name: "Navbar",
@@ -89,6 +92,7 @@ export default {
   },
   data() {
     return {
+      inboxCount: 0,
       languages: [
         { code: "en", label: "English" },
         { code: "ar", label: "العربية" },
@@ -123,6 +127,20 @@ export default {
       this.$i18n.locale = lang;
       localStorage.setItem("lang", lang);
     },
+    async getInboxCount() {
+      try {
+        const res = await api.get("/carts/invites");
+        this.inboxCount = res.data.length;
+      } 
+      catch (err) {
+        console.error("Failed to fetch inbox count", err);
+      }
+    }
   },
+  async mounted(){
+    if (this.isLoggedIn) {
+      await this.getInboxCount();
+    }
+  }
 };
 </script>

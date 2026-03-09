@@ -2,10 +2,14 @@
     "cart_details": {
         "back_to_carts":"← 返回购物车", 
         "add_item":"+ 添加商品", 
+        "add_item_modal_title":"添加商品",
         "this_cart_is_empty":"该购物车为空。", 
         "item_name":"商品名称", 
         "cancel":"取消", 
-        "eg_milk":"例如：牛奶"
+        "eg_milk":"例如：牛奶",
+        "link":"链接",
+        "price":"价格",
+        "quantity":"数量"
     },
     "cart": {
         "carts":"购物车",

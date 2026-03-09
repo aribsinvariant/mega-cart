@@ -54,7 +54,8 @@
         "toggle_light_mode": "切换到浅色模式",
         "language":"语言",
         "inbox":"收件箱",
-        "shared_carts":"共享购物车"
+        "shared_carts":"共享购物车",
+        "account_settings":"账户设置"
     },
     "recover": {
         "forgot_password":"忘记密码", 
@@ -114,5 +115,35 @@
         "m_ago": "{count} 分钟前",
         "h_ago": "{count} 小时前",
         "d_ago": "{count} 天前"
+    },
+    "account_settings": {
+        "account_settings":"账户设置",
+        "edit":"编辑",
+        "name":"姓名",
+        "profile_picture":"头像",
+        "cancel":"取消",
+        "save":"保存",
+        "change_email_password":"更改邮箱/密码",
+        "back_to_carts":"← 返回购物车",
+        "name_updated":"显示名称更新成功！",
+        "name_update_failed":"更新显示名称失败。请重试。"
+    },
+    "security_settings": {
+        "change_email_password":"更改邮箱/密码",
+        "change_email":"更改邮箱",
+        "change_password":"更改密码",
+        "current_password":"当前密码",
+        "new_email":"新邮箱",
+        "new_password":"新密码（至少6个字符）",
+        "confirm_new_password":"确认新密码",
+        "cancel":"取消",
+        "save":"保存",
+        "hide":"隐藏",
+        "show":"显示",
+        "email_updated":"邮箱更新成功！",
+        "password_updated":"密码更新成功！",
+        "update_failed":"更新失败。请检查您的当前密码并重试。",
+        "back_to_account_settings":"← 返回账户设置"
+
     }
 }

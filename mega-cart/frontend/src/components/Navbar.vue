@@ -71,6 +71,11 @@
                   {{ themeLabel }}
                 </button>
               </li>
+              <li v-if="isLoggedIn">
+                <button class="dropdown-item" @click="$router.push({ name: 'accountSettings' })">
+                  {{ $t("nav.account_settings") }}
+                </button>
+              </li>
             </ul>
         </li>
       </ul>

@@ -50,7 +50,8 @@
         "toggle_light_mode": "الوضع الفاتح",
         "language":"لغة",
         "inbox":"صندوق الوارد",
-        "shared_carts":"السلات المشتركة"
+        "shared_carts":"السلات المشتركة",
+        "account_settings":"إعدادات الحساب"
     },
     "recover": {
         "forgot_password":"نسيت كلمة المرور", 
@@ -111,5 +112,35 @@
         "m_ago": "منذ {count} دقيقة",
         "h_ago": "منذ {count} ساعة",
         "d_ago": "منذ {count} يوم"
+    },
+    "account_settings": {
+        "account_settings":"إعدادات الحساب",
+        "edit":"تعديل",
+        "name":"الاسم",
+        "profile_picture":"صورة الملف الشخصي",
+        "cancel":"إلغاء",
+        "save":"حفظ",
+        "change_email_password":" تغيير البريد الإلكتروني/كلمة المرور",
+        "back_to_carts":"← العودة إلى السلات",
+        "name_updated":"تم تحديث اسم العرض بنجاح!",
+        "name_update_failed":"فشل تحديث اسم العرض. يرجى المحاولة مرة أخرى."
+    },
+    "security_settings": {
+        "change_email_password":" تغيير البريد الإلكتروني/كلمة المرور",
+        "change_email":" تغيير البريد الإلكتروني",
+        "change_password":" تغيير كلمة المرور",
+        "current_password":"كلمة المرور الحالية",
+        "new_email":"البريد الإلكتروني الجديد",
+        "new_password":"كلمة مرور جديدة (6 أحرف على الأقل)",
+        "confirm_new_password":"تأكيد كلمة المرور الجديدة",
+        "cancel":"إلغاء",
+        "save":"حفظ",
+        "hide":"إخفاء",
+        "show":"عرض",
+        "email_updated":"تم تحديث البريد الإلكتروني بنجاح!",
+        "password_updated":"تم تحديث كلمة المرور بنجاح!",
+        "update_failed":"فشل التحديث. يرجى التحقق من كلمة المرور الحالية والمحاولة مرة أخرى.",
+        "back_to_account_settings":"← العودة إلى إعدادات الحساب"
+
     }
 }

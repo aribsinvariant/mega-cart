@@ -50,7 +50,8 @@
         "toggle_light_mode": "Modo claro",
         "language":"Idioma",
         "inbox":"Bandeja de entrada",
-        "shared_carts":"Carritos compartidos"
+        "shared_carts":"Carritos compartidos",
+        "account_settings":"Configuración de la cuenta"
     },
     "recover": {
         "forgot_password":"Olvidé mi contraseña", 
@@ -110,5 +111,35 @@
         "m_ago": "Hace {count} min",
         "h_ago": "Hace {count} h",
         "d_ago": "Hace {count} días"
+    },
+    "account_settings": {
+        "account_settings":"Configuración de la cuenta",
+        "edit":"Editar",
+        "name":"Nombre",
+        "profile_picture":"Imagen de perfil",
+        "cancel":"Cancelar",
+        "save":"Guardar",
+        "change_email_password":"Cambiar correo electrónico/contraseña",
+        "back_to_carts":"← Volver a los carritos",
+        "name_updated":"Nombre de visualización actualizado con éxito!",
+        "name_update_failed":"Error al actualizar el nombre de visualización. Por favor, inténtalo de nuevo."
+    },
+    "security_settings": {
+        "change_email_password":"Cambiar correo electrónico/contraseña",
+        "change_email":"Cambiar Correo Electrónico",
+        "change_password":"Cambiar Contraseña",
+        "current_password":"Contraseña actual",
+        "new_email":"Nuevo correo electrónico",
+        "new_password":"Nueva contraseña (al menos 6 caracteres)",
+        "confirm_new_password":"Confirmar nueva contraseña",
+        "cancel":"Cancelar",
+        "save":"Guardar",
+        "hide":"Ocultar",
+        "show":"Mostrar",
+        "email_updated":"Correo electrónico actualizado con éxito!",
+        "password_updated":"Contraseña actualizada con éxito!",
+        "update_failed":"Error al actualizar. Por favor, verifica tu contraseña actual y vuelve a intentarlo.",
+        "back_to_account_settings":"← Volver a la configuración de la cuenta"
+
     }
 }

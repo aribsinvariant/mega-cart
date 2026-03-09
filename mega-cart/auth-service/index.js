@@ -39,6 +39,31 @@ async function connectQueue() {
 }
 connectQueue();
 
+function authenticateToken(req, res, next) {
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) return res.status(401).json({ error: 'No token' });
+  try {
+    req.user = jwt.verify(token, JWT_SECRET);
+    next();
+  } catch {
+    return res.status(403).json({ error: 'Invalid token' });
+  }
+}
+
+app.get('/account/me', authenticateToken, async (req, res) => {
+  try {
+    const result = await db.query(
+      'SELECT id, username, email FROM users WHERE id = $1',
+      [req.user.id]
+    );
+    if (result.rows.length === 0) return res.status(404).json({ error: 'User not found' });
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error('Error in /account/me:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 app.get('/users/by-email', async (req, res) => {
   try {
     const email = (req.query.email || "").trim().toLowerCase();

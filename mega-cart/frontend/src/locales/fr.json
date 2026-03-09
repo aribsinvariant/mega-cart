@@ -50,7 +50,8 @@
         "toggle_light_mode": "Passer au mode clair",
         "language":"Langue",
         "inbox":"Boîte de réception",
-        "shared_carts":"Paniers partagés"
+        "shared_carts":"Paniers partagés",
+        "account_settings":"Paramètres du compte"
     },
     "recover": {
         "forgot_password":"Mot de passe oublié", 
@@ -110,5 +111,35 @@
         "m_ago": "Il y a {count} min",
         "h_ago": "Il y a {count} h",
         "d_ago": "Il y a {count} jours"
+    },
+    "account_settings": {
+        "account_settings":"Paramètres du compte",
+        "edit":"Modifier",
+        "name":"Nom",
+        "profile_picture":"Image de profil",
+        "cancel":"Annuler",
+        "save":"Enregistrer",
+        "change_email_password":"Changer l’e-mail/le mot de passe",
+        "back_to_carts":"← Retour aux paniers",
+        "name_updated":"Nom d’affichage mis à jour avec succès !",
+        "name_update_failed":"Échec de la mise à jour du nom d’affichage. Veuillez réessayer."
+    },
+    "security_settings": {
+        "change_email_password":"Changer l’e-mail/le mot de passe",
+        "change_email":"Changer l’e-mail",
+        "change_password":"Changer le mot de passe",
+        "current_password":"Mot de passe actuel",
+        "new_email":"Nouvel e-mail",
+        "new_password":"Nouveau mot de passe (au moins 6 caractères)",
+        "confirm_new_password":"Confirmer le nouveau mot de passe",
+        "cancel":"Annuler",
+        "save":"Enregistrer",
+        "hide":"Cacher",
+        "show":"Afficher",
+        "email_updated":"E-mail mis à jour avec succès !",
+        "password_updated":"Mot de passe mis à jour avec succès !",
+        "update_failed":"Échec de la mise à jour. Veuillez vérifier votre mot de passe actuel et réessayer.",
+        "back_to_account_settings":"← Retour aux paramètres du compte"
+
     }
 }

@@ -10,6 +10,8 @@ import ResetPage from "@/components/ResetPage.vue";
 import SharedCartLink from "@/components/SharedCartLink.vue";
 import SharedCartInbox from "@/components/SharedCartInbox.vue";
 import SharedCartPage from "@/components/SharedCartPage.vue";
+import AccountSettings from "@/components/AccountSettings.vue";
+import SecuritySettings from "@/components/SecuritySettings.vue";
 
 const routes = [
   { path: "/", name: "home", component: HomePage },
@@ -31,6 +33,8 @@ const routes = [
   },
   { path: "/carts/shared", name: "sharedCartView", component: SharedCartPage, meta: { requiresAuth: true }, props: true },
   { path: "/carts/shared/inbox", name: "inbox", component: SharedCartInbox, meta: { requiresAuth: true } },
+  { path: "/account/settings", name: "accountSettings", component: AccountSettings, meta: { requiresAuth: true } },
+  { path: "/account/settings/security", name: "securitySettings", component: SecuritySettings, meta: { requiresAuth: true } }
 ];
 
 const router = createRouter({

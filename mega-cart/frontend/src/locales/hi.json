@@ -50,7 +50,8 @@
         "toggle_light_mode": "लाइट मोड पर स्विच करें",
         "language":"भाषा",
         "inbox":"इनबॉक्स",
-        "shared_carts":"साझा कार्ट"
+        "shared_carts":"साझा कार्ट",
+        "account_settings":"खाता सेटिंग्स"
     },
     "recover": {
         "forgot_password":"पासवर्ड भूल गए", 
@@ -111,5 +112,35 @@
         "m_ago": "{count} मिनट पहले",
         "h_ago": "{count} घंटे पहले",
         "d_ago": "{count} दिन पहले"
+    },
+    "account_settings": {
+        "account_settings":"खाता सेटिंग्स",
+        "edit":"संपादित करें",
+        "name":"नाम",
+        "profile_picture":"प्रोफ़ाइल चित्र",
+        "cancel":"रद्द करें",
+        "save":"सहेजें",
+        "change_email_password":"ईमेल/पासवर्ड बदलें",
+        "back_to_carts":"← कार्ट पर वापस जाएँ",
+        "name_updated":"डिस्प्ले नाम सफलतापूर्वक अपडेट किया गया!",
+        "name_update_failed":"डिस्प्ले नाम अपडेट करने में विफल। कृपया पुन: प्रयास करें।"
+    },
+    "security_settings": {
+        "change_email_password":"ईमेल/पासवर्ड बदलें",
+        "change_email":"ईमेल बदलें",
+        "change_password":"पासवर्ड बदलें",
+        "current_password":"वर्तमान पासवर्ड",
+        "new_email":"नया ईमेल",
+        "new_password":"नया पासवर्ड (कम से कम 6 अक्षर)",
+        "confirm_new_password":"नया पासवर्ड पुष्टि करें",
+        "cancel":"रद्द करें",
+        "save":"सहेजें",
+        "hide":"छिपाएं",
+        "show":"दिखाएं",
+        "email_updated":"ईमेल सफलतापूर्वक अपडेट किया गया!",
+        "password_updated":"पासवर्ड सफलतापूर्वक अपडेट किया गया!",
+        "update_failed":"अपडेट करने में विफल। कृपया अपना वर्तमान पासवर्ड जांचें और पुन: प्रयास करें।",
+        "back_to_account_settings":"← खाता सेटिंग्स पर वापस जाएँ"
+
     }
 }

@@ -50,7 +50,8 @@
         "toggle_light_mode":"Toggle Light Mode",
         "language":"Language",
         "inbox":"Inbox",
-        "shared_carts":"Shared Carts"
+        "shared_carts":"Shared Carts",
+        "account_settings":"Account Settings"
     },
     "recover": {
         "forgot_password":"Forgot Password", 
@@ -110,5 +111,35 @@
         "m_ago": "{count}m ago", 
         "h_ago": "{count}h ago", 
         "d_ago": "{count}d ago"
+    },
+    "account_settings": {
+        "account_settings":"Account Settings",
+        "edit":"Edit",
+        "name":"Name",
+        "profile_picture":"Profile Picture",
+        "cancel":"Cancel",
+        "save":"Save",
+        "change_email_password":"Change Email/Password",
+        "back_to_carts":"← Back to carts",
+        "name_updated":"Display name updated successfully!",
+        "name_update_failed":"Failed to update display name. Please try again."
+    },
+    "security_settings": {
+        "change_email_password":"Change Email/Password",
+        "change_email":"Change Email",
+        "change_password":"Change Password",
+        "current_password":"Current Password",
+        "new_email":"New Email",
+        "new_password":"New Password (at least 6 characters)",
+        "confirm_new_password":"Confirm New Password",
+        "cancel":"Cancel",
+        "save":"Save",
+        "hide":"Hide",
+        "show":"Show",
+        "email_updated":"Email updated successfully!",
+        "password_updated":"Password updated successfully!",
+        "update_failed":"Failed to update. Please check your current password and try again.",
+        "back_to_account_settings":"← Back to Account Settings"
+
     }
 }

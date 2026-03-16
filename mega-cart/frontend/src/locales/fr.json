@@ -9,7 +9,10 @@
         "eg_milk":"ex. Lait",
         "link":"Lien",
         "price":"Prix",
-        "quantity":"Quantité"
+        "quantity":"Quantité",
+        "total":"Total",
+        "edit_item":"Modifier l'article",
+        "confirm":"Confirmer"
     },
     "cart": {
         "carts":"Paniers",

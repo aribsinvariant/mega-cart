@@ -9,7 +9,10 @@
         "eg_milk":"例如：牛奶",
         "link":"链接",
         "price":"价格",
-        "quantity":"数量"
+        "quantity":"数量",
+        "total":"总计",
+        "edit_item":"编辑商品",
+        "confirm":"确认"
     },
     "cart": {
         "carts":"购物车",

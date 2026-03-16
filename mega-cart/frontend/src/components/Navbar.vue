@@ -21,7 +21,7 @@
         <li v-if="isLoggedIn" class="nav-item p-2">
             <router-link class="nav-link" to="/carts/shared">{{ $t("nav.shared_carts") }}</router-link>
         </li>
-        <li class="nav-item p-2">
+        <li v-if="isLoggedIn" class="nav-item p-2">
             <router-link class="nav-link" to="/carts/shared/inbox">{{ $t("nav.inbox") }}
               <span v-if="inboxCount > 0">({{ inboxCount }})</span>
             </router-link>

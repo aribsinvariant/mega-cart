@@ -17,6 +17,8 @@
     @duplicate-cart="duplicateCart"
     @share-cart-link="shareWithLink"
     @update-inbox="updateInboxCount"
+    @delete-cart="deleteCart"
+
   />
 </template>
 
@@ -348,6 +350,23 @@ export default {
       } catch (err) {
         console.error("Share with link failed:", err?.response?.status, err?.response?.data);
         alert(`Failed to create shareable link (${err?.response?.status || "no status"})`);
+      }
+    },
+    async deleteCart(cart){
+      if (!confirm("Are you sure you want to delete this cart? This action cannot be undone.")) {
+        return;
+      }
+
+      try {
+        await api.delete(`/carts/${cart.id}`);
+        this.carts = this.carts.filter((c) => c.id !== cart.id);
+        if (this.selectedCartId === cart.id) {
+          this.selectedCartId = null;
+          this.$router.push({ name: "carts" });
+        }
+      } catch (err) {
+        console.error("Delete cart failed:", err?.response?.status, err?.response?.data);
+        alert(`Failed to delete cart (${err?.response?.status || "no status"})`);
       }
     }
   }

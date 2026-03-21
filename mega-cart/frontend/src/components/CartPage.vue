@@ -25,6 +25,7 @@
             </button>
             <button class="edit-btn" title="Edit" @click="openEditModal(cart)" :style="{ color: cart.description ? getContrastColor(cart.description) : 'var(--bs-body-color)' }">✏️</button>
             <button class="edit-btn" title="Duplicate" @click="duplicateCart(cart)" :style="{ color: cart.description ? getContrastColor(cart.description) : 'var(--bs-body-color)' }">⧉</button>
+            <button class="edit-btn" title="Delete" @click="deleteCart(cart)" :style="{ color: cart.description ? getContrastColor(cart.description) : 'var(--bs-body-color)' }">❌</button>
             </div>
             <div class="d-flex gap-2">
               <button 
@@ -411,6 +412,9 @@ export default {
     },
     duplicateCart(cart){
       this.$emit("duplicate-cart", cart);
+    },
+    deleteCart(cart){
+      this.$emit("delete-cart", cart);
     }
   },
 };

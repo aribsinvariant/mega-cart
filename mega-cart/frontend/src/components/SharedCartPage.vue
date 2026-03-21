@@ -36,6 +36,13 @@
           >
             • {{ cart.can_edit ? $t("shared_cart.editable") : $t("shared_cart.view_only") }}
           </small>
+          <button 
+            class="edit-btn" 
+            title="remove" @click="removeSharedCart(cart)" 
+            :style="{ color: cart.description ? getContrastColor(cart.description) : 'var(--bs-body-color)' }"
+            >
+              ❌
+            </button>
         </div>
 
         <div class="d-flex gap-2 align-items-center">
@@ -104,6 +111,30 @@
     <div v-if="showTagModal" class="modal-backdrop fade show"></div>
   </div>
 </template>
+
+<style scoped>
+  .edit-btn {
+    background: none !important;
+    border: none !important;
+    cursor: pointer !important;
+    color: #aaa !important;
+    font-size: 13px !important;
+    padding: 2px 5px !important;
+    border-radius: 4px !important;
+    filter: grayscale(100%) !important;
+  } 
+
+  .edit-btn:hover {
+    color: #666 !important;
+    background-color: #f0f0f0 !important;
+  }
+
+  .list-group-item .btn-outline-primary:hover {
+    background-color: rgba(0, 0, 0, 0.1) !important;
+    color: inherit !important;
+    border-color: inherit !important;
+  } 
+</style>
 
 <script>
 import { api } from "../api";
@@ -187,6 +218,24 @@ export default {
         backgroundColor: "transparent",
       };
     },
+    async removeSharedCart(cart) {
+      if (!confirm("Are you sure you want to remove this shared cart? This will revoke your access to it.")) {
+        return;
+      }
+  
+      try {
+        await api.delete(`/carts/${cart.id}`);
+        this.carts = this.carts.filter((c) => c.id !== cart.id);
+        if (this.selectedCartId === cart.id) {
+          this.selectedCartId = null;
+          this.$router.push({ name: "carts" });
+          this.$refs.sharedCartPage.load();
+        }
+      } catch (err) {
+        console.error("Remove shared cart failed:", err?.response?.status, err?.response?.data);
+        alert(`Failed to remove shared cart (${err?.response?.status || "no status"})`);
+      }
+    }
   },
 };
 </script>

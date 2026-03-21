@@ -12,7 +12,8 @@
         "quantity":"Cantidad",
         "total":"Total",
         "edit_item":"Editar artículo",
-        "confirm":"Confirmar"
+        "confirm":"Confirmar",
+        "autofill":"Autocompletar con IA"
     },
     "cart": {
         "carts":"Carritos",

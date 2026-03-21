@@ -12,7 +12,8 @@
         "quantity":"Quantity",
         "total":"Total",
         "edit_item":"Edit Item",
-        "confirm":"Confirm"
+        "confirm":"Confirm",
+        "autofill":"AI Autofill"
     },
     "cart": {
         "carts":"Carts",

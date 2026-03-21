@@ -157,6 +157,14 @@
               <button class="btn btn-primary" type="submit" :disabled="newItemName.length === 0">
                 {{ $t("cart_details.add_item") }}
               </button>
+              <button 
+                type="button" 
+                class="btn btn-info"
+                @click="llmAutoFill()"
+                :disabled="!newItemLink || !isValidUrl(newItemLink)"
+              >
+                {{ $t("cart_details.autofill") }}
+              </button>
             </div>
           </form>
         </div>
@@ -283,7 +291,9 @@ export default {
       commentsLoading: false,
       commentsPosting: false,
       commentsError: null,
-      isDarkMode: document.body.classList.contains('dark')
+      isDarkMode: document.body.classList.contains('dark'),
+      autofilling: false,
+      autofillError: '',
     };
   },
 
@@ -366,6 +376,33 @@ export default {
       this.editItemLink = "";
       this.editItemPrice = "";
       this.editItemQuantity = "1";
+    },
+    async llmAutoFill() {
+      this.autofilling = true
+      this.autofillError = ''
+
+      try {
+        const res = await api.post('/autofill', { url: this.newItemLink })
+        const item = res.data
+        if (item.name)          this.newItemName     = item.name
+        if (item.price != null) this.newItemPrice    = item.price
+        if (item.quantity)      this.newItemQuantity = item.quantity
+      } 
+      catch (err) {
+        this.autofillError = err?.response?.data?.message ?? 'Autofill failed. Please fill in details manually.'
+        console.error('Autofill error:', err)
+      } 
+      finally {
+        this.autofilling = false
+      }
+    },
+    isValidUrl(url) {
+      try {
+        new URL(url.startsWith('http') ? url : 'https://' + url)
+        return true
+      } catch {
+        return false
+      }
     },
     openLink(link) {
       if (!link) return;

@@ -12,7 +12,8 @@
         "quantity":"Quantité",
         "total":"Total",
         "edit_item":"Modifier l'article",
-        "confirm":"Confirmer"
+        "confirm":"Confirmer",
+        "autofill":"Remplissage automatique avec IA"
     },
     "cart": {
         "carts":"Paniers",

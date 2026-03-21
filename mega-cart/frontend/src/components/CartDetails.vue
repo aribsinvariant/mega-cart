@@ -20,11 +20,22 @@
         <div class="d-flex justify-content-between align-items-center">
 
           <div>
-            <div
-              class="fw-bold item-link"
-              @click="openLink(item.description)"
-            >
-              {{ item.name }}
+            <div class="d-flex align-items-center gap-2">
+              <div
+                class="fw-bold item-link"
+                @click="openLink(item.description)"
+              >
+                {{ item.name }}
+              </div>
+
+              <span
+                v-if="cart?.can_edit"
+                class="edit-btn"
+                title="Edit"
+                @click="openEditModal(item)"
+              >
+                ✏️
+              </span>
             </div>
 
             <div class="text-muted">
@@ -42,7 +53,8 @@
               −
             </button>
 
-            <span>{{ item.quantity }}</span>
+            <span v-if="!cart?.can_edit">{{ $t("cart_details.quantity") }}: {{ item.quantity }}</span>
+            <span v-if="cart?.can_edit">{{ item.quantity }}</span>
 
             <button
               v-if="cart?.can_edit"
@@ -53,7 +65,7 @@
             </button>
 
             <span class="ms-3 fw-bold">
-              ${{ (item.price * item.quantity).toFixed(2) }}
+              ${{ (item.price).toFixed(2) }}
             </span>
 
             <button
@@ -66,6 +78,15 @@
         </div>
       </li>
     </ul>
+
+    <ul v-if="cart && cart.items.length > 0" class="list-group mt-3">
+      <li class="list-group-item d-flex justify-content-end" color="secondary">
+        <span class="fw-bold">
+          {{ $t("cart_details.total") }}: ${{ cart.items.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(2) }}
+        </span>
+      </li>
+    </ul>
+
     <div
       v-if="showModal"
       class="modal fade show"
@@ -141,6 +162,83 @@
         </div>
       </div>
     </div>
+
+    <div
+      v-if="showEditModal"
+      class="modal fade show"
+      tabindex="-1"
+      style="display: block;"
+      role="dialog"
+      aria-modal="true"
+      @click.self="closeEditModal"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">{{ $t("cart_details.edit_item") }}</h5>
+            <button type="button" class="btn-close" @click="closeEditModal"></button>
+          </div>
+
+          <form @submit.prevent="modifyItem()">
+            <div class="modal-body">
+              <label class="form-label" for="itemName">{{ $t("cart_details.item_name") }}</label>
+              <input
+                id="itemName"
+                class="form-control"
+                v-model.trim="editItemName"
+                :placeholder="$t('cart_details.eg_milk')"
+                required
+                maxlength="40"
+                ref="itemNameInput"
+              />
+              <label class="form-label" for="link">{{ $t("cart_details.link") }}</label>
+              <input
+                id="link"
+                class="form-control"
+                v-model.trim="editItemLink"
+                :placeholder="'e.g. http://example.com/product'"
+                required
+                maxlength="1024"
+                ref="itemLinkInput"
+              />
+              <label class="form-label" for="price">{{ $t("cart_details.price") }}</label>
+              <input
+                id="price"
+                class="form-control"
+                v-model.trim="editItemPrice"
+                :placeholder="'e.g. 1.99'"
+                required
+                type="number"
+                step="0.01"
+                min="0"
+              />
+              <label class="form-label" for="quantity">{{ $t("cart_details.quantity") }}</label>
+              <input
+                id="quantity"
+                class="form-control"
+                v-model.trim="editItemQuantity"
+                :placeholder="'e.g. 1'"
+                required
+                type="number"
+                step="1"
+                min="1"
+                default="1"
+              />
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline-secondary" @click="closeEditModal">
+                {{ $t("cart_details.cancel") }}
+              </button>
+              <button class="btn btn-primary" type="submit" :disabled="editItemName.length === 0">
+                {{ $t("cart_details.confirm") }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
     <CommentSection
       :comments="cartComments"
       :current-user="currentUser"
@@ -171,6 +269,12 @@ export default {
       cart: null,
       loading: true,
       showModal: false,
+      showEditModal: false,
+      editingItem: null,
+      editItemName: "",
+      editItemLink: "",
+      editItemPrice: "",
+      editItemQuantity: "1",
       newItemName: "",
       newItemLink: "",
       newItemPrice: "",
@@ -217,6 +321,51 @@ export default {
       });
 
       this.getCart();
+    },
+    async modifyItem() {
+      if (!this.cart?.can_edit) return;
+
+      const updatedItems = this.cart.items.map(i =>
+        i === this.editingItem
+          ? {
+              ...i,
+              name: this.editItemName,
+              description: this.editItemLink,
+              price: parseFloat(this.editItemPrice),
+              quantity: parseInt(this.editItemQuantity)
+            }
+          : i
+      );
+
+      await api.put(`/carts/${this.id}`, {
+        name: this.cart.name,
+        description: this.cart.description ?? null,
+        items: updatedItems,
+      });
+
+      await this.getCart();
+      this.closeEditModal();
+    },
+    openEditModal(item) {
+      if (!this.cart?.can_edit) return;
+      
+      this.editingItem = item;
+      
+      this.editItemName = item.name;
+      this.editItemLink = item.description;
+      this.editItemPrice = item.price;
+      this.editItemQuantity = item.quantity;
+      
+      this.showEditModal = true;
+    },
+    closeEditModal() {
+      this.showEditModal = false;
+      this.editingItem = null;
+      
+      this.editItemName = "";
+      this.editItemLink = "";
+      this.editItemPrice = "";
+      this.editItemQuantity = "1";
     },
     openLink(link) {
       if (!link) return;
@@ -338,5 +487,21 @@ export default {
 
   .item-link:hover {
     text-decoration: underline;
+  }
+
+  .edit-btn {
+    background: none !important;
+    border: none !important;
+    cursor: pointer !important;
+    color: #aaa !important;
+    font-size: 13px !important;
+    padding: 2px 5px !important;
+    border-radius: 4px !important;
+    filter: grayscale(100%) !important;
+  }
+
+  .edit-btn:hover {
+    color: #666 !important;
+    background-color: #f0f0f0 !important;
   }
 </style>

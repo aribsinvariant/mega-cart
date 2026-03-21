@@ -9,7 +9,10 @@
         "eg_milk":"p. ej. Leche",
         "link":"Enlace",
         "price":"Precio",
-        "quantity":"Cantidad"
+        "quantity":"Cantidad",
+        "total":"Total",
+        "edit_item":"Editar artículo",
+        "confirm":"Confirmar"
     },
     "cart": {
         "carts":"Carritos",

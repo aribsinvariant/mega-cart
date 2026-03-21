@@ -366,7 +366,7 @@ app.put('/:id', async (req, res) => {
 
         await client.query('DELETE FROM items WHERE cart_id = $1', [cartId]);
 
-        if (items && items.length > 0) { // <--- ADD THIS CHECK  <----- kiratgpt
+        if (items && items.length > 0) { // <--- ADD THIS CHECK  <----- kiratgpt <----- 😭
             for (const item of items) {
                 await client.query(
                     'INSERT INTO items (cart_id, name, description, price, quantity) VALUES ($1, $2, $3, $4, $5)',

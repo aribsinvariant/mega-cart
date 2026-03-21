@@ -9,7 +9,10 @@
         "eg_milk":"e.g. Milk",
         "link":"Link",
         "price":"Price",
-        "quantity":"Quantity"
+        "quantity":"Quantity",
+        "total":"Total",
+        "edit_item":"Edit Item",
+        "confirm":"Confirm"
     },
     "cart": {
         "carts":"Carts",

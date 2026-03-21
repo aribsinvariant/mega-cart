@@ -59,6 +59,13 @@ services:
     depends_on:
       - gateway
 
+  extension-build:
+    build:
+      context: ./extension
+      dockerfile: Dockerfile
+    volumes:
+      - ./extension/dist:/app/dist
+
   mailpit:
     image: axllent/mailpit:latest
     ports:

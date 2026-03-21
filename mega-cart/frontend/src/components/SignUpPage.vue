@@ -9,6 +9,7 @@
           id="email"
           class="form-control"
           v-model.trim="email"
+          type="email"
           autocomplete="email"
           required
         />

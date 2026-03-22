@@ -25,6 +25,8 @@ services:
     build: ./auth-service
     ports:
       - "3001:3001"
+    volumes:
+      - ./auth-service/profile_pictures:/app/profile_pictures
     environment:
       - AMQP_URL=amqp://rabbitmq
       - DATABASE_URL=postgresql://${DB_USER}:${DB_PASS}@postgres:5432/auth_db

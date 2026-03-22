@@ -3,3 +3,6 @@
 .DS_Store
 Thumbs.db
 **/dist
+
+# profile pictures
+mega-cart/auth-service/profile_pictures/

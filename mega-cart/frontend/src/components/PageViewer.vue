@@ -12,6 +12,8 @@
     @add-tag="$emit('add-tag', $event)"
     @edit-cart="$emit('edit-cart', $event)"
     @duplicate-cart="$emit('duplicate-cart', $event)"
+    @delete-cart="$emit('delete-cart', $event)"
+    @remove-shared-cart="$emit('remove-shared-cart', $event)"
   />
 </template>
 
@@ -21,10 +23,11 @@ import SignUpPage from "./SignUpPage.vue";
 import LogInPage from "./LogInPage.vue";
 import CartPage from "./CartPage.vue";
 import CartDetails from "./CartDetails.vue";
+import SharedCartPage from "./SharedCartPage.vue";
 
 export default {
   props: ["page", "selectedCart", "carts"],
-  components: { HomePage, SignUpPage, LogInPage, CartPage, CartDetails },
-  emits: ["signup-success", "login-success", "cart-selected", "back", "create-cart", "add-item", "add-tag", "edit-cart", "duplicate-cart"]
+  components: { HomePage, SignUpPage, LogInPage, CartPage, CartDetails, SharedCartPage },
+  emits: ["signup-success", "login-success", "cart-selected", "back", "create-cart", "add-item", "add-tag", "edit-cart", "duplicate-cart", "delete-cart"]
 };
 </script>

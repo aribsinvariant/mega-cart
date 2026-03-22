@@ -169,6 +169,27 @@ app.post('/:id/share', async (req, res) => {
     }
 });
 
+// remove shared cart for invitee
+app.delete('/shared/:id', async (req, res) => {
+    const cartId = req.params.id;
+    const userId = req.user.id;
+
+    console.log("cartId:", cartId, "userId:", userId);
+    try {
+        const result = await query(
+            "DELETE FROM shared_carts WHERE cart_id = $1 AND user_id = $2 AND status = 'accepted' RETURNING *",
+            [cartId, userId]
+        );
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Shared cart not found" });
+        }
+        res.json({ message: "Shared cart removed" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to remove shared cart" });
+    }
+});
+
 // list pending cart invites
 app.get('/invites', async (req, res) => {
     const userId = req.user.id;
@@ -459,10 +480,36 @@ app.get('/:id/comments', async (req, res) => {
         if (!access.allowed) return res.status(403).json({ error: "Forbidden: You do not have access to this cart's comments" });
 
         const result = await query(
-            'SELECT id, user_id, username, content, created_at FROM cart_comments WHERE cart_id = $1 ORDER BY created_at ASC',
-            [id]
+        'SELECT id, user_id, username, content, created_at FROM cart_comments WHERE cart_id = $1 ORDER BY created_at ASC',
+        [id]
         );
-        res.json(result.rows);
+
+        const comments = result.rows;
+
+        const userIds = [...new Set(comments.map(c => c.user_id))];
+
+        let usersMap = {};
+
+        if (userIds.length > 0) {
+        try {
+            const usersRes = await axios.get('http://auth-service:3001/users/bulk', {
+            params: { ids: userIds.join(',') }
+            });
+
+            usersRes.data.forEach(user => {
+            usersMap[user.id] = user;
+            });
+        } catch (err) {
+            console.error("Failed to fetch user data:", err.message);
+        }
+        }
+
+        const enrichedComments = comments.map(comment => ({
+        ...comment,
+        profile_picture: usersMap[comment.user_id]?.profile_picture || null
+        }));
+
+        res.json(enrichedComments);
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Failed to fetch comments" });

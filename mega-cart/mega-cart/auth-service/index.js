@@ -6,13 +6,15 @@ const crypto = require('crypto');
 const amqp = require('amqplib');
 const db = require('./db');
 const app = express();
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
-const cors = require('cors');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret';
 app.use(express.json());
+
+const authMiddleware = require('./authMiddleware');
+app.use((req, res, next) => {
+    console.log("AUTH-SERVICE HIT:", req.method, req.originalUrl);
+    next();
+});
 
 let channel;
 
@@ -42,74 +44,6 @@ async function connectQueue() {
     }
 }
 connectQueue();
-
-// update profile pic
-app.use('/profile_pictures', express.static(path.join(__dirname, 'profile_pictures')));
-const uploadDir = path.join(__dirname, 'profile_pictures');
-fs.mkdirSync(uploadDir, { recursive: true });
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, uploadDir);
-    }, 
-    filename: (req, file, cb) => {
-        const ext = path.extname(file.originalname);
-        cb(null, `user-${req.user.id}${ext}`);
-    }
-});
-const upload = multer({ storage });
-
-app.use(cors({
-  origin: 'http://localhost:5173',
-  credentials: true
-}));
-
-function authenticateToken(req, res, next) {
-  const token = req.headers.authorization?.split(' ')[1];
-  if (!token) return res.status(401).json({ error: 'No token' });
-  try {
-    req.user = jwt.verify(token, JWT_SECRET);
-    next();
-  } catch {
-    return res.status(403).json({ error: 'Invalid token' });
-  }
-}
-
-app.get('/account/me', authenticateToken, async (req, res) => {
-  try {
-    const result = await db.query(
-      'SELECT id, username, email, profile_picture FROM users WHERE id = $1',
-      [req.user.id]
-    );
-    if (result.rows.length === 0) return res.status(404).json({ error: 'User not found' });
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error('Error in /account/me:', err);
-    res.status(500).json({ error: 'Server error' });
-  }
-});
-
-app.get('/users/by-email', async (req, res) => {
-  try {
-    const email = (req.query.email || "").trim().toLowerCase();
-    if (!email) {
-      return res.status(400).json({ error: "Email is required" });
-    }
-
-    const result = await db.query(
-      "SELECT id FROM users WHERE lower(email) = $1",
-      [email]
-    );
-
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    return res.json({ userId: result.rows[0].id });
-  } catch (err) {
-    console.error("Error in /users/by-email:", err);
-    return res.status(500).json({ error: "Server error" });
-  }
-});
 
 app.post('/register', async (req, res) => {
     try {
@@ -187,7 +121,6 @@ app.post('/login', async (req, res) => {
         {
             id: user.id,
             email: user.email,
-            username: user.username,
         },
         JWT_SECRET,
         { expiresIn: '1h' }
@@ -280,7 +213,6 @@ app.post('/reset-password', async (req, res) => {
             [email]
         );
 
-
         res.status(200).json({ message: 'Password successfully reset' });
     } catch (error) {
         console.error('Error in /reset-password:', error);
@@ -288,56 +220,94 @@ app.post('/reset-password', async (req, res) => {
     }
 });
 
-app.post('/account/profile-picture', 
-    authenticateToken, 
-    upload.single('profilePicture'), 
-    async (req, res) => {
-    try {
-        if (!req.file) {
-            return res.status(400).json({ error: 'Profile picture file required' });
-        }
-        const profilePicturePath = `/profile_pictures/${req.file.filename}`;
+app.use(authMiddleware);
 
-        await db.query('UPDATE users SET profile_picture = $1 WHERE id = $2', 
-            [profilePicturePath, req.user.id]
-        )
-
-        res.status(200).json({ 
-            message: 'Profile picture successfully updated', 
-            profilePicture: profilePicturePath
-        });
-    } catch (error) {
-        console.error('Error in /account/profile_pictures:', error);
-        res.status(500).json({ error: 'Profile picture update failed'});
-    }
-});
-
-app.get('/users/bulk', async (req, res) => {
+app.get('/account/me', async (req, res) => {
   try {
-    const idsParam = req.query.ids;
-
-    if (!idsParam) {
-      return res.status(400).json({ error: 'ids query param required' });
-    }
-
-    
-    const ids = idsParam.split(',').map(id => parseInt(id)).filter(Boolean);
-
-    if (ids.length === 0) {
-      return res.json([]);
-    }
-
-    const result = await db.query(
-      'SELECT id, username, profile_picture FROM users WHERE id = ANY($1)',
-      [ids]
-    );
-
-    res.json(result.rows);
-  } catch (err) {
-    console.error('Error in /users/bulk:', err);
-    res.status(500).json({ error: 'Server error' });
+    const result = await db.query('SELECT id, username, email FROM users WHERE id = $1', [req.user.id]);
+    if (result.rows.length === 0) return res.status(404).json({ error: 'User not found' });
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error('Error in /account/me:', error);
+    res.status(500).json({ error: 'Failed to get user' });
   }
 });
 
-// maybe add delete user, forgot password (will need notify service for this), etc. 
+app.put('/account/username', async (req, res) => {
+  try {
+    const { username } = req.body;
+    if (!username) return res.status(400).json({ error: 'Username required' });
+
+    await db.query('UPDATE users SET username = $1 WHERE id = $2', [username, req.user.id]);
+    res.status(200).json({ message: 'Username updated successfully' });
+  } catch (error) {
+    console.error('Error in /account/username:', error);
+    res.status(500).json({ error: 'Failed to update username' });
+  }
+});
+
+app.put('/account/email', async (req, res) => {
+  try {
+    const email = req.body.email;
+    const password = req.body.password;
+
+    // Empty values
+    if (!email) return res.status(400).json({ error: 'Email value required' });
+    if (!password) return res.status(400).json({ error: 'Password value required' });
+
+    // Get current user
+    const result = await db.query('SELECT * FROM users WHERE id = $1', [req.user.id]);
+    if (result.rows.length === 0) return res.status(404).json({ error: 'User not found' });
+
+    // Verify current password
+    const passwordMatch = await bcrypt.compare(password, result.rows[0].password_hash);
+    if (!passwordMatch) return res.status(401).json({ error: 'Incorrect password' });
+
+    // Check new email isn't already taken
+    const emailCheck = await db.query('SELECT * FROM users WHERE email = $1', [email]);
+    if (emailCheck.rows.length > 0) return res.status(409).json({ error: 'Email already in use' });
+
+    // Update to new email
+    await db.query('UPDATE users SET email = $1 WHERE id = $2', [email, req.user.id]);
+
+    res.status(200).json({ message: 'Email updated successfully' });
+  } catch (error) {
+    console.error('Error in /account/email:', error);
+    res.status(500).json({ error: 'Failed to update email' });
+  }
+});
+
+app.put('/account/password', async (req, res) => {
+  try {
+    const oldPassword = req.body.oldPassword;
+    const newPassword = req.body.newPassword;
+
+    // Empty values
+    if (!oldPassword) return res.status(400).json({ error: 'Current password required' });
+    if (!newPassword) return res.status(400).json({ error: 'New password required' });
+
+    // Get current user
+    const result = await db.query('SELECT * FROM users WHERE id = $1', [req.user.id]);
+    if (result.rows.length === 0) return res.status(404).json({ error: 'User not found' });
+
+    // Verify old password
+    const passwordMatch = await bcrypt.compare(oldPassword, result.rows[0].password_hash);
+    if (!passwordMatch) return res.status(401).json({ error: 'Incorrect password' });
+
+    // Make sure new password is different
+    const samePassword = await bcrypt.compare(newPassword, result.rows[0].password_hash);
+    if (samePassword) return res.status(409).json({ error: 'New password cannot be the same as the old password' });
+
+    // Hash and update password
+    const newHashedPassword = await bcrypt.hash(newPassword, 10);
+    await db.query('UPDATE users SET password_hash = $1 WHERE id = $2', [newHashedPassword, req.user.id]);
+
+    res.status(200).json({ message: 'Password updated successfully' });
+  } catch (error) {
+    console.error('Error in /account/password:', error);
+    res.status(500).json({ error: 'Failed to update password' });
+  }
+});
+
+// maybe add delete user, forgot password (will need notify service for this), etc.
 app.listen(3001, () => console.log('Auth Service running on 3001'))

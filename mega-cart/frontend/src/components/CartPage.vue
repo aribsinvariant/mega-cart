@@ -7,14 +7,23 @@
       </button>
     </div>
 
-    <div class="mt-4">
+    <div class="mt-3">
+      <input
+        v-model="searchQuery"
+        class="form-control"
+        type="search"
+        :placeholder="$t('cart.search_carts')"
+      />
+    </div>
+
+    <div class="mt-3">
       <p v-if="carts.length === 0" class="text-muted">
         {{ $t("cart.no_carts_yet_create_one") }}
       </p>
 
       <ul v-else class="list-group">
         <li
-          v-for="cart in [...carts].sort((a, b) => a.id - b.id)"
+          v-for="cart in filteredCarts"
           :key="cart.id"
           class="list-group-item d-flex justify-content-between align-items-center"
           :style="{ backgroundColor: cart.description || 'var(--bs-body-bg)', color: getContrastColor(cart.description) }"
@@ -25,6 +34,7 @@
             </button>
             <button class="edit-btn" title="Edit" @click="openEditModal(cart)" :style="{ color: cart.description ? getContrastColor(cart.description) : 'var(--bs-body-color)' }">✏️</button>
             <button class="edit-btn" title="Duplicate" @click="duplicateCart(cart)" :style="{ color: cart.description ? getContrastColor(cart.description) : 'var(--bs-body-color)' }">⧉</button>
+            <button class="edit-btn" title="Delete" @click="deleteCart(cart)" :style="{ color: cart.description ? getContrastColor(cart.description) : 'var(--bs-body-color)' }">❌</button>
             </div>
             <div class="d-flex gap-2">
               <button 
@@ -294,13 +304,24 @@ export default {
       newTagName: "",
       shareEmail: "",
       updatedCartName: "",
-      isViewOnly: false
+      isViewOnly: false,
+      searchQuery: "",
     };
   },
   computed: {
     selectedCart() {
       return this.carts.find((c) => c.id === this.selectedCartId) || null;
-    }
+    },
+    filteredCarts() {
+      const q = this.searchQuery.trim().toLowerCase();
+      const sorted = [...this.carts].sort((a, b) => a.id - b.id);
+      if (!q) return sorted;
+      return sorted.filter(cart => {
+        const nameMatch = cart.name?.toLowerCase().includes(q);
+        const tagMatch = Array.isArray(cart.labels) && cart.labels.some(tag => tag.toLowerCase().includes(q));
+        return nameMatch || tagMatch;
+      });
+    },
   },
   methods: {
     openModal() {
@@ -411,6 +432,9 @@ export default {
     },
     duplicateCart(cart){
       this.$emit("duplicate-cart", cart);
+    },
+    deleteCart(cart){
+      this.$emit("delete-cart", cart);
     }
   },
 };

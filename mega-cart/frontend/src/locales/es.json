@@ -1,18 +1,19 @@
 {
     "cart_details": {
-        "back_to_carts": "← Volver a los carritos",
-        "add_item": "+ Añadir artículo",
-        "add_item_modal_title": "Añadir artículo",
-        "this_cart_is_empty": "Este carrito está vacío.",
-        "item_name": "Nombre del artículo",
-        "cancel": "Cancelar",
-        "eg_milk": "p. ej. Leche",
-        "link": "Enlace",
-        "price": "Precio",
-        "quantity": "Cantidad",
-        "total": "Total",
-        "edit_item": "Editar artículo",
-        "confirm": "Confirmar"
+        "back_to_carts":"← Volver a los carritos", 
+        "add_item":"+ Añadir artículo", 
+        "add_item_modal_title":"Añadir artículo",
+        "this_cart_is_empty":"Este carrito está vacío.", 
+        "item_name":"Nombre del artículo", 
+        "cancel":"Cancelar", 
+        "eg_milk":"p. ej. Leche",
+        "link":"Enlace",
+        "price":"Precio",
+        "quantity":"Cantidad",
+        "total":"Total",
+        "edit_item":"Editar artículo",
+        "confirm":"Confirmar",
+        "autofill":"Autocompletar con IA"
     },
     "cart": {
         "carts":"Carritos",

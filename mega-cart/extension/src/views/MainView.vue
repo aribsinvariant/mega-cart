@@ -71,6 +71,25 @@
       </div>
 
       <button
+        type="button"
+        class="btn btn-info w-100 mb-2"
+        @click="runAutofill"
+        :disabled="!itemUrl || autofilling"
+      >
+        <span
+          v-if="autofilling"
+          class="spinner-border spinner-border-sm me-1"
+          role="status"
+          style="width:13px;height:13px;"
+        ></span>
+        {{ autofilling ? 'Filling in details…' : 'AI Autofill' }}
+      </button>
+
+      <div v-if="autofillError" class="alert alert-warning py-2 mb-2" style="font-size:12px;">
+        {{ autofillError }}
+      </div>
+
+      <button
         class="btn btn-primary w-100"
         type="submit"
         :disabled="!itemName || !selectedCartId || submitting"
@@ -116,6 +135,8 @@ export default {
       selectedCartId: '',
       submitting:     false,
       errorMsg:       '',
+      autofilling:    false,
+      autofillError:  '',
     }
   },
 
@@ -131,6 +152,26 @@ export default {
   },
 
   methods: {
+    async runAutofill() {
+      this.autofilling   = true
+      this.autofillError = ''
+ 
+      try {
+        const res  = await api.post('/autofill', { url: this.itemUrl })
+        const item = res.data
+        if (item.name)     this.itemName     = item.name
+        if (item.price != null) this.itemPrice = item.price
+        if (item.quantity) this.itemQuantity = item.quantity
+      } 
+      catch (err) {
+        this.autofillError = err?.response?.data?.message ?? 'Autofill failed. Please fill in details manually.'
+        console.error('Autofill error:', err)
+      } 
+      finally {
+        this.autofilling = false
+      }
+    },
+
     async handleAddItem() {
       if (!this.itemName || !this.selectedCartId) return
       this.submitting = true

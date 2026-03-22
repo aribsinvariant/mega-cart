@@ -47,10 +47,17 @@
           </small>
           <button 
             class="edit-btn" 
-            title="remove" @click="removeSharedCart(cart)" 
+            title="Remove" @click="removeSharedCart(cart)" 
             :style="{ color: cart.description ? getContrastColor(cart.description) : 'var(--bs-body-color)' }"
             >
               ❌
+            </button>
+            <button 
+            class="edit-btn" 
+            title="Copy" @click="copyCart(cart)" 
+            :style="{ color: cart.description ? getContrastColor(cart.description) : 'var(--bs-body-color)' }"
+            >
+              ⧉
             </button>
         </div>
 
@@ -257,6 +264,9 @@ export default {
         console.error("Remove shared cart failed:", err?.response?.status, err?.response?.data);
         alert(`Failed to remove shared cart (${err?.response?.status || "no status"})`);
       }
+    },
+    copyCart(cart) {
+      this.$emit("duplicate-cart", cart);
     }
   },
 };

@@ -54,7 +54,15 @@
 
       <transition-group name="comment-fade" tag="div" class="comments-list">
         <div v-for="comment in sortedComments" :key="comment.id" class="comment">
-          <div class="comment__avatar">{{ comment.username?.[0]?.toUpperCase() }}</div>
+          <img
+            v-if="comment.profile_picture"
+            :src="`http://localhost:3001${comment.profile_picture}`"
+            class="comment__avatar"
+          />
+          <div v-else class="comment__avatar">
+            {{ comment.username?.[0]?.toUpperCase() }}
+          </div>
+
           <div class="comment__body">
             <div class="comment__meta">
               <span class="comment__author">{{ comment.username }}</span>
@@ -322,5 +330,20 @@ export default {
   color: #9ca3af;
   font-size: 0.9rem;
   padding: 32px 0;
+}
+
+.comment__avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover; 
+  background: #374151;
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 </style>

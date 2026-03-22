@@ -470,6 +470,7 @@ export default {
         this.commentsError = err.message
       } finally {
         this.commentsPosting = false
+        await this.fetchComments();
       }
     }
   },

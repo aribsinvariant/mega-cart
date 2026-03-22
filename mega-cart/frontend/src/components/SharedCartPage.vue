@@ -10,13 +10,22 @@
       </select>
     </div>
 
+    <div class="mt-3">
+      <input
+        v-model="searchQuery"
+        class="form-control"
+        type="search"
+        :placeholder="$t('shared_cart.search_carts')"
+      />
+    </div>
+
     <p v-if="carts.length === 0" class="text-muted mt-4">
       {{ $t("shared_cart.no_shared_carts") }}
     </p>
 
     <ul v-else class="list-group mt-4">
       <li
-        v-for="cart in [...carts].sort((a, b) => a.id - b.id)"
+        v-for="cart in filteredCarts"
         :key="cart.id"
         class="list-group-item d-flex justify-content-between align-items-center"
         :style="{ backgroundColor: cart.description || 'var(--bs-body-bg)', color: getContrastColor(cart.description) }"
@@ -117,7 +126,20 @@ export default {
       showTagModal: false,
       selectedCart: null,
       newTagName: "",
+      searchQuery: "",
     };
+  },
+  computed: {
+    filteredCarts() {
+      const q = this.searchQuery.trim().toLowerCase();
+      const sorted = [...this.carts].sort((a, b) => a.id - b.id);
+      if (!q) return sorted;
+      return sorted.filter(cart => {
+        const nameMatch = cart.name?.toLowerCase().includes(q);
+        const tagMatch = Array.isArray(cart.labels) && cart.labels.some(tag => tag.toLowerCase().includes(q));
+        return nameMatch || tagMatch;
+      });
+    },
   },
   async mounted() {
     const qFilter = this.$route.query.filter;

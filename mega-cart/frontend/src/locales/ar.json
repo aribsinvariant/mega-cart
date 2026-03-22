@@ -33,7 +33,8 @@
         "share_a_copy_with_link_instead":"مشاركة نسخة عبر الرابط", 
         "view_only":"عرض فقط", 
         "eg_groceries":"مثال: بقالة", 
-        "eg_email":"مثال: user{'@'}example.com"
+        "eg_email":"مثال: user{'@'}example.com",
+        "delete_confirmation":"هل أنت متأكد أنك تريد حذف هذه السلة؟ لا يمكن التراجع عن هذا الإجراء."
     }, 
     "home": {
         "welcome":"مرحبًا بك في Mega Cart، الحل الشامل لجميع احتياجات التسوق الخاصة بك."
@@ -107,7 +108,8 @@
         "cancel":"إلغاء",
         "create_new_tag":"إنشاء علامة جديدة",
         "tag_name":"اسم العلامة",
-        "eg_groceries":"مثال: بقالة"
+        "eg_groceries":"مثال: بقالة",
+        "remove_confirmation":"هل أنت متأكد أنك تريد إزالة هذه السلة من سلاتك المشتركة؟ سيؤدي هذا إلى إلغاء وصولك إليها."
     }, 
     "comment_section": {
         "comments": "التعليقات",

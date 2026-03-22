@@ -219,12 +219,12 @@ export default {
       };
     },
     async removeSharedCart(cart) {
-      if (!confirm("Are you sure you want to remove this shared cart? This will revoke your access to it.")) {
+      if (!confirm(this.$t("shared_cart.remove_confirmation"))) {
         return;
       }
   
       try {
-        await api.delete(`/carts/${cart.id}`);
+        await api.delete(`/carts/shared/${cart.id}`);
         this.carts = this.carts.filter((c) => c.id !== cart.id);
         if (this.selectedCartId === cart.id) {
           this.selectedCartId = null;

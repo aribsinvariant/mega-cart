@@ -353,7 +353,7 @@ export default {
       }
     },
     async deleteCart(cart){
-      if (!confirm("Are you sure you want to delete this cart? This action cannot be undone.")) {
+      if (!confirm(this.$t("cart.delete_confirmation"))) {
         return;
       }
 

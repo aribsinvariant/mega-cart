@@ -33,7 +33,8 @@
         "share_a_copy_with_link_instead":"Share a copy with link instead", 
         "view_only":"View-only", 
         "eg_groceries":"e.g. Groceries", 
-        "eg_email":"e.g. user{'@'}example.com"
+        "eg_email":"e.g. user{'@'}example.com",
+        "delete_confirmation":"Are you sure you want to delete this cart? This action cannot be undone."
     }, 
     "home": {
         "welcome":"Welcome to Mega Cart, the one-website solution to all your shopping problems."
@@ -106,7 +107,8 @@
         "cancel":"Cancel",
         "create_new_tag":"Create new tag",
         "tag_name":"Tag name",
-        "eg_groceries":"e.g. groceries"
+        "eg_groceries":"e.g. groceries",
+        "remove_confirmation":"Are you sure you want to remove this cart from your shared carts? This will revoke your access to it."
     }, 
     "comment_section": {
         "comments": "Comments",

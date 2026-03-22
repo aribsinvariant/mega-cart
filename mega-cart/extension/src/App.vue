@@ -25,14 +25,15 @@
         :loading="cartsLoading"
         :page-url="pageUrl"
         @item-added="onItemAdded"
-        @go-import="currentView = 'import'"
+        @go-import="goToImport"
       />
       <ImportView
         v-else-if="currentView === 'import'"
         key="import"
+        :import-items="importItems"
         :carts="carts"
         :loading="cartsLoading"
-        @back="currentView = 'main'"
+        @back="onImportBack"
         @import-done="onImportDone"
       />
       <SuccessView
@@ -65,6 +66,7 @@ export default {
       carts: [],
       cartsLoading: false,
       successMessage: {},
+      importItems: [],
     }
   },
 
@@ -80,7 +82,16 @@ export default {
     await auth.init()
     if (this.isLoggedIn) {
       await this.loadCarts()
-      this.currentView = 'main'
+      // check if there are any items in the detected cart, if so just go straight to importview
+      let initialView = 'main'
+      if (typeof chrome !== 'undefined' && chrome.storage) {
+        const result = await chrome.storage.local.get('detectedCartItems')
+        if (result.detectedCartItems && result.detectedCartItems.length > 0) {
+          this.importItems = result.detectedCartItems
+          initialView = 'import'
+        }
+      }
+      this.currentView = initialView
       this.getPageUrl()
     }
   },
@@ -137,7 +148,22 @@ export default {
       }
       this.currentView = 'success'
     },
+    goToImport(items = []) {
+      this.importItems = items;
+      this.currentView = 'import';
+    },
+    onImportBack() {
+      if (typeof chrome !== 'undefined' && chrome.storage) {
+        chrome.storage.local.remove('detectedCartItems')
+      }
+      this.importItems = []
+      this.currentView = 'main'
+    },
     onImportDone({ cart, count }) {
+      // clear out the detected cart items from storage once successfully imported
+      if (typeof chrome !== 'undefined' && chrome.storage) {
+        chrome.storage.local.remove('detectedCartItems')
+      }
       this.successMessage = {
         title: 'Cart imported!',
         sub: `${count} items were copied into your cart.`,

@@ -1,18 +1,18 @@
 {
     "cart_details": {
-        "back_to_carts":"← कार्ट पर वापस जाएँ", 
-        "add_item":"+ आइटम जोड़ें", 
-        "add_item_modal_title":"आइटम जोड़ें",
-        "this_cart_is_empty":"यह कार्ट खाली है।", 
-        "item_name":"आइटम का नाम", 
-        "cancel":"रद्द करें", 
-        "eg_milk":"उदा. दूध",
-        "link":"लिंक",
-        "price":"मूल्य",
-        "quantity":"मात्रा",
-        "total":"कुल",
-        "edit_item":"आइटम संपादित करें",
-        "confirm":"पुष्टि करें"
+        "back_to_carts": "← कार्ट पर वापस जाएँ",
+        "add_item": "+ आइटम जोड़ें",
+        "add_item_modal_title": "आइटम जोड़ें",
+        "this_cart_is_empty": "यह कार्ट खाली है।",
+        "item_name": "आइटम का नाम",
+        "cancel": "रद्द करें",
+        "eg_milk": "उदा. दूध",
+        "link": "लिंक",
+        "price": "मूल्य",
+        "quantity": "मात्रा",
+        "total": "कुल",
+        "edit_item": "आइटम संपादित करें",
+        "confirm": "पुष्टि करें"
     },
     "cart": {
         "carts":"कार्ट",
@@ -34,66 +34,66 @@
         "view_only":"केवल देखें", 
         "eg_groceries":"उदा. किराना", 
         "eg_email":"उदा. user{'@'}example.com",
-        "delete_confirmation":"क्या आप सुनिश्चित हैं कि आप इस कार्ट को हटाना चाहते हैं? इस क्रिया को पूरा करने के बाद वापस नहीं लिया जा सकता।"
+        "delete_confirmation":"क्या आप सुनिश्चित हैं कि आप इस कार्ट को हटाना चाहते हैं? इस क्रिया को पूरा करने के बाद वापस नहीं लिया जा सकता।",
+        "search_carts": "कार्ट खोजें..."
     }, 
     "home": {
-        "welcome":"Mega Cart में आपका स्वागत है, आपकी सभी खरीदारी की समस्याओं का एक ही वेबसाइट समाधान।"
-    }, 
+        "welcome": "Mega Cart में आपका स्वागत है, आपकी सभी खरीदारी की समस्याओं का एक ही वेबसाइट समाधान।"
+    },
     "login": {
-        "log_in":"लॉग इन", 
-        "email":"ईमेल", 
-        "password":"पासवर्ड", 
-        "dont_have_an_account":"क्या आपके पास खाता नहीं है?",
-        "sign_up":"साइन अप", 
-        "forgot_your_password":"क्या आप पासवर्ड भूल गए?",
-        "reset_password":"पासवर्ड रीसेट करें"
-    }, 
+        "log_in": "लॉग इन",
+        "email": "ईमेल",
+        "password": "पासवर्ड",
+        "dont_have_an_account": "क्या आपके पास खाता नहीं है?",
+        "sign_up": "साइन अप",
+        "forgot_your_password": "क्या आप पासवर्ड भूल गए?",
+        "reset_password": "पासवर्ड रीसेट करें"
+    },
     "nav": {
-        "carts":"कार्ट", 
-        "log_in":"लॉग इन", 
-        "sign_up":"साइन अप", 
-        "settings":"सेटिंग्स",
-        "log_out":"लॉग आउट", 
+        "carts": "कार्ट",
+        "log_in": "लॉग इन",
+        "sign_up": "साइन अप",
+        "settings": "सेटिंग्स",
+        "log_out": "लॉग आउट",
         "toggle_dark_mode": "डार्क मोड पर स्विच करें",
         "toggle_light_mode": "लाइट मोड पर स्विच करें",
-        "language":"भाषा",
-        "inbox":"इनबॉक्स",
-        "shared_carts":"साझा कार्ट",
-        "account_settings":"खाता सेटिंग्स"
+        "language": "भाषा",
+        "inbox": "इनबॉक्स",
+        "shared_carts": "साझा कार्ट",
+        "account_settings": "खाता सेटिंग्स"
     },
     "recover": {
-        "forgot_password":"पासवर्ड भूल गए", 
-        "email":"ईमेल", 
-        "send_recovery_email":"रिकवरी ईमेल भेजें", 
-        "back_to_login":"लॉग इन पर वापस जाएँ"
-    }, 
-    "reset": {
-        "password_reset":"पासवर्ड रीसेट", 
-        "token":"टोकन", 
-        "new_password":"नया पासवर्ड", 
-        "verify_new_password":"नया पासवर्ड पुष्टि करें", 
-        "log_in":"लॉग इन", 
-        "didnt_receive_a_reset_email":"क्या आपको रीसेट ईमेल नहीं मिला?", 
-        "back_to_password_recovery":"पासवर्ड रिकवरी पर वापस जाएँ"
-    }, 
-    "signup": {
-        "sign_up":"साइन अप",
-        "email":"ईमेल", 
-        "full_name":"पूरा नाम", 
-        "password_at_least_6_char":"पासवर्ड (कम से कम 6 अक्षर)", 
-        "create_account":"खाता बनाएं", 
-        "already_have_an_account":"क्या आपके पास पहले से खाता है?", 
-        "log_in":"लॉग इन"
+        "forgot_password": "पासवर्ड भूल गए",
+        "email": "ईमेल",
+        "send_recovery_email": "रिकवरी ईमेल भेजें",
+        "back_to_login": "लॉग इन पर वापस जाएँ"
     },
-    "inbox":{
-        "shared_cart_inbox":"साझा कार्ट इनबॉक्स",
-        "no_invites":"कोई आमंत्रण नहीं है।",
-        "accept":"स्वीकार करें",
-        "decline":"अस्वीकार करें",
-        "permission":"अनुमति",
-        "editable":"संपादन योग्य",
-        "view_only":"केवल देखने योग्य"
-
+    "reset": {
+        "password_reset": "पासवर्ड रीसेट",
+        "token": "टोकन",
+        "new_password": "नया पासवर्ड",
+        "verify_new_password": "नया पासवर्ड पुष्टि करें",
+        "log_in": "लॉग इन",
+        "didnt_receive_a_reset_email": "क्या आपको रीसेट ईमेल नहीं मिला?",
+        "back_to_password_recovery": "पासवर्ड रिकवरी पर वापस जाएँ"
+    },
+    "signup": {
+        "sign_up": "साइन अप",
+        "email": "ईमेल",
+        "full_name": "पूरा नाम",
+        "password_at_least_6_char": "पासवर्ड (कम से कम 6 अक्षर)",
+        "create_account": "खाता बनाएं",
+        "already_have_an_account": "क्या आपके पास पहले से खाता है?",
+        "log_in": "लॉग इन"
+    },
+    "inbox": {
+        "shared_cart_inbox": "साझा कार्ट इनबॉक्स",
+        "no_invites": "कोई आमंत्रण नहीं है।",
+        "accept": "स्वीकार करें",
+        "decline": "अस्वीकार करें",
+        "permission": "अनुमति",
+        "editable": "संपादन योग्य",
+        "view_only": "केवल देखने योग्य"
     },
     "shared_cart": {
         "shared_carts":"साझा कार्ट",
@@ -109,7 +109,8 @@
         "create_new_tag":"नया टैग बनाएं",
         "tag_name":"टैग का नाम",
         "eg_groceries":"उदा. किराना",
-        "remove_confirmation":"क्या आप सुनिश्चित हैं कि आप इस कार्ट को अपने साझा कार्ट से हटाना चाहते हैं? इससे आपकी उस कार्ट तक पहुंच रद्द हो जाएगी।"
+        "remove_confirmation":"क्या आप सुनिश्चित हैं कि आप इस कार्ट को अपने साझा कार्ट से हटाना चाहते हैं? इससे आपकी उस कार्ट तक पहुंच रद्द हो जाएगी।",
+        "search_carts": "कार्ट खोजें..."
     }, 
     "comment_section": {
         "comments": "टिप्पणियाँ",
@@ -123,33 +124,32 @@
         "d_ago": "{count} दिन पहले"
     },
     "account_settings": {
-        "account_settings":"खाता सेटिंग्स",
-        "edit":"संपादित करें",
-        "name":"नाम",
-        "profile_picture":"प्रोफ़ाइल चित्र",
-        "cancel":"रद्द करें",
-        "save":"सहेजें",
-        "change_email_password":"ईमेल/पासवर्ड बदलें",
-        "back_to_carts":"← कार्ट पर वापस जाएँ",
-        "name_updated":"डिस्प्ले नाम सफलतापूर्वक अपडेट किया गया!",
-        "name_update_failed":"डिस्प्ले नाम अपडेट करने में विफल। कृपया पुन: प्रयास करें।"
+        "account_settings": "खाता सेटिंग्स",
+        "edit": "संपादित करें",
+        "name": "नाम",
+        "profile_picture": "प्रोफ़ाइल चित्र",
+        "cancel": "रद्द करें",
+        "save": "सहेजें",
+        "change_email_password": "ईमेल/पासवर्ड बदलें",
+        "back_to_carts": "← कार्ट पर वापस जाएँ",
+        "name_updated": "डिस्प्ले नाम सफलतापूर्वक अपडेट किया गया!",
+        "name_update_failed": "डिस्प्ले नाम अपडेट करने में विफल। कृपया पुन: प्रयास करें।"
     },
     "security_settings": {
-        "change_email_password":"ईमेल/पासवर्ड बदलें",
-        "change_email":"ईमेल बदलें",
-        "change_password":"पासवर्ड बदलें",
-        "current_password":"वर्तमान पासवर्ड",
-        "new_email":"नया ईमेल",
-        "new_password":"नया पासवर्ड (कम से कम 6 अक्षर)",
-        "confirm_new_password":"नया पासवर्ड पुष्टि करें",
-        "cancel":"रद्द करें",
-        "save":"सहेजें",
-        "hide":"छिपाएं",
-        "show":"दिखाएं",
-        "email_updated":"ईमेल सफलतापूर्वक अपडेट किया गया!",
-        "password_updated":"पासवर्ड सफलतापूर्वक अपडेट किया गया!",
-        "update_failed":"अपडेट करने में विफल। कृपया अपना वर्तमान पासवर्ड जांचें और पुन: प्रयास करें।",
-        "back_to_account_settings":"← खाता सेटिंग्स पर वापस जाएँ"
-
+        "change_email_password": "ईमेल/पासवर्ड बदलें",
+        "change_email": "ईमेल बदलें",
+        "change_password": "पासवर्ड बदलें",
+        "current_password": "वर्तमान पासवर्ड",
+        "new_email": "नया ईमेल",
+        "new_password": "नया पासवर्ड (कम से कम 6 अक्षर)",
+        "confirm_new_password": "नया पासवर्ड पुष्टि करें",
+        "cancel": "रद्द करें",
+        "save": "सहेजें",
+        "hide": "छिपाएं",
+        "show": "दिखाएं",
+        "email_updated": "ईमेल सफलतापूर्वक अपडेट किया गया!",
+        "password_updated": "पासवर्ड सफलतापूर्वक अपडेट किया गया!",
+        "update_failed": "अपडेट करने में विफल। कृपया अपना वर्तमान पासवर्ड जांचें और पुन: प्रयास करें।",
+        "back_to_account_settings": "← खाता सेटिंग्स पर वापस जाएँ"
     }
 }

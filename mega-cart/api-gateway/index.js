@@ -10,4 +10,6 @@ app.use('/auth', createProxyMiddleware({ target: 'http://auth-service:3001', cha
 
 app.use('/carts', createProxyMiddleware({ target: 'http://cart-service:3007', changeOrigin: true, pathRewrite: (path) => path, }));
 
+app.use('/autofill', createProxyMiddleware({ target: 'http://cart-service:3007', changeOrigin: true, pathRewrite: { '^/': '/autofill' } }));
+
 app.listen(8080, () => console.log('Gateway running on 8080'));

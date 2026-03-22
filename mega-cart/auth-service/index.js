@@ -312,5 +312,32 @@ app.post('/account/profile-picture',
     }
 });
 
+app.get('/users/bulk', async (req, res) => {
+  try {
+    const idsParam = req.query.ids;
+
+    if (!idsParam) {
+      return res.status(400).json({ error: 'ids query param required' });
+    }
+
+    
+    const ids = idsParam.split(',').map(id => parseInt(id)).filter(Boolean);
+
+    if (ids.length === 0) {
+      return res.json([]);
+    }
+
+    const result = await db.query(
+      'SELECT id, username, profile_picture FROM users WHERE id = ANY($1)',
+      [ids]
+    );
+
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error in /users/bulk:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 // maybe add delete user, forgot password (will need notify service for this), etc. 
 app.listen(3001, () => console.log('Auth Service running on 3001'))

@@ -33,7 +33,8 @@
         "share_a_copy_with_link_instead":"Partager une copie via un lien", 
         "view_only":"Lecture seule", 
         "eg_groceries":"ex. Courses", 
-        "eg_email":"ex. user{'@'}example.com"
+        "eg_email":"ex. user{'@'}example.com",
+        "delete_confirmation":"Êtes-vous sûr de vouloir supprimer ce panier? Cette action ne peut pas être annulée."
     }, 
     "home": {
         "welcome":"Bienvenue sur Mega Cart, la solution unique pour tous vos besoins d’achat."
@@ -106,7 +107,8 @@
         "cancel":"Annuler",
         "create_new_tag":"Créer une nouvelle étiquette",
         "tag_name":"Nom de l’étiquette",
-        "eg_groceries":"ex. Courses"
+        "eg_groceries":"ex. Courses",
+        "remove_confirmation":"Êtes-vous sûr de vouloir supprimer ce panier de vos paniers partagés ? Cela révoquera votre accès à celui-ci."
     }, 
     "comment_section": {
         "comments": "Commentaires",

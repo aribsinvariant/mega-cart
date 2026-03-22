@@ -33,7 +33,8 @@
         "share_a_copy_with_link_instead":"Compartir una copia mediante enlace", 
         "view_only":"Solo lectura", 
         "eg_groceries":"p. ej. Comestibles", 
-        "eg_email":"p. ej. user{'@'}example.com"
+        "eg_email":"p. ej. user{'@'}example.com",
+        "delete_confirmation":"¿Estás seguro de que quieres eliminar este carrito? Esta acción no se puede deshacer."
     }, 
     "home": {
         "welcome":"Bienvenido a Mega Cart, la solución en un solo sitio web para todos tus problemas de compras."
@@ -106,7 +107,8 @@
         "cancel":"Cancelar",
         "create_new_tag":"Crear nueva etiqueta",
         "tag_name":"Nombre de la etiqueta",
-        "eg_groceries":"p. ej. Comestibles"
+        "eg_groceries":"p. ej. Comestibles",
+        "remove_confirmation":"¿Estás seguro de que quieres eliminar este carrito de tus carritos compartidos? Esto revocará tu acceso a él."
     }, 
     "comment_section": {
         "comments": "Comentarios",

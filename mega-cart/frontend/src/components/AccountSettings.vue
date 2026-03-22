@@ -70,10 +70,11 @@ export default {
   },
   async mounted() {
     try {
-      const res = await api.get("auth/account/me");
+      const res = await api.get("/auth/account/me");
       this.userName = res.data.username;
-      // after adding profile picture support to backend, this is where we would set the profile picture URL:
-      // this.profilePicture = res.data.profilePicture || null;
+      this.profilePicture = res.data.profile_picture
+        ? `http://localhost:3001${res.data.profile_picture}?t=${Date.now()}`
+        : null;
     } catch (e) {
       console.error("Failed to load user", e);
     }
@@ -82,18 +83,31 @@ export default {
   },
   methods: {
     async handleFileChange(event) {
-      //TODO: Implement actual profile picture upload functionality. This is just a placeholder to show how it would work.
       const file = event.target.files[0];
       if (!file) return;
+
       const formData = new FormData();
       formData.append("profilePicture", file);
+
       try {
-        const res = await api.post("/auth/account/profile-picture", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
+        const token = localStorage.getItem("token");
+
+        const res = await fetch("http://localhost:3001/account/profile-picture", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
         });
-        this.profilePicture = res.data.profilePicture;
+
+        const data = await res.json();
+        console.log("upload response:", data);
+
+        this.profilePicture = data.profilePicture
+          ? `http://localhost:3001${data.profilePicture}?t=${Date.now()}`
+          : null;
       } catch (e) {
-        console.error("Profile picture upload not yet implemented", e);
+        console.error("Profile picture upload failed", e);
       }
     },
     startEditName() {

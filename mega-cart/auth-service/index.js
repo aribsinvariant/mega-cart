@@ -6,6 +6,10 @@ const crypto = require('crypto');
 const amqp = require('amqplib');
 const db = require('./db');
 const app = express();
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+const cors = require('cors');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret';
 app.use(express.json());
@@ -39,6 +43,26 @@ async function connectQueue() {
 }
 connectQueue();
 
+// update profile pic
+app.use('/profile_pictures', express.static(path.join(__dirname, 'profile_pictures')));
+const uploadDir = path.join(__dirname, 'profile_pictures');
+fs.mkdirSync(uploadDir, { recursive: true });
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, uploadDir);
+    }, 
+    filename: (req, file, cb) => {
+        const ext = path.extname(file.originalname);
+        cb(null, `user-${req.user.id}${ext}`);
+    }
+});
+const upload = multer({ storage });
+
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true
+}));
+
 function authenticateToken(req, res, next) {
   const token = req.headers.authorization?.split(' ')[1];
   if (!token) return res.status(401).json({ error: 'No token' });
@@ -53,7 +77,7 @@ function authenticateToken(req, res, next) {
 app.get('/account/me', authenticateToken, async (req, res) => {
   try {
     const result = await db.query(
-      'SELECT id, username, email FROM users WHERE id = $1',
+      'SELECT id, username, email, profile_picture FROM users WHERE id = $1',
       [req.user.id]
     );
     if (result.rows.length === 0) return res.status(404).json({ error: 'User not found' });
@@ -261,6 +285,30 @@ app.post('/reset-password', async (req, res) => {
     } catch (error) {
         console.error('Error in /reset-password:', error);
         res.status(500).json({ error: 'Reset Password Failed'});
+    }
+});
+
+app.post('/account/profile-picture', 
+    authenticateToken, 
+    upload.single('profilePicture'), 
+    async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ error: 'Profile picture file required' });
+        }
+        const profilePicturePath = `/profile_pictures/${req.file.filename}`;
+
+        await db.query('UPDATE users SET profile_picture = $1 WHERE id = $2', 
+            [profilePicturePath, req.user.id]
+        )
+
+        res.status(200).json({ 
+            message: 'Profile picture successfully updated', 
+            profilePicture: profilePicturePath
+        });
+    } catch (error) {
+        console.error('Error in /account/profile_pictures:', error);
+        res.status(500).json({ error: 'Profile picture update failed'});
     }
 });
 

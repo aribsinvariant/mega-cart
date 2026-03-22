@@ -18,6 +18,7 @@
     @share-cart-link="shareWithLink"
     @update-inbox="updateInboxCount"
     @delete-cart="deleteCart"
+    @remove-shared-cart="removeSharedCart"
 
   />
 </template>
@@ -367,6 +368,19 @@ export default {
       } catch (err) {
         console.error("Delete cart failed:", err?.response?.status, err?.response?.data);
         alert(`Failed to delete cart (${err?.response?.status || "no status"})`);
+      }
+    },
+    async removeSharedCart(cart) {
+      if (!confirm("Are you sure you want to remove this shared cart? This will revoke your access to it.")) {
+        return;
+      }
+
+      try {
+        await api.delete(`/carts/shared/${cart.id}`);
+        this.carts = this.carts.filter((c) => c.id !== cart.id);
+      } catch (err) {
+        console.error("Remove shared cart failed:", err?.response?.status, err?.response?.data);
+        alert(`Failed to remove shared cart (${err?.response?.status || "no status"})`);
       }
     }
   }

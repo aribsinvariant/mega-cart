@@ -174,6 +174,7 @@ app.delete('/shared/:id', async (req, res) => {
     const cartId = req.params.id;
     const userId = req.user.id;
 
+    console.log("cartId:", cartId, "userId:", userId);
     try {
         const result = await query(
             "DELETE FROM shared_carts WHERE cart_id = $1 AND user_id = $2 AND status = 'accepted' RETURNING *",

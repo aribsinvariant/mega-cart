@@ -219,22 +219,8 @@ export default {
       };
     },
     async removeSharedCart(cart) {
-      if (!confirm("Are you sure you want to remove this shared cart? This will revoke your access to it.")) {
-        return;
-      }
-  
-      try {
-        await api.delete(`/carts/${cart.id}`);
-        this.carts = this.carts.filter((c) => c.id !== cart.id);
-        if (this.selectedCartId === cart.id) {
-          this.selectedCartId = null;
-          this.$router.push({ name: "carts" });
-          this.$refs.sharedCartPage.load();
-        }
-      } catch (err) {
-        console.error("Remove shared cart failed:", err?.response?.status, err?.response?.data);
-        alert(`Failed to remove shared cart (${err?.response?.status || "no status"})`);
-      }
+      this.$emit("remove-shared-cart", cart);
+      this.carts = this.carts.filter((c) => c.id !== cart.id);
     }
   },
 };

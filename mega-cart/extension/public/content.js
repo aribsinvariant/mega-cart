@@ -65,20 +65,44 @@
       if (bestItems.length > 0) return;
 
       const items = [];
-      const cartRows = document.querySelectorAll('.cart-item, [data-cart-item], .mini-cart-item');
-      cartRows.forEach(row => {
-        const titleEl = row.querySelector('.product-title, .item-title, h3, a.title');
-        const priceEl = row.querySelector('.price, .item-price');
-        const qtyEl = row.querySelector('input[type="number"], .quantity');
+      const host = window.location.hostname;
 
-        if (titleEl) {
-          items.push({
-            name: titleEl.innerText.trim(),
-            price: priceEl ? priceEl.innerText.trim() : 0,
-            quantity: qtyEl && qtyEl.value ? parseInt(qtyEl.value) : 1,
-          });
-        }
-      });
+      if (host.includes('amazon.')) {
+        document.querySelectorAll('.sc-list-item').forEach(row => {
+          const titleEl = row.querySelector('.sc-product-title, .a-truncate-cut');
+          const priceEl = row.querySelector('.sc-product-price, .sc-item-price');
+          const qtyEl = row.querySelector('.a-dropdown-prompt, input[name="quantity"]');
+          if (titleEl && row.innerText.includes('$')) {
+            let quantity = 1;
+            if (qtyEl) {
+              const qtyStr = qtyEl.value || qtyEl.innerText || '';
+              const match = qtyStr.match(/\d+/);
+              if (match) quantity = parseInt(match[0], 10);
+            }
+            items.push({
+              name: titleEl.innerText.trim(),
+              price: priceEl ? priceEl.innerText.trim() : 0,
+              quantity: quantity,
+            });
+          }
+        });
+      } else {
+        // generic fallback for all other sites
+        const cartRows = document.querySelectorAll('.cart-item, [data-cart-item], .mini-cart-item, .item-list .item');
+        cartRows.forEach(row => {
+          const titleEl = row.querySelector('.product-title, .item-title, h3, a.title, .name');
+          const priceEl = row.querySelector('.price, .item-price, .amount');
+          const qtyEl = row.querySelector('input[type="number"], .quantity, select.qty');
+
+          if (titleEl) {
+            items.push({
+              name: titleEl.innerText.trim(),
+              price: priceEl ? priceEl.innerText.trim() : 0,
+              quantity: qtyEl && qtyEl.value ? parseInt(qtyEl.value) : 1,
+            });
+          }
+        });
+      }
       if (items.length > 0) {
         updateItemsInStorage(items);
       }

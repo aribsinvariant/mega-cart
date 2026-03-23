@@ -11,14 +11,21 @@
       <li
         v-for="(item, i) in importItems"
         :key="i"
-        class="list-group-item d-flex justify-content-between align-items-center py-2"
+        class="list-group-item py-2"
         style="font-size:13px;"
       >
-        <div>
-          <div class="fw-bold">{{ item.name }}</div>
-          <div class="text-muted">${{ Number(item.price).toFixed(2) }} × {{ item.quantity }}</div>
+        <div class="mb-2">
+          <input class="form-control form-control-sm fw-bold" v-model.trim="item.name" placeholder="Item name" aria-label="Item name" />
         </div>
-        <span class="fw-bold">${{ (item.price * item.quantity).toFixed(2) }}</span>
+        <div class="d-flex align-items-center gap-2">
+          <div class="input-group input-group-sm" style="width: 110px;">
+            <span class="input-group-text text-muted px-2">$</span>
+            <input type="number" class="form-control px-2" v-model.number="item.price" step="0.01" min="0" placeholder="0.00" aria-label="Item price" />
+          </div>
+          <span class="text-muted" style="font-size: 14px;">×</span>
+          <input type="number" class="form-control form-control-sm text-center" style="width: 65px;" v-model.number="item.quantity" step="1" min="1" aria-label="Item quantity" />
+          <span class="ms-auto fw-bold">${{ ((parseFloat(item.price) || 0) * (parseInt(item.quantity) || 1)).toFixed(2) }}</span>
+        </div>
       </li>
 
       <li class="list-group-item d-flex justify-content-end py-2">

@@ -3,6 +3,7 @@ const { query } = require('./db');
 const crypto = require('crypto');
 const amqp = require('amqplib');
 const axios = require('axios');
+const cheerio = require('cheerio');
 const db = require('./db');
 const app = express();
 
@@ -574,6 +575,7 @@ app.delete('/:id/comments/:commentId', async (req, res) => {
         res.status(500).json({ error: "Failed to delete comment" });
     }
 });
+
 // create cart share link
 app.post('/:id/share-link', async (req, res) => {
     const { id } = req.params;
@@ -604,6 +606,114 @@ app.post('/:id/share-link', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Share Failed" });    
+    }
+});
+
+// gets price more cosistenly
+function parsePrice(raw) {
+    if (raw == null) return null;
+    const cleaned = String(raw)
+        .replace(/[^0-9.,]/g, '')
+        .replace(/,(\d{2})$/, '.$1')
+        .replace(/,/g, '');
+    const num = parseFloat(cleaned);
+    return isNaN(num) ? null : num;
+}
+
+// gets details to auto add cart given a link
+function extractProductDetails($) {
+    const PRODUCT_TYPES = ['product', 'individualproduct', 'productgroup', 'productmodel'];
+
+    let name = null;
+    let price = null;
+    
+    // try jsonld structured data
+    const scripts = $('script[type="application/ld+json"]');
+    for (let el of scripts) {
+        try {
+            const data = JSON.parse($(el).html());
+            const items = [data].flat();
+            const graphItems = items.flatMap(d => d['@graph'] ? [d['@graph']].flat() : [d]);
+            const product = graphItems.find(d => PRODUCT_TYPES.includes(d['@type']?.toLowerCase()));
+            if (product) {
+                if (!name && product.name) name = product.name.split(/[|\-–]/)[0].trim();
+                if (!price) {
+                    const offer = product.offers?.offers?.[0] ?? product.offers;
+                    price = parsePrice(offer?.price);
+                }
+            }
+        } catch (_) {}
+    }
+ 
+    // try open graph meta tags if jsonld didn't work
+    if (!name) {
+        const ogTitle = $('meta[property="og:title"]').attr('content');
+        if (ogTitle) name = ogTitle.split(/[|\-–]/)[0].trim();
+    }
+    if (!price) {
+        const rawPrice = $('meta[property="product:price:amount"]').attr('content')
+            ?? $('meta[property="og:price:amount"]').attr('content');
+        price = parsePrice(rawPrice);
+    }
+
+    // try just html
+    if (!name) {
+        name = $('h1').first().text().split(/[|\-–]/)[0].trim() || null;
+    }
+    if (!price) {
+        const priceSelectors = ['meta[itemprop="price"]', '[itemprop="price"]'];
+        for (const selector of priceSelectors) {
+            const el = $(selector);
+            if (el.length) {
+                const val = el.attr('content') ?? el.attr('data-price') ?? el.text();
+                price = parsePrice(val);
+                if (price) break;
+            }
+        }
+    }
+
+    return { name, price, quantity: 1 };
+}
+ 
+// takes "https://..." and gives { name, price, quantity } to auto fill the add item fields
+app.post('/autofill', async (req, res) => {
+    const { url } = req.body;
+ 
+    if (!url || !url.startsWith('http')) {
+        return res.status(400).json({ message: 'A valid URL is required' });
+    }
+ 
+    // get the page html
+    let pageHtml;
+    try {
+        const response = await axios.get(url, {
+            timeout: 10000,
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                'Accept-Language': 'en-US,en;q=0.5',
+                'Accept-Encoding': 'gzip, deflate, br',
+                'Connection': 'keep-alive',
+            },
+            maxContentLength: 5 * 1024 * 1024,
+        });
+        pageHtml = response.data;
+    } catch (err) {
+        console.error('Autofill fetch error:', err.message);
+        return res.status(422).json({ message: 'Could not fetch the provided URL' });
+    }
+ 
+    // get product details from html
+    try {
+        const $ = cheerio.load(pageHtml);
+        const item = extractProductDetails($);
+        if (!item) {
+            return res.status(422).json({ message: 'Could not extract product details from this URL' });
+        }
+        res.json(item);
+    } catch (err) {
+        console.error('Autofill parse error:', err.message);
+        res.status(500).json({ message: 'Failed to parse product details from URL' });
     }
 });
 

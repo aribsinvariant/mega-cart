@@ -112,7 +112,7 @@
                 v-model.trim="newItemName"
                 :placeholder="$t('cart_details.eg_milk')"
                 required
-                maxlength="40"
+                maxlength="255"
                 ref="itemNameInput"
               />
               <label class="form-label" for="link">{{ $t("cart_details.link") }}</label>
@@ -196,7 +196,7 @@
                 v-model.trim="editItemName"
                 :placeholder="$t('cart_details.eg_milk')"
                 required
-                maxlength="40"
+                maxlength="255"
                 ref="itemNameInput"
               />
               <label class="form-label" for="link">{{ $t("cart_details.link") }}</label>

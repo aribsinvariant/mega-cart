@@ -82,7 +82,7 @@
           role="status"
           style="width:13px;height:13px;"
         ></span>
-        {{ autofilling ? 'Filling in details…' : 'AI Autofill' }}
+        {{ autofilling ? 'Filling in details…' : 'Autofill' }}
       </button>
 
       <div v-if="autofillError" class="alert alert-warning py-2 mb-2" style="font-size:12px;">

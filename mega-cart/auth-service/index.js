@@ -339,5 +339,81 @@ app.get('/users/bulk', async (req, res) => {
   }
 });
 
+app.put('/account/username', authenticateToken, async (req, res) => {
+  try {
+    const { username } = req.body;
+    if (!username) return res.status(400).json({ error: 'Username required' });
+
+    await db.query('UPDATE users SET username = $1 WHERE id = $2', [username, req.user.id]);
+    res.status(200).json({ message: 'Username updated successfully' });
+  } catch (error) {
+    console.error('Error in /account/username:', error);
+    res.status(500).json({ error: 'Failed to update username' });
+  }
+});
+
+app.put('/account/email', authenticateToken, async (req, res) => {
+  try {
+    const email = req.body.email;
+    const password = req.body.password;
+
+    // Empty values
+    if (!email) return res.status(400).json({ error: 'Email value required' });
+    if (!password) return res.status(400).json({ error: 'Password value required' });
+
+    // Get current user
+    const result = await db.query('SELECT * FROM users WHERE id = $1', [req.user.id]);
+    if (result.rows.length === 0) return res.status(404).json({ error: 'User not found' });
+
+    // Verify current password
+    const passwordMatch = await bcrypt.compare(password, result.rows[0].password_hash);
+    if (!passwordMatch) return res.status(401).json({ error: 'Incorrect password' });
+
+    // Check new email isn't already taken
+    const emailCheck = await db.query('SELECT * FROM users WHERE email = $1', [email]);
+    if (emailCheck.rows.length > 0) return res.status(409).json({ error: 'Email already in use' });
+
+    // Update to new email
+    await db.query('UPDATE users SET email = $1 WHERE id = $2', [email, req.user.id]);
+
+    res.status(200).json({ message: 'Email updated successfully' });
+  } catch (error) {
+    console.error('Error in /account/email:', error);
+    res.status(500).json({ error: 'Failed to update email' });
+  }
+});
+
+app.put('/account/password', authenticateToken, async (req, res) => {
+  try {
+    const oldPassword = req.body.oldPassword;
+    const newPassword = req.body.newPassword;
+
+    // Empty values
+    if (!oldPassword) return res.status(400).json({ error: 'Current password required' });
+    if (!newPassword) return res.status(400).json({ error: 'New password required' });
+
+    // Get current user
+    const result = await db.query('SELECT * FROM users WHERE id = $1', [req.user.id]);
+    if (result.rows.length === 0) return res.status(404).json({ error: 'User not found' });
+
+    // Verify old password
+    const passwordMatch = await bcrypt.compare(oldPassword, result.rows[0].password_hash);
+    if (!passwordMatch) return res.status(401).json({ error: 'Incorrect password' });
+
+    // Make sure new password is different
+    const samePassword = await bcrypt.compare(newPassword, result.rows[0].password_hash);
+    if (samePassword) return res.status(409).json({ error: 'New password cannot be the same as the old password' });
+
+    // Hash and update password
+    const newHashedPassword = await bcrypt.hash(newPassword, 10);
+    await db.query('UPDATE users SET password_hash = $1 WHERE id = $2', [newHashedPassword, req.user.id]);
+
+    res.status(200).json({ message: 'Password updated successfully' });
+  } catch (error) {
+    console.error('Error in /account/password:', error);
+    res.status(500).json({ error: 'Failed to update password' });
+  }
+});
+
 // maybe add delete user, forgot password (will need notify service for this), etc. 
 app.listen(3001, () => console.log('Auth Service running on 3001'))

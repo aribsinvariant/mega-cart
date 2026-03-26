@@ -13,7 +13,7 @@
         "total":"Total",
         "edit_item":"Modifier l'article",
         "confirm":"Confirmer",
-        "autofill":"Remplissage automatique avec IA"
+        "autofill":"Autofill"
     },
     "cart": {
         "carts":"Paniers",

@@ -81,7 +81,7 @@
       </li>
     </ul>
 
-    <!-- Tag modal (same as your carts page) -->
+    
     <div
       v-if="showTagModal"
       class="modal fade show"
@@ -100,6 +100,15 @@
           <form @submit.prevent.stop="createTag">
             <div class="modal-body">
               <label class="form-label" for="tagName">{{ $t("shared_cart.tag_name") }}</label>
+              <ul class="list-group mb-2">
+                <li
+                  v-for="tag in (selectedCart ? selectedCart.labels : [])"
+                  :key="tag"
+                  class="list-group-item"
+                >
+                  <label>{{ tag }}</label>
+                </li>
+              </ul>
               <input
                 id="tagName"
                 class="form-control"

@@ -50,13 +50,16 @@ app.get('/shared', async (req, res) => {
 
     try {
         let text = `
-        SELECT c.id, c.name, c.description, c.created_at,
-                sc.can_edit,
-                c.user_id AS owner_id
-        FROM shared_carts sc
-        JOIN carts c ON c.id = sc.cart_id
-        WHERE sc.user_id = $1 AND sc.status = 'accepted'
-        `;
+            SELECT c.id, c.name, c.description, c.created_at,
+                    sc.can_edit,
+                    c.user_id AS owner_id,
+                    COALESCE(array_agg(lc.label_name) FILTER (WHERE lc.label_name IS NOT NULL), '{}') AS labels
+            FROM shared_carts sc
+            JOIN carts c ON c.id = sc.cart_id
+            LEFT JOIN labeled_carts lc ON c.id = lc.cart_id
+            WHERE sc.user_id = $1 AND sc.status = 'accepted'
+            GROUP BY c.id, c.name, c.description, c.created_at, sc.can_edit, c.user_id
+            `;
         const params = [userId];
 
         if (editable === "true") {

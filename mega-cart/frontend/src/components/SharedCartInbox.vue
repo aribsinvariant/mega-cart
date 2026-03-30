@@ -7,7 +7,7 @@
         <ul v-else class="list-group mt-3">
             <li v-for="c in invites" :key="c.id" class="list-group-item d-flex justify-content-between align-items-center">
                 <div>
-                    <div class="fw-semibold">{{ c.name }}</div>
+                    <div class="fw-semibold text-truncate-custom">{{ c.name }}</div>
                     <small class="text-body-secondary">
                         {{ $t("inbox.permission") }}: {{ c.can_edit ? $t("inbox.editable") : $t("inbox.view_only") }}
                     </small>
@@ -53,3 +53,14 @@ export default {
     }
 };
 </script>
+
+<style scoped>
+  .text-truncate-custom {
+    max-width: 30ch;      
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    vertical-align: middle;
+  }
+</style>

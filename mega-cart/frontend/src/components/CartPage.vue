@@ -29,7 +29,7 @@
           :style="{ backgroundColor: cart.description || 'var(--bs-body-bg)', color: getContrastColor(cart.description) }"
         >
           <div class="d-flex align-items-center gap-2">
-            <button class="btn btn-link p-0" @click="openCart(cart)" :style="{ color: cart.description ? getContrastColor(cart.description) : 'var(--bs-body-color)' }">
+            <button class="btn btn-link p-0 text-truncate-custom" @click="openCart(cart)" :style="{ color: cart.description ? getContrastColor(cart.description) : 'var(--bs-body-color)' }">
                 {{ cart.name }}
             </button>
             <button class="edit-btn" title="Edit" @click="openEditModal(cart)" :style="{ color: cart.description ? getContrastColor(cart.description) : 'var(--bs-body-color)' }">✏️</button>
@@ -439,3 +439,14 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+  .text-truncate-custom {
+    max-width: 30ch;      
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    vertical-align: middle;
+  }
+</style>

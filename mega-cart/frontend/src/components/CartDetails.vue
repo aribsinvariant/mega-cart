@@ -22,7 +22,7 @@
           <div>
             <div class="d-flex align-items-center gap-2">
               <div
-                class="fw-bold item-link"
+                class="fw-bold item-link text-truncate-custom"
                 @click="openLink(item.description)"
               >
                 {{ item.name }}
@@ -541,5 +541,13 @@ export default {
   .edit-btn:hover {
     color: #666 !important;
     background-color: #f0f0f0 !important;
+  }
+  .text-truncate-custom {
+    max-width: 30ch;      
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    vertical-align: middle;
   }
 </style>

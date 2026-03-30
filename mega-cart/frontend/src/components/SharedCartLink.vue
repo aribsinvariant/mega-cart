@@ -11,7 +11,7 @@
 
           <div>
             <div
-              class="fw-bold item-link"
+              class="fw-bold item-link text-truncate-custom"
               @click="openLink(item.description)"
             >
               {{ item.name }}
@@ -84,5 +84,13 @@ export default {
 
   .item-link:hover {
     text-decoration: underline;
+  }
+  .text-truncate-custom {
+    max-width: 30ch;      
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    vertical-align: middle;
   }
 </style>

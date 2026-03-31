@@ -3,7 +3,7 @@
     <div class="d-flex align-items-center justify-content-between">
       <h1 class="mb-0">{{ $t("shared_cart.shared_carts") }}</h1>
 
-      <select class="form-select w-auto" v-model="filter" @change="load">
+      <select class="form-select w-auto" v-model="filter">
         <option value="all">{{ $t("shared_cart.all_shared") }}</option>
         <option value="editable">{{ $t("shared_cart.editable_only") }}</option>
         <option value="viewonly">{{ $t("shared_cart.view_only") }}</option>
@@ -179,7 +179,11 @@ export default {
   computed: {
     filteredCarts() {
       const q = this.searchQuery.trim().toLowerCase();
-      const sorted = [...this.carts].sort((a, b) => a.id - b.id);
+      let sorted = [...this.carts].sort((a, b) => a.id - b.id);
+
+      if (this.filter === 'editable') sorted = sorted.filter(c => c.can_edit);
+      if (this.filter === 'viewonly') sorted = sorted.filter(c => !c.can_edit);
+
       if (!q) return sorted;
       return sorted.filter(cart => {
         const nameMatch = cart.name?.toLowerCase().includes(q);
@@ -191,9 +195,10 @@ export default {
   async mounted() {
     const qFilter = this.$route.query.filter;
     if (qFilter === "all" || qFilter === "editable" || qFilter === "viewonly") {
-        this.filter = qFilter;
+      this.filter = qFilter;
     }
-    await this.load();
+    const res = await api.get("/carts/shared");
+    this.carts = res.data;
   },
   methods: {
     async load() {

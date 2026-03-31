@@ -12,22 +12,27 @@
       if (Array.isArray(node)) {
         // evaluate if this array looks like a list of products/cart items
         if (node.length > 0 && typeof node[0] === 'object' && node[0]) {
-          const firstItem = JSON.stringify(node[0]).toLowerCase();
-          // extremely broad heuristic check for a product object
-          if ((firstItem.includes('price') || firstItem.includes('amount')) &&
-            (firstItem.includes('name') || firstItem.includes('title'))) {
+          const sampleItem = JSON.stringify(node.slice(0, 3)).toLowerCase();
+          if ((sampleItem.includes('price') || sampleItem.includes('amount')) &&
+            (sampleItem.includes('name') || sampleItem.includes('title') || sampleItem.includes('sku') || sampleItem.includes('product_id'))) {
 
             node.forEach(item => {
               if (!item || typeof item !== 'object') return;
-              if (item.quantity === undefined && item.qty === undefined) return;
 
               // map generic object properties to our MegaCart format
-              const name = item.name || item.title || item.product_title || item.ItemName || item.productName;
-
-              // Prioritize formatted strings ("$122.00") over raw integers (12200) to avoid cent conversion issues
-              const priceVal = item.formatted_price || item.formattedPrice || item.price_html || item.price || item.itemPrice || item.amount;
+              const name = item.name || item.title || item.product_title || item.ItemName || item.productName || item.item_name || item.productTitle || item.product_name;
+              const priceVal = item.formatted_price || item.formattedPrice || item.price_html || item.price || item.itemPrice || item.amount || item.unit_price || item.sale_price || item.regular_price || item.variant_price;
               const quantity = parseInt(item.quantity) || parseInt(item.qty) || 1;
-              const url = item.url || item.link || window.location.href;
+              // For Amazon, build product URL from ASIN if available
+              const asin = item.asin || item.ASIN;
+              let url;
+              if (asin && window.location.hostname.includes('amazon.')) {
+                url = `${window.location.origin}/dp/${asin}`;
+              } else {
+                const rawUrl = item.url || item.link || item.product_url || item.item_url || item.permalink || '';
+                // If it's a relative path, prepend the origin
+                url = rawUrl.startsWith('http') ? rawUrl : `${window.location.origin}${rawUrl.startsWith('/') ? '' : '/'}${rawUrl}`;
+              }
 
               // parse price
               let price = 0;
@@ -102,7 +107,11 @@
 
   XMLHttpRequest.prototype.send = function (...args) {
     this.addEventListener('load', function () {
-      processResponse(this.responseText);
+      if (this.responseType === '' || this.responseType === 'text') {
+        processResponse(this.responseText);
+      } else if (this.responseType === 'json') {
+        processResponse(this.response);
+      }
     });
     return originalXhrSend.apply(this, args);
   };
@@ -127,8 +136,13 @@
   };
 
   // initial and delayed scans to catch lazy-loaded objects
-  scanDataLayers();
-  setTimeout(scanDataLayers, 2000);
-  setTimeout(scanDataLayers, 5500);
-
+  window.addEventListener('message', (event) => {
+    if (event.source !== window || !event.data) return;
+    if (event.data.type === 'MEGACART_TRIGGER_SCAN') {
+      scanDataLayers();
+      setTimeout(() => {
+        window.postMessage({ type: 'MEGACART_SCAN_COMPLETE' }, '*');
+      }, 100);
+    }
+  });
 })();

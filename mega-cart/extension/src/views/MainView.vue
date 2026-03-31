@@ -105,8 +105,17 @@
         <p class="mb-0 fw-bold" style="font-size:13px;">Import multiple items</p>
         <p class="text-muted mb-0" style="font-size:12px;">Manually add several items at once.</p>
       </div>
-      <button class="btn btn-outline-secondary btn-sm" @click="$emit('go-import')">
-        Open →
+      <button
+        class="btn btn-outline-secondary btn-sm"
+        :disabled="scanLoading"
+        @click="$emit('go-import')"
+      >
+        <span
+          v-if="scanLoading"
+          class="spinner-border spinner-border-sm me-1"
+          style="width:13px;height:13px;"
+        ></span>
+        {{ scanLoading ? 'Scanning…' : 'Open →' }}
       </button>
     </div>
 
@@ -124,6 +133,7 @@ export default {
     carts:   { type: Array,   default: () => [] },
     loading: { type: Boolean, default: false },
     pageUrl: { type: String,  default: '' },
+    scanLoading: { type: Boolean, default: false },
   },
 
   data() {
@@ -185,7 +195,7 @@ export default {
           items: [
             ...existing,
             {
-              name:        this.itemName,
+              name:        this.itemName.slice(0, 255),
               description: this.itemUrl  || null,
               price:       parseFloat(this.itemPrice)  || 0,
               quantity:    parseInt(this.itemQuantity) || 1,

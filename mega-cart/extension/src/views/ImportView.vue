@@ -57,7 +57,10 @@
     <div v-if="importError" class="alert alert-danger py-2 mb-3" style="font-size:13px;">
       {{ importError }}
     </div>
-
+    <div v-if="truncatedItems.length" class="alert alert-warning py-2 mb-2" style="font-size:12px;">
+      ⚠️ {{ truncatedItems.length }} item name(s) exceed 255 characters and will be shortened.
+    </div>
+    
     <button
       class="btn btn-primary w-100"
       :disabled="!canImport || importing"
@@ -101,6 +104,9 @@ export default {
       if (this.selectedCartId === '__new__' && !this.newCartName.trim()) return false
       return true
     },
+    truncatedItems() {
+      return this.importItems.filter(i => i.name?.length > 255);
+    },
   },
 
   methods: {
@@ -133,7 +139,7 @@ export default {
           items: [
             ...existing,
             ...this.importItems.map(i => ({
-              name:        i.name,
+              name:        i.name.slice(0, 255),
               description: i.url   ?? null,
               price:       parseFloat(i.price)    || 0,
               quantity:    parseInt(i.quantity)   || 1,

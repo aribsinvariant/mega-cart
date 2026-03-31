@@ -70,7 +70,7 @@ async function handleMessage(msg) {
           items: [
             ...existing,
             {
-              name:        msg.item.name,
+              name:        msg.item.name.slice(0, 255),
               description: msg.item.url      || null,
               price:       parseFloat(msg.item.price)   || 0,
               quantity:    parseInt(msg.item.quantity)  || 1,
@@ -105,7 +105,7 @@ async function handleMessage(msg) {
           items: [
             ...existing,
             ...msg.items.map(i => ({
-              name:        i.name,
+              name:        i.name.slice(0, 255),
               description: i.url      || null,
               price:       parseFloat(i.price)   || 0,
               quantity:    parseInt(i.quantity)  || 1,
@@ -114,6 +114,14 @@ async function handleMessage(msg) {
         }),
       })
       return { cartId, cartName }
+    }
+
+    case 'SCAN_FOR_CART_ITEMS': {
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      if (!tab) return { items: [] };
+
+      const response = await chrome.tabs.sendMessage(tab.id, { type: 'SCAN_FOR_CART_ITEMS' });
+      return { items: response?.items ?? [] };
     }
 
     default:

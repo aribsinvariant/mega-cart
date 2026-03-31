@@ -24,6 +24,7 @@
         :carts="carts"
         :loading="cartsLoading"
         :page-url="pageUrl"
+        :scan-loading="scanLoading"
         @item-added="onItemAdded"
         @go-import="goToImport"
       />
@@ -67,6 +68,7 @@ export default {
       cartsLoading: false,
       successMessage: {},
       importItems: [],
+      scanLoading: false,
     }
   },
 
@@ -84,13 +86,6 @@ export default {
       await this.loadCarts()
       // check if there are any items in the detected cart, if so just go straight to importview
       let initialView = 'main'
-      if (typeof chrome !== 'undefined' && chrome.storage) {
-        const result = await chrome.storage.local.get('detectedCartItems')
-        if (result.detectedCartItems && result.detectedCartItems.length > 0) {
-          this.importItems = result.detectedCartItems
-          initialView = 'import'
-        }
-      }
       this.currentView = initialView
       this.getPageUrl()
     }
@@ -148,9 +143,21 @@ export default {
       }
       this.currentView = 'success'
     },
-    goToImport(items = []) {
-      this.importItems = items;
-      this.currentView = 'import';
+    async goToImport() {
+      this.scanLoading = true;
+      this.importItems = [];
+      if (typeof chrome !== 'undefined' && chrome.storage) {
+        await chrome.storage.local.remove('detectedCartItems');
+      }
+      try {
+        if (typeof chrome !== 'undefined' && chrome.runtime) {
+          const response = await chrome.runtime.sendMessage({ type: 'SCAN_FOR_CART_ITEMS' });
+          this.importItems = response?.items ?? [];
+        }
+      } finally {
+        this.scanLoading = false;
+        this.currentView = 'import';
+      }
     },
     onImportBack() {
       if (typeof chrome !== 'undefined' && chrome.storage) {

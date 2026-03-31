@@ -59,64 +59,80 @@
   // Heuristic Scanner fallback
   let scanTimeout = null;
   function scanDOMForCart() {
-    clearTimeout(scanTimeout);
-    scanTimeout = setTimeout(() => {
-      // prefer network data
-      if (bestItems.length > 0) return;
 
-      const items = [];
-      const host = window.location.hostname;
+    const items = [];
+    const host = window.location.hostname;
 
-      if (host.includes('amazon.')) {
-        document.querySelectorAll('.sc-list-item').forEach(row => {
-          const titleEl = row.querySelector('.sc-product-title, .a-truncate-cut');
-          const priceEl = row.querySelector('.sc-product-price, .sc-item-price');
-          const qtyEl = row.querySelector('.a-dropdown-prompt, input[name="quantity"]');
-          if (titleEl && row.innerText.includes('$')) {
-            let quantity = 1;
-            if (qtyEl) {
-              const qtyStr = qtyEl.value || qtyEl.innerText || '';
-              const match = qtyStr.match(/\d+/);
-              if (match) quantity = parseInt(match[0], 10);
-            }
-            items.push({
-              name: titleEl.innerText.trim(),
-              price: priceEl ? priceEl.innerText.trim() : 0,
-              quantity: quantity,
-            });
+    if (host.includes('amazon.')) {
+      document.querySelectorAll('.sc-list-item').forEach(row => {
+        const titleEl = row.querySelector('.sc-product-title, .a-truncate-cut');
+        const priceEl = row.querySelector('.sc-product-price, .sc-item-price');
+        const qtyEl = row.querySelector('.a-dropdown-prompt, input[name="quantity"]');
+        if (titleEl && row.innerText.includes('$')) {
+          let quantity = 1;
+          if (qtyEl) {
+            const qtyStr = qtyEl.value || qtyEl.innerText || '';
+            const match = qtyStr.match(/\d+/);
+            if (match) quantity = parseInt(match[0], 10);
           }
-        });
-      } else {
-        // generic fallback for all other sites
-        const cartRows = document.querySelectorAll('.cart-item, [data-cart-item], .mini-cart-item, .item-list .item');
-        cartRows.forEach(row => {
-          const titleEl = row.querySelector('.product-title, .item-title, h3, a.title, .name');
-          const priceEl = row.querySelector('.price, .item-price, .amount');
-          const qtyEl = row.querySelector('input[type="number"], .quantity, select.qty');
+          items.push({
+            name: titleEl.innerText.trim(),
+            price: priceEl ? priceEl.innerText.trim() : 0,
+            quantity: quantity,
+          });
+        }
+      });
+    } else {
+      // generic fallback for all other sites
+      const cartRows = document.querySelectorAll('.cart-item, [data-cart-item], .mini-cart-item, .item-list .item');
+      cartRows.forEach(row => {
+        const titleEl = row.querySelector('.product-title, .item-title, h3, a.title, .name');
+        const priceEl = row.querySelector('.price, .item-price, .amount');
+        const qtyEl = row.querySelector('input[type="number"], .quantity, select.qty');
 
-          if (titleEl) {
-            items.push({
-              name: titleEl.innerText.trim(),
-              price: priceEl ? priceEl.innerText.trim() : 0,
-              quantity: qtyEl && qtyEl.value ? parseInt(qtyEl.value) : 1,
-            });
-          }
-        });
-      }
-      if (items.length > 0) {
-        updateItemsInStorage(items);
-      }
-    }, 1000);
+        if (titleEl) {
+          items.push({
+            name: titleEl.innerText.trim(),
+            price: priceEl ? priceEl.innerText.trim() : 0,
+            quantity: qtyEl && qtyEl.value ? parseInt(qtyEl.value) : 1,
+          });
+        }
+      });
+    }
+    if (items.length > 0) {
+      updateItemsInStorage(items);
+    }
   }
 
-  const domObserver = new MutationObserver(scanDOMForCart);
-  domObserver.observe(document.body, { childList: true, subtree: true });
-  scanDOMForCart(); // Initial scan
+  
 
   chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     if (message.type === 'GET_DARK_MODE') {
       const isDark = localStorage.getItem('darkMode') === 'true'
       sendResponse({ isDark })
+      return true
+    }
+    if (message.type === 'SCAN_FOR_CART_ITEMS') {
+
+      const onScanComplete = (event) => {
+        if (event.source !== window || !event.data) return;
+        if (event.data.type !== 'MEGACART_SCAN_COMPLETE') return;
+        window.removeEventListener('message', onScanComplete);
+
+        // If network/data-layer scan found nothing, fall back to DOM heuristics
+        if (bestItems.length === 0) {
+          scanDOMForCart();
+        }
+
+        const items = bestItems;
+        chrome.storage.local.set({ detectedCartItems: items });
+        sendResponse({ success: true, items });
+      };
+
+      window.addEventListener('message', onScanComplete);
+      window.postMessage({ type: 'MEGACART_TRIGGER_SCAN' }, '*');
+
+      return true;
     }
     return true
   })
